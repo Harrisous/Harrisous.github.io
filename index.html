@@ -5,30 +5,130 @@
     <title>Haochen LI (Harry) - Main Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; color: #222; background: #f5f6fa; }
-        header { background: #3949ab; color: #fff; padding: 24px 0; text-align: center; }
-        nav { margin: 12px 0; }
-        nav a { color: #3949ab; margin: 0 10px; text-decoration: none; font-weight: 500;}
-        section { max-width: 900px; background: #fff; margin: 24px auto; padding: 32px 24px; border-radius: 8px; box-shadow: 0 2px 12px #ddd; }
-        h2 { color: #3949ab; margin-top: 2em; }
-        ul { padding-left: 18px; }
-        .tag { background: #e3eafe; color: #3949ab; border-radius: 4px; font-size: 80%; padding: 2px 7px; margin: 0 2px;}
-        .links a { margin-right: 16px; color: #3949ab; text-decoration: none; }
-        .project { margin-bottom: 18px; }
-        @media (max-width: 600px){ section {padding: 16px;} }
+        :root {
+            --white: #fff;
+            --black: #1a1a1a;
+            --gray-dark: #272727;
+            --gray: #5c5c5c;
+            --gray-light: #ededed;
+            --primary: #111;
+            --card-bg: #f8f8f8;
+            --accent: #222;
+        }
+        html, body {
+            background: var(--white);
+            color: var(--primary);
+            font-family: 'SF Pro Display', 'Segoe UI', Arial, sans-serif;
+            font-size: 17px;
+            margin: 0;
+            padding: 0;
+            letter-spacing: 0.01em;
+        }
+        header {
+            text-align: center;
+            padding: 56px 0 28px 0;
+            background: var(--white);
+        }
+        header h1 {
+            color: var(--black);
+            font-weight: 700;
+            font-size: 2.4em;
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+        }
+        header > div {
+            color: var(--gray);
+            font-size: 1.1em;
+        }
+        .tag {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+            border-radius: 28px;
+            display: inline-block;
+            font-size: 80%;
+            padding: 4px 14px;
+            margin: 0 4px 0 0;
+            font-weight: 500;
+        }
+        nav {
+            text-align: center;
+            margin: 16px 0 8px 0;
+        }
+        nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 28px;
+            font-size: 1.08em;
+            letter-spacing: 0.02em;
+            transition: color 0.15s;
+        }
+        nav a:hover {
+            color: #555;
+        }
+        section {
+            max-width: 720px;
+            background: var(--card-bg);
+            margin: 36px auto 0 auto;
+            padding: 46px 38px;
+            border-radius: 16px;
+            box-shadow: 0 1.5px 8px #dedede30;
+            border: 1.5px solid var(--gray-light);
+        }
+        h2 {
+            color: var(--black);
+            font-size: 1.35em;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            margin-top: 0;
+            margin-bottom: 1.4em;
+        }
+        ul {
+            padding-left: 24px;
+            margin-top: 0.2em;
+            margin-bottom: 1em;
+        }
+        li {
+            margin-bottom: 0.5em;
+        }
+        .project {
+            margin-bottom: 22px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ececec;
+        }
+        .project:last-child {
+            border-bottom: none;
+        }
+        .links a {
+            margin-right: 22px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 1px dotted #aaa;
+            transition: border 0.18s;
+        }
+        .links a:hover {
+            border-bottom: 1.8px solid #111;
+        }
+        @media (max-width: 700px) {
+            section { padding: 24px 10px; }
+            header { padding: 32px 0 14px 0; }
+        }
+        /* Slight Apple-inspired feel */
+        ::selection { background: #c1c1c1; color: var(--white);}
+        a, a:visited { transition: color 0.15s; }
     </style>
 </head>
 <body>
     <header>
         <h1>Haochen LI (Harry)</h1>
         <div>Duke M.Eng in Artificial Intelligence & Product Innovation | HKU B.Sc Actuarial Science & Computer Science</div>
-        <div>
+        <div style="margin: 16px 0 0 0;">
             <span class="tag">Machine Learning</span>
             <span class="tag">AI Agent</span>
             <span class="tag">Product Innovation</span>
         </div>
     </header>
-
     <nav>
         <a href="#about">About</a>
         <a href="#education">Education</a>
@@ -36,14 +136,12 @@
         <a href="#projects">Projects</a>
         <a href="#contact">Contact</a>
     </nav>
-
     <section id="about">
         <h2>👋 About Me</h2>
         <p>
             Hi! I'm <b>Haochen LI (Harry)</b>, a Master’s student at Duke University in Artificial Intelligence and Product Innovation. My interests include <b>AI agents, machine learning, deep learning, and edge AI</b>. I am passionate about leveraging AI to solve complex, real-world problems and always eager to explore new technologies.
         </p>
     </section>
-
     <section id="education">
         <h2>📚 Education</h2>
         <ul>
@@ -51,7 +149,6 @@
             <li><b>The University of Hong Kong</b> (Sep 2019 - Jul 2024):<br> B.Sc Actuarial Science & Computer Science</li>
         </ul>
     </section>
-
     <section id="skills">
         <h2>💡 Skills</h2>
         <ul>
@@ -64,7 +161,6 @@
             <li><b>Others:</b> Linux, API, SSH, Git</li>
         </ul>
     </section>
-
     <section id="projects">
         <h2>🚀 Project Highlights</h2>
         <div class="project">
@@ -87,7 +183,6 @@
             - Duke chatbot, LLM Text-to-SQL fine-tuning, AI pet robot (Raspberry Pi), Driving behavior detection, Movie recommendation, Stock prediction, Sentiment analysis, etc.
         </div>
     </section>
-
     <section id="contact">
         <h2>📬 Contact Me</h2>
         <div class="links">
