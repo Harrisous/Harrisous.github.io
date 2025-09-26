@@ -100,12 +100,54 @@
             .social-links { gap: 18px; }
             header { padding: 32px 0 10px 0; }
         }
+        .profile-photo {
+            display: block;
+            margin: 18px auto 0 auto;
+            width: 128px;
+            height: 128px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 1px 10px #ccc;
+            border: 3px solid #ededed;
+        }
+        .blog-section {
+            max-width: 520px;
+            background: var(--gray-light);
+            margin: 42px auto 30px auto;
+            padding: 32px 22px;
+            border-radius: 14px;
+            box-shadow: 0 1.5px 8px #dedede30;
+        }
+        .blog-section h2 {
+            font-size: 1.18em;
+            font-weight: 600;
+            margin-top: 0;
+        }
+        .blog-section ul {
+            padding-left: 18px;
+            margin-top: 1em;
+        }
+        .blog-section li {
+            margin-bottom: 0.9em;
+        }
+        .blog-section a {
+            color: var(--accent);
+            text-decoration: underline;
+            font-weight: 500;
+            font-size: 1em;
+            transition: color 0.12s;
+        }
+        .blog-section a:hover {
+            color: #0073b1;
+        }
+
+        
     </style>
 </head>
 <body>
     <header>
         <h1>Haochen LI (Harry)</h1>
-        <!-- <img src="images/profile.jpg" alt="My Photo" class="profile-photo"> -->
+        <img src="images/profile.jpg" alt="My Handsome Photo" class="profile-photo">
     </header>
     <section class="contact-section">
         <h2>Connection</h2>
@@ -130,7 +172,16 @@
         <p>
             Duke Master of Engineering, Artificial Intelligence (Current Student) <br>
             Focus: AI Agent System, Machine Learning, Deep Learning, Edge AI. <br>
+            More in Social Media Profile!
         </p>
     </section>
+    <section class="blog-section">
+    <h2>My Blog</h2>
+    <ul>
+        coming soon...
+        <!-- <li><a href="blog/blog1.html">Blog 1</a></li> -->
+        <!-- 可继续添加更多文章 -->
+    </ul>
+</section>
 </body>
 </html>
