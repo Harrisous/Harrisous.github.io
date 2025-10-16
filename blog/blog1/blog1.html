@@ -2,12 +2,127 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Blog 1 标题示例</title>
+    <title>🐱 How AI Sees Cats</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="blog1_style.css">
 </head>
 <body>
-    <h1>Blog 1 标题示例</h1>
-    <p>这里是博客正文，可以写你的内容...</p>
-    <a href="../index.html">返回主页</a>
+    <div class="block" id="Introduction">
+        <h1>🐱 How AI Sees Cats ✨</h1>
+        <h2>Explaining Grad-CAM with Cat Memes in 10min</h2>
+        <h3>Expainable AI | Computer Vision | General Public | <a href="https://github.com/Harrisous/AI-Tutorials/blob/main/GradCAM_Tutorial.ipynb">Code Tutorial </a></h3>
+        <p> Ever wondered how your iphone photos knows there's a cat in your photo — and not just a fluffy furry ball?
+            To figure out how AI sees your photos and make decisions, scientists came up with Grad-CAM (Gradient-weighted Class Activation Mapping), 
+            a useful AI heat vision that enable us to see the focus area of AI. <br><br>
+            
+            In this blog, I'm going to illustrate this XAI/explainbale AI tool using two famous meme cats.
+        </p>
+        <div class="image-row">
+            <figure>
+                <img src="./images/image_bozai.png" alt="Bozai" width="250" height="250">
+                <figcaption>Bozai</figcaption>
+            </figure>
+            <figure>
+                <img src="./images/image_guangdang.png" alt="Guangdang" width="250" height="250">
+                <figcaption>Guangdang</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <div class="block" id="Background">
+        <h2>1. First Peak Into The Black Box</h2>
+        <p>This, is a graph of a ResNet 50, a computer vision neural network that transform cat pictures into a prediction.</p>
+        <figure>
+            <img src="./images/ResNet.png" alt="ResNet Structure" width="600" height="200">
+            <figcaption>ResNet Structure</figcaption> 
+        </figure>
+        
+        <p>The neuron nodes looks so horrible, and how is it possible to look into this black box? It works simply like this: when you upload a picture of your cat to an AI model, it confidently says: “This is a cat!” 😺 by giving 0 or 1 indicating weather it is a cat.
+            But you wonder — what made you come up with this answer? 
+            Grad-CAM came in and said take this -- an X Ray filter that shows where the AI was “looking” when it decided “cat.” 
+            It highlights important regions in the image using color — red for “very important,” blue for “meh.”
+        </p>
+        <div class="image-row">
+            <figure>
+                <img src="./images/image_bozai.png" alt="Original Bozai" width="250" height="250">
+                <figcaption>Original Bozai</figcaption>
+            </figure>
+            <figure>
+                <img src="./images/bozai_GradCAM.png" alt="Bozai after Grad-CAM" width="250" height="250">
+                <figcaption>Bozai after Grad-CAM</figcaption>
+            </figure>
+        </div>
+        <div class="image-row">
+            <figure>
+                <img src="./images/image_guangdang.png" alt="Guangdan" width="250" height="250">
+                <figcaption>Original Guangdang</figcaption>
+            </figure>
+            <figure>
+                <img src="./images/guangdang_GradCAM.png" alt="Guangdang after Grad-CAM" width="250" height="250">
+                <figcaption>Guangdang after Grad-CAM</figcaption>
+            </figure>
+        </div>
+        
+
+    </div>
+
+    <div class="block" id="Logic">
+        <h2>2. How It Works</h2>
+        <p>From above picture we can see that the model mainly focus on the nose to distinguish cats from dogs. It is reasonable since cats have shorter nose than dogs. (PS: this model is trained specifically to distinguish cats and dogs, you can check the detail in tutorial link below)<br><br>
+            In the last layer of the ResNet, the original picture was broken down into many little pictures showing every possible detail: 
+            fur texture, ear triangles, nose dots, tail curve, etc. Grad-CAM traces which parts of the sub-images caused the biggest reaction in the AI's 
+            final decision. Then it projects that excitement back onto the original picture — like a thermal camera for AI attention. 
+            It's like applying Electroencephalogram(EEG)/"brain scan" to human brain to see what is going on when we think. So Grad-CAM ask: "Show me where your brain went brrr 🧠💥 when you saw this cat!"
+        </p>
+        <figure>
+            <img src="./images/EEG.png" alt="brain scan pic" width="432" height="257">
+            <figcaption>Brain Scan with EEG</figcaption> 
+        </figure>
+        <p> Here is a <a href="https://github.com/Harrisous/AI-Tutorials/blob/main/GradCAM_Tutorial.ipynb"> jupyter notebook tutorial on Grad-CAM</a> if you have some knowledge about Pytorch and want to explore more on applying Grad-CAM to general ResNet after transfer learning. 
+            The reward is that you can replicate the heatmap of Grad-CAM result just like I posted in this blog. (There could be some changes made for the tutorial so the heatmap may not be exactly the same) 
+        </p>
+
+    </div>
+
+    <div class="block" id="Impact">
+        <h2>3. Why It Matters</h2>
+        <p>
+            Grad-CAM is cool because it helps humans trust and debug AI. Since the focus of AI is marked out on the picture, it is easy for people to see what is the real focus
+            and we can compare the focus with human rationale and check if it is reasonable to make such judgement. For example, 
+            if the back ground of a sofa determines a cat, there might be something wrong with the model. And people may need to investigate or even retrain the model. 
+            Some might say it is okay to predict a cat from the surrounding environment as long as the prediction is correct. 
+            But the whole thing can be critical when safety is involved such as self-driving or criminal detection. 
+        </p>
+    </div>
+
+    <div class="block" id="Summary">
+        <h2>4. Key Takeout</h2>
+        <p>
+            <b>Grad-CAM = AI's highlight reel of what mattered most when it made a decision.</b> <br>
+            It helps us to understand how AI think and thus we can debug or train the AI based on human rationale (AI alignment). 
+            So next time your AI says "this is a cat," you can say: "Prove it. Show me the Grad-CAM result." 😼🔥
+        </p>
+        <figure>
+            <img src="./images/image_guangdang-thanks.png" alt="Thanks" width="250" height="250">
+        </figure>
+        
+    </div>
+
+    <div class="block" id="Reference">
+        <h2> Reference and Thanks </h2>
+        <small style="font-style: italic;">1. Special thanks to <a href="https://pratt.duke.edu/people/brinnae-bent/">Dr. Brinnae Bent</a> who teaches AIPI590 XAI and introduced the model<br>
+        2. Cat meme sources: <a href="https://space.bilibili.com/2147413451">Guangdang</a> and <a href="https://space.bilibili.com/251664034">Bozai</a> Do not use for commercial purposes.<br>
+        3. ResNet <a href="https://arxiv.org/pdf/1512.03385">original paper</a>. Structure graph from: Stephen, A., Punitha, A. & Chandrasekar, <a href="https://link.springer.com/article/10.1007/s00521-022-07793-2">Designing self attention-based ResNet architecture for rice leaf disease classification.</a> Neural Comput & Applic 35, 6737–6751 (2023). https://doi.org/10.1007/s00521-022-07793-2<br>
+        4. EEG picture from <a href="https://www.healthresearch.org/eeg-brain-function-measurement/">EEG Brain Function Measurement</a>
+        </small>
+    </div>
+    <br>
+    <div class="block"><a href="../../index.html">
+        <figure>
+            <img src="./images/banana_cat.png" alt="Back to main page" width="80" height="125">
+            <figcaption>Back to main page</figcaption> 
+        </figure>
+    </a>
+    </div>
 </body>
 </html>
