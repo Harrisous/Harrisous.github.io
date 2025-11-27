@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haochen LI (Harry) - Connect</title>
+    
+    <!-- 1. 引入 Tailwind CSS (样式库) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. 引入 React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- 3. 引入 Babel (让浏览器能看懂 JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 自定义动画样式 -->
+    <style>
+        body {
+            background-color: #0a0a0a;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        @keyframes fade-in-down {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down {
+            animation: fade-in-down 0.8s ease-out forwards;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s infinite;
+        }
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4; 
+        }
+    </style>
+</head>
+<body>
+    <!-- React 挂载点 -->
+    <div id="root"></div>
+
+    <!-- React 逻辑代码 -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- 0. 图标组件 (手动内联 SVG 以避免依赖问题) ---
+        const Icons = {
+            Github: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>,
+            Linkedin: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>,
+            Mail: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
+            Terminal: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>,
+            Cpu: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>,
+            Network: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>,
+            ChevronRight: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>,
+            ExternalLink: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>,
+            Code: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+            Folder: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 2H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>,
+            FileCode: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/></svg>,
+            ArrowRight: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>,
+            Layers: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>,
+            Monitor: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+        };
+
+        // --- 1. 项目数据 ---
+        const projects = [
+            {
+                id: 'PROJ_001',
+                title: 'Blue Devil ChatBot',
+                category: 'Agentic AI',
+                description: 'A chatbot for Duke related information retrieval, built using LangGraph framework for agentic search. Toolbox includes: API calls for exisitng APIs, Web Scrapping, and Tavily search for general search. WebScraping(bs4), LangGraph, Agentic Search, API are the key technologies used in this project',
+                stack: ['Python', 'LangGraph', 'LangChain', 'Streamlit', 'BeautifulSoup', 'Tavily', 'Restful API', 'AWS', 'OpenAI API'],
+                link: 'https://github.com/Harrisous/AIPI590LLM-project-2-DukeChatbot'
+            },
+            {
+                id: 'PROJ_002',
+                title: 'Text-To-SQLs',
+                category: 'LLM Fine-tuning',
+                description: "A large language model (LLM) fine-tuning task using the Bird database, aimed at enhancing LLM's capabilities in automatic text-to-SQL generation. We achieved 50% accuracy improvement on simple Text-To-SQL generation tasks at the expense of the capability to deal with challenging tasks.",
+                stack: ['Python', 'Unsloth', 'PEFT(LoRA)', 'Local LLM', 'BIRD Database', 'Hugging Face'],
+                link: 'https://github.com/Duke-AIPI-LLM-Course/project-1-maiga'
+            },
+            {
+                id: 'PROJ_003',
+                title: 'Pido (AI Pet Robot)',
+                category: 'Edge AI',
+                description: "Our team built an edge AI pet robot (Pido) that can follow the owner's commands with tracking function, providing comfort and companionship to the user. The pet is able to move or follow the user, understand instruction bark, show emotion on LCD screen and wag tail. The whole system runs on a RaspberryPi 4B powered by a powerbank and the action are done by motors (powered by another set of batteries) and servo.",
+                stack: ["Python", "Raspberry Pi 4B", "Edge AI", "OpenCV", "aruco", "Google Web Speech API", "SpeechRecognition", "Ultrasonic distance sensor", "DC motorized chassis", "Servo motors", "LCD screen display", "Camera", "Microphone", "Physical button"],
+                link: 'https://github.com/Harrisous/AIPI590AIPhysicialWorld-AIPet'
+            },
+            {
+                id: 'PROJ_004',
+                title: 'Stock Market Transformer',
+                category: 'Financial AI',
+                description: "Stock Market Transformer is a deep learning project for stock market prediction using autoencoder-based environment embeddings and Transformer (with Mixture-of-Experts and multi-head attention) to forecast future prices from complex time-series market data. The approach delivered promising short-term opening price prediction results with a working app, though further improvements are needed for broader targets and lower loss.",
+                stack: ["Python", "PyTorch", "Transformer architecture (DeepSeek V3)", "Mixture-of-Experts (MoE)", "Multi-head attention", "Autoencoder", "Financial time series modeling", "Streamlit"],
+                link: 'https://github.com/Harrisous/StockMarketTransformer'
+            },
+            {
+                id: 'PROJ_005',
+                title: 'Dual-Stream Emotion XAI',
+                category: 'Explainable AI',
+                description: "Dual-Stream Emotion XAI is a Python/Streamlit project that uses Hugging Face Wav2Vec2 for acoustic emotion, RoBERTa plus Whisper ASR for semantic sentiment/emotion, and PCA-based latent-space visualization (via scikit-learn and Plotly) to compare “how you sound” versus “what you say” in side-by-side 3D embedding spaces, revealing clusters, nearest neighbors, and cross-modal conflicts like sarcasm for explainable analysis of human emotion.",
+                stack: ["Python", "Streamlit", "Hugging Face", "Wav2Vec2", "RoBERTa", "Whisper ASR", "Plotly", "Librosa", "PCA", "joblib"],
+                link: 'https://github.com/Harrisous/XAI-Final-Project'
+            },
+            {
+                id: 'PROJ_006',
+                title: 'Sentinel AI',
+                category: 'AML',
+                description: "Sentinel AI is an AI-powered risk scoring system designed for blockchain wallets. It aggregates and analyzes over 1 billion transactions, focusing on stablecoins (USDT/USDC), which dominate the digital asset market with $2.90T in monthly transfer volume. The platform assigns real-time risk scores based on transaction history, smart contract associations, and monitored KYC transactions, effectively closing compliance gaps. It won the Academic Award at the 2025 FINOS DTCC Hackathon.",
+                stack: ["Python", "Google Big Query", "SQL", "XGBoost", "CatBoost", "LightGBM", "Random Forest", "Model Evaluation", "Financial Machine Learning"],
+                link: 'https://github.com/finos-labs/dtcch-2025-OpenAML'
+            },
+            {
+                id: 'PROJ_007',
+                title: 'FlashBack',
+                category: 'Companion AI',
+                description: "FlashBack is an Award-Winner end-to-end personal AI assistant that remember everything for human to increase memory storage. It is built on a Raspberry Pi with camera and mic that records first-person video, uploads synchronized audio–video files via a Flask server to Google Cloud storage, and exposes a web interface where user prompts are sent to a Google Cloud–hosted API that leverages the Gemini API to answer questions about past in-person interactions, such as who you met and what you discussed. It won the first place in Education Track at the 2024 Duke AI Hackathon.",
+                stack: ["Raspberry Pi", "Camera", "Microphone", "Full stack development", "Python", "Flask", "Docker", "CI/CD", "GCP", "Gemini API", "Multimodal AI", "Audio–video processing pipeline"],
+                link: 'https://github.com/finos-labs/dtcch-2025-OpenAML'
+            },
+
+        ];
+
+        // --- 2. 动态几何背景组件 ---
+        const GeometricBackground = () => {
+            const canvasRef = useRef(null);
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                let animationFrameId;
+                let width, height;
+                let particles = [];
+
+                const particleCount = 60;
+                const connectionDistance = 150;
+                const mouseDistance = 200;
+                let mouse = { x: null, y: null };
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        this.vx = (Math.random() - 0.5) * 0.5;
+                        this.vy = (Math.random() - 0.5) * 0.5;
+                        this.size = Math.random() * 2 + 1;
+                    }
+
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        if (this.x < 0 || this.x > width) this.vx *= -1;
+                        if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                        if (mouse.x != null) {
+                            let dx = mouse.x - this.x;
+                            let dy = mouse.y - this.y;
+                            let distance = Math.sqrt(dx * dx + dy * dy);
+                            if (distance < mouseDistance) {
+                                const forceDirectionX = dx / distance;
+                                const forceDirectionY = dy / distance;
+                                const force = (mouseDistance - distance) / mouseDistance;
+                                const directionX = forceDirectionX * force * 0.5;
+                                const directionY = forceDirectionY * force * 0.5;
+                                this.x -= directionX;
+                                this.y -= directionY;
+                            }
+                        }
+                    }
+
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(6, 182, 212, 0.5)';
+                        ctx.fill();
+                    }
+                }
+
+                const init = () => {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                    particles = [];
+                    for (let i = 0; i < particleCount; i++) {
+                        particles.push(new Particle());
+                    }
+                };
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+                        for (let j = i; j < particles.length; j++) {
+                            let dx = particles[i].x - particles[j].x;
+                            let dy = particles[i].y - particles[j].y;
+                            let distance = Math.sqrt(dx * dx + dy * dy);
+                            if (distance < connectionDistance) {
+                                ctx.beginPath();
+                                let opacity = 1 - (distance / connectionDistance);
+                                ctx.strokeStyle = `rgba(6, 182, 212, ${opacity * 0.2})`;
+                                ctx.lineWidth = 1;
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    animationFrameId = requestAnimationFrame(animate);
+                };
+
+                const handleResize = () => { init(); };
+                const handleMouseMove = (e) => { mouse.x = e.clientX; mouse.y = e.clientY; };
+                const handleMouseLeave = () => { mouse.x = null; mouse.y = null; };
+
+                window.addEventListener('resize', handleResize);
+                window.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('mouseleave', handleMouseLeave);
+
+                init();
+                animate();
+
+                return () => {
+                    window.removeEventListener('resize', handleResize);
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    window.removeEventListener('mouseleave', handleMouseLeave);
+                    cancelAnimationFrame(animationFrameId);
+                };
+            }, []);
+
+            return <canvas ref={canvasRef} className="fixed inset-0 z-0 bg-[#0a0a0a]" style={{ pointerEvents: 'none' }} />;
+        };
+
+        // --- 3. 项目展示组件 (Project Viewer) ---
+        const ProjectViewer = () => {
+            const [activeId, setActiveId] = useState(projects[0].id);
+            const activeProject = projects.find(p => p.id === activeId);
+
+            return (
+                <div className="w-full mt-12 animate-fade-in-down" style={{animationDelay: '0.2s'}}>
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2 px-1">
+                        <Icons.Monitor className="text-cyan-500" size={24} />
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+                            Hands-On Projects
+                        </span>
+                    </h2>
+                    
+                    <div className="flex flex-col md:flex-row gap-0 bg-gray-900/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-black/40 min-h-[450px]">
+                        
+                        {/* 左侧：文件列表 */}
+                        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 bg-black/20 overflow-y-auto">
+                            <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                <h3 className="text-xs font-mono text-gray-500 uppercase tracking-wider">Project_Files</h3>
+                                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            </div>
+                            <div className="p-2 space-y-1">
+                                {projects.map((project) => (
+                                    <button
+                                        key={project.id}
+                                        onClick={() => setActiveId(project.id)}
+                                        className={`w-full text-left p-3 rounded-lg text-sm font-mono transition-all flex items-center gap-3 group relative overflow-hidden ${
+                                            activeId === project.id 
+                                                ? 'bg-cyan-950/30 text-cyan-400 border border-cyan-500/30' 
+                                                : 'text-gray-400 hover:bg-white/5 hover:text-gray-200 border border-transparent'
+                                        }`}
+                                    >
+                                        {activeId === project.id && (
+                                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500" />
+                                        )}
+                                        <Icons.Folder size={16} className={`${activeId === project.id ? 'fill-cyan-500/20 text-cyan-400' : 'text-gray-600 group-hover:text-gray-400'}`} />
+                                        <span className="truncate font-medium">{project.title}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* 右侧：详情预览 */}
+                        <div className="flex-1 p-6 md:p-8 relative flex flex-col bg-gradient-to-br from-transparent to-cyan-900/5">
+                            <div className="absolute inset-0 bg-[linear-gradient(rgba(18,18,18,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] pointer-events-none opacity-20" />
+                            
+                            <div className="relative z-10 h-full flex flex-col">
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-mono text-cyan-600 px-1.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-900/50 uppercase">
+                                                {activeProject.category}
+                                            </span>
+                                            <span className="text-[10px] text-gray-600 font-mono">ID: {activeProject.id}</span>
+                                        </div>
+                                        <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{activeProject.title}</h3>
+                                    </div>
+                                    <div className="hidden sm:flex p-3 bg-white/5 rounded-xl border border-white/10 shadow-inner">
+                                        <Icons.FileCode className="text-cyan-500/70" size={24} />
+                                    </div>
+                                </div>
+
+                                <div className="prose prose-invert max-w-none mb-8 flex-grow">
+                                    <p className="text-gray-400 leading-relaxed font-light text-sm md:text-base border-l-2 border-white/10 pl-4">
+                                        {activeProject.description}
+                                    </p>
+                                </div>
+
+                                <div className="mt-auto pt-6 border-t border-white/5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+                                        <div>
+                                            <h4 className="text-[10px] font-mono text-gray-500 mb-3 uppercase tracking-wider flex items-center gap-1">
+                                                <Icons.Layers size={10} /> Tech_Stack
+                                            </h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {activeProject.stack.map(tech => (
+                                                    <span key={tech} className="text-xs px-2.5 py-1 rounded bg-white/5 text-gray-300 border border-white/10 hover:border-cyan-500/30 hover:text-cyan-400 transition-colors cursor-default">
+                                                        {tech}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="sm:text-right">
+                                            <a href={activeProject.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-all shadow-lg shadow-cyan-900/20 group">
+                                                <span>View Repository</span>
+                                                <Icons.ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- 4. 社交链接子组件 ---
+        const SocialLink = ({ href, Icon, label, value, color }) => (
+            <a href={href} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/5 transition-all duration-200 group ${color}`}>
+                <div className="flex items-center gap-3 text-gray-300 group-hover:text-inherit">
+                    {Icon}
+                    <span className="font-medium">{label}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono group-hover:text-gray-400">
+                    <span className="hidden sm:inline">{value}</span>
+                    <Icons.ChevronRight size={14} />
+                </div>
+            </a>
+        );
+
+        // --- 5. 主页面组件 (Portfolio) ---
+        const Portfolio = () => {
+            const [text, setText] = useState('');
+            const fullText = "Agentic_Systems | Gen_AI | LLM | Multi_Modal | Machine_Learning | Edge_AI";
+            
+            useEffect(() => {
+                let index = 0;
+                const interval = setInterval(() => {
+                    setText(fullText.slice(0, index));
+                    index++;
+                    if (index > fullText.length) clearInterval(interval);
+                }, 50);
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <div className="min-h-screen text-gray-300 font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden relative">
+                    <GeometricBackground />
+
+                    <div className="fixed inset-0 z-0 pointer-events-none">
+                        <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-cyan-500 opacity-10 blur-[120px]"></div>
+                    </div>
+
+                    <main className="relative z-10 max-w-4xl mx-auto px-6 py-20 flex flex-col items-center">
+                        <header className="flex flex-col items-center text-center space-y-8 mb-16 animate-fade-in-down">
+                            <div className="relative group cursor-pointer">
+                                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500 animate-pulse-slow"></div>
+                                <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-800 bg-black">
+                                    <img 
+                                        src="images/profile.png" 
+                                        alt="Haochen LI" 
+                                        className="w-full h-full object-cover transform transition duration-700 group-hover:scale-110"
+                                        onError={(e) => {
+                                            e.target.onerror = null; 
+                                            e.target.src = "https://ui-avatars.com/api/?name=Haochen+Li&background=0D8ABC&color=fff";
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h1 className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500 tracking-tight">
+                                    Haochen LI <span className="text-2xl text-cyan-500/80 font-mono font-normal block md:inline md:ml-2">(Harry)</span>
+                                </h1>
+                                
+                                <div className="flex items-center justify-center gap-2 text-cyan-400 font-mono text-sm md:text-base h-6">
+                                    <Icons.Terminal size={16} />
+                                    <span>{text}</span>
+                                    <span className="animate-pulse">_</span>
+                                </div>
+                            </div>
+                        </header>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-6">
+                            {/* About Me */}
+                            <div className="group md:col-span-2 relative bg-gray-900/60 backdrop-blur-md border border-white/10 rounded-xl p-8 hover:border-cyan-500/30 transition-all duration-300 overflow-hidden shadow-lg shadow-black/20">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity duration-500 transform group-hover:rotate-12">
+                                    <Icons.Cpu size={64} />
+                                </div>
+                                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                    <span className="w-1 h-6 bg-cyan-500 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]"></span>
+                                    Profile
+                                </h2>
+                                <div className="space-y-4 text-gray-400 leading-relaxed font-light">
+                                    <p>
+                                        <strong className="text-white">Duke University |</strong>  Master of Engineering | Artificial Intelligence <br />
+                                        <strong className="text-white">The University of Hong Kong |</strong>  Bachelor of Science | Computer Science | Actuarial Science
+                                    </p>
+                                    <p>
+                                        Specializing in <span className="text-cyan-400 font-medium">Artificial Intelligence</span>, efficient deployment. 
+                                        Focusing on building autonomous Agent Systems, Gen AI, LLMs, RAG systems and AI for Edge devices.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Blog */}
+                            <div className="group relative bg-gray-900/60 backdrop-blur-md border border-white/10 rounded-xl p-8 hover:border-cyan-500/30 transition-all duration-300 shadow-lg shadow-black/20">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity duration-500 transform group-hover:-translate-y-1">
+                                    <Icons.Code size={48} />
+                                </div>
+                                <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                    <span className="w-1 h-6 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+                                    Latest Blogs
+                                </h2>
+                                <div className="space-y-4">
+                                    <a href="./blog/blog1/blog1.html" className="block p-4 rounded-lg bg-white/5 border border-transparent hover:border-cyan-500/30 hover:bg-white/10 transition-all group/item">
+                                        <div className="flex justify-between items-start">
+                                            <span className="text-xs font-mono text-cyan-500 mb-1 block">BLOG_ENTRY_001</span>
+                                            <Icons.ExternalLink size={14} className="text-gray-500 group-hover/item:text-cyan-400 transition-colors" />
+                                        </div>
+                                        <h3 className="text-gray-200 font-medium group-hover/item:text-white transition-colors">
+                                            How AI Sees Cats: Explaining Grad-CAM
+                                        </h3>
+                                        <p className="text-xs text-gray-500 mt-2">10min read • Visualization</p>
+                                    </a>
+                                    <div className="p-4 rounded-lg border border-dashed border-white/10 flex items-center justify-center text-sm text-gray-600 font-mono hover:text-cyan-500/50 hover:border-cyan-500/20 transition-colors cursor-default">
+                                        [ Waiting for new input... ]
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Connect */}
+                            <div className="flex flex-col gap-6">
+                                <div className="flex-1 bg-gray-900/60 backdrop-blur-md border border-white/10 rounded-xl p-8 hover:border-cyan-500/30 transition-all duration-300 relative overflow-hidden shadow-lg shadow-black/20">
+                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                                        <Icons.Network size={48} />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                        <span className="w-1 h-6 bg-purple-500 rounded-full shadow-[0_0_10px_rgba(168,85,247,0.5)]"></span>
+                                        Contact
+                                    </h2>
+                                    <div className="space-y-3">
+                                        <SocialLink href="mailto:harryli12321@gmail.com" Icon={<Icons.Mail size={20} />} label="Email" value="harryli12321@gmail.com" color="hover:text-red-400 hover:border-red-500/30" />
+                                        <SocialLink href="https://www.linkedin.com/in/haochen-harry-li" Icon={<Icons.Linkedin size={20} />} label="LinkedIn" value="haochen-harry-li" color="hover:text-blue-400 hover:border-blue-500/30" />
+                                        <SocialLink href="https://github.com/Harrisous" Icon={<Icons.Github size={20} />} label="GitHub" value="Harrisous" color="hover:text-white hover:border-white/30" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ProjectViewer />
+
+                        <footer className="mt-20 text-center text-gray-600 text-sm font-mono z-10">
+                            <p className="mb-2 hover:text-cyan-500 transition-colors cursor-default">DESIGNED_BY_GEMINI // DEPLOYED_ON_GITHUB_PAGES</p>
+                            <p>© 2025 Haochen LI. All systems operational.</p>
+                        </footer>
+                    </main>
+                </div>
+            );
+        };
+
+        // 渲染 App
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Portfolio />);
+    </script>
+</body>
+</html>
