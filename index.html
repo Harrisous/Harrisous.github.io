@@ -815,41 +815,6 @@
             </a>
         );
 
-        // --- 新增：互动点赞组件 ---
-        const LikeButton = () => {
-            const [likes, setLikes] = useState(() => {
-                // 修改初始值为 0，并更新 key 以重置本地存储
-                return parseInt(localStorage.getItem('cyber_likes_v2') || '0'); 
-            });
-            const [isLiked, setIsLiked] = useState(false);
-
-            const handleLike = () => {
-                const newLikes = likes + 1;
-                setLikes(newLikes);
-                setIsLiked(true);
-                localStorage.setItem('cyber_likes_v2', newLikes.toString());
-            };
-
-            return (
-                <button
-                    onClick={handleLike}
-                    className={`group relative flex items-center gap-3 px-6 py-3 border bg-black/50 hover:bg-cyber-neonPink/10 transition-all clip-path-polygon mt-6 ${isLiked ? 'text-cyber-neonPink border-cyber-neonPink shadow-[0_0_10px_rgba(255,0,255,0.3)]' : 'text-gray-400 border-gray-700 hover:text-cyber-neonPink hover:border-cyber-neonPink'}`}
-                >
-                    <Icons.Heart size={20} className={`transition-all duration-300 ${isLiked ? 'fill-cyber-neonPink scale-110' : 'group-hover:scale-110'}`} />
-                    <span className="font-mono font-bold tracking-widest text-lg">
-                        <Typewriter text={likes.toLocaleString()} speed={100} delay={800} /> 
-                        <span className="text-xs text-gray-600 ml-1">LIKES</span>
-                    </span>
-                    
-                    {/* 心跳动画效果 */}
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-neonPink opacity-75 ${isLiked ? '' : 'hidden'}`}></span>
-                      <span className={`relative inline-flex rounded-full h-3 w-3 bg-cyber-neonPink ${isLiked ? '' : 'hidden'}`}></span>
-                    </span>
-                </button>
-            );
-        }
-
         const Portfolio = () => {
             const [text, setText] = useState('');
             const fullText = "Agentic_Systems | Gen_AI | RAG_Systems | Edge_AI | AI_Deployment";
@@ -857,7 +822,7 @@
             const widgetRef = useRef(null);
             const [musicPlaying, setMusicPlaying] = useState(false);
             // 修改初始音量为 10
-            const [volume, setVolume] = useState(10);
+            const [volume, setVolume] = useState(20);
 
             useEffect(() => {
                 let index = 0;
@@ -974,9 +939,6 @@
                                     <span>{text}</span>
                                     <span className="w-2 h-4 bg-cyber-neonBlue animate-pulse"></span>
                                 </div>
-
-                                {/* 插入点赞按钮 */}
-                                <LikeButton />
                             </div>
                         </header>
 
