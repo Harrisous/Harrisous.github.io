@@ -2,127 +2,539 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>🐱 How AI Sees Cats</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="blog1_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐱 How AI Sees Cats - NETRUNNER LOGS</title>
+    
+    <!-- 1. 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#020202',
+                            dark: '#050508',
+                            neonBlue: '#00c3d9', 
+                            neonPink: '#d900d9', 
+                            neonYellow: '#d9cc00', 
+                            dim: 'rgba(0, 195, 217, 0.05)',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- 2. 引入 React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- 3. 引入 Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            background-color: #020202;
+            color: #cccccc;
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: #00c3d9; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d900d9; }
+
+        /* 扫描线动画 */
+        @keyframes scrollScanlines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: scrollScanlines 0.5s linear infinite;
+            opacity: 0.15; 
+        }
+
+        /* 切角卡片 */
+        .cyber-card {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            border-left: 2px solid #00c3d9;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(5px);
+        }
+
+        /* 故障文字 */
+        .glitch-text { position: relative; }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; background: #020202;
+        }
+        .glitch-text::before {
+            left: 2px; text-shadow: -1px 0 #d900d9; clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px; text-shadow: -1px 0 #00c3d9; clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(13px, 9999px, 81px, 0); } 20% { clip: rect(67px, 9999px, 2px, 0); } 100% { clip: rect(58px, 9999px, 95px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(62px, 9999px, 21px, 0); } 20% { clip: rect(2px, 9999px, 4px, 0); } 100% { clip: rect(35px, 9999px, 86px, 0); }
+        }
+
+        /* 图片故障悬停 */
+        @keyframes glitch-noise {
+            0% { transform: translate(0); filter: none; }
+            20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg) contrast(1.2); }
+            40% { transform: translate(2px, -1px); filter: hue-rotate(-45deg) contrast(1.1); }
+            60% { transform: translate(-1px, 2px); filter: invert(0.1); }
+            80% { transform: translate(1px, -1px); filter: hue-rotate(45deg); }
+            100% { transform: translate(0); filter: none; }
+        }
+        .cyber-img:hover {
+            animation: glitch-noise 0.3s infinite linear;
+            border-color: #d900d9;
+        }
+
+        /* 打字机光标 */
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background-color: #00c3d9;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
 </head>
 <body>
-    <div class="block" id="Introduction">
-        <h1>🐱 How AI Sees Cats ✨</h1>
-        <h2>Explaining Grad-CAM with Cat Memes in 10min</h2>
-        <h3>Expainable AI | Computer Vision | General Public | <a href="https://github.com/Harrisous/AI-Tutorials/blob/main/GradCAM_Tutorial.ipynb">Code Tutorial </a></h3>
-        <p> Ever wondered how your iphone photos knows there's a cat in your photo — and not just a fluffy furry ball?
-            To figure out how AI sees your photos and make decisions, scientists came up with Grad-CAM (Gradient-weighted Class Activation Mapping), 
-            a useful AI heat vision that enable us to see the focus area of AI. <br><br>
-            
-            In this blog, I'm going to illustrate this XAI/explainbale AI tool using two famous meme cats.
-        </p>
-        <div class="image-row">
-            <figure>
-                <img src="./images/image_bozai.png" alt="Bozai" width="250" height="250">
-                <figcaption>Bozai</figcaption>
-            </figure>
-            <figure>
-                <img src="./images/image_guangdang.png" alt="Guangdang" width="250" height="250">
-                <figcaption>Guangdang</figcaption>
-            </figure>
-        </div>
-    </div>
+    <div id="root"></div>
 
-    <div class="block" id="Background">
-        <h2>1. First Peak Into The Black Box</h2>
-        <p>This, is a graph of a ResNet 50, a computer vision neural network that transform cat pictures into a prediction.</p>
-        <figure>
-            <img src="./images/ResNet.png" alt="ResNet Structure" width="600" height="200">
-            <figcaption>ResNet Structure</figcaption> 
-        </figure>
-        
-        <p>The neuron nodes looks so horrible, and how is it possible to look into this black box? It works simply like this: when you upload a picture of your cat to an AI model, it confidently says: “This is a cat!” 😺 by giving 0 or 1 indicating weather it is a cat.
-            But you wonder — what made you come up with this answer? 
-            Grad-CAM came in and said take this -- an X Ray filter that shows where the AI was “looking” when it decided “cat.” 
-            It highlights important regions in the image using color — red for “very important,” blue for “meh.”
-        </p>
-        <div class="image-row">
-            <figure>
-                <img src="./images/image_bozai.png" alt="Original Bozai" width="250" height="250">
-                <figcaption>Original Bozai</figcaption>
-            </figure>
-            <figure>
-                <img src="./images/bozai_GradCAM.png" alt="Bozai after Grad-CAM" width="250" height="250">
-                <figcaption>Bozai after Grad-CAM</figcaption>
-            </figure>
-        </div>
-        <div class="image-row">
-            <figure>
-                <img src="./images/image_guangdang.png" alt="Guangdan" width="250" height="250">
-                <figcaption>Original Guangdang</figcaption>
-            </figure>
-            <figure>
-                <img src="./images/guangdang_GradCAM.png" alt="Guangdang after Grad-CAM" width="250" height="250">
-                <figcaption>Guangdang after Grad-CAM</figcaption>
-            </figure>
-        </div>
-        
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
 
-    </div>
+        // --- 修复版：稳健的打字机组件 (基于长度截取) ---
+        const Typewriter = ({ text, speed = 10, delay = 0, className = "", onComplete }) => {
+            const [displayLength, setDisplayLength] = useState(0); 
+            const [isTyping, setIsTyping] = useState(false);
 
-    <div class="block" id="Logic">
-        <h2>2. How It Works</h2>
-        <p>From above picture we can see that the model mainly focus on the nose to distinguish cats from dogs. It is reasonable since cats have shorter nose than dogs. (PS: this model is trained specifically to distinguish cats and dogs, you can check the detail in tutorial link below)<br><br>
-            In the last layer of the ResNet, the original picture was broken down into many little pictures showing every possible detail: 
-            fur texture, ear triangles, nose dots, tail curve, etc. Grad-CAM traces which parts of the sub-images caused the biggest reaction in the AI's 
-            final decision. Then it projects that excitement back onto the original picture — like a thermal camera for AI attention. 
-            It's like applying Electroencephalogram(EEG)/"brain scan" to human brain to see what is going on when we think. So Grad-CAM ask: "Show me where your brain went brrr 🧠💥 when you saw this cat!"
-        </p>
-        <figure>
-            <img src="./images/EEG.png" alt="brain scan pic" width="432" height="257">
-            <figcaption>Brain Scan with EEG</figcaption> 
-        </figure>
-        <p> Here is a <a href="https://github.com/Harrisous/AI-Tutorials/blob/main/GradCAM_Tutorial.ipynb"> jupyter notebook tutorial on Grad-CAM</a> if you have some knowledge about Pytorch and want to explore more on applying Grad-CAM to general ResNet after transfer learning. 
-            The reward is that you can replicate the heatmap of Grad-CAM result just like I posted in this blog. (There could be some changes made for the tutorial so the heatmap may not be exactly the same) 
-        </p>
+            useEffect(() => {
+                setDisplayLength(0);
+                setIsTyping(false);
+                
+                let i = 0;
+                let timer;
+                
+                const startTyping = () => {
+                    setIsTyping(true);
+                    timer = setInterval(() => {
+                        if (i < text.length) {
+                            i++;
+                            setDisplayLength(i);
+                        } else {
+                            clearInterval(timer);
+                            setIsTyping(false);
+                            if (onComplete) onComplete();
+                        }
+                    }, speed);
+                };
 
-    </div>
+                const delayTimer = setTimeout(startTyping, delay);
 
-    <div class="block" id="Impact">
-        <h2>3. Why It Matters</h2>
-        <p>
-            Grad-CAM is cool because it helps humans trust and debug AI. Since the focus of AI is marked out on the picture, it is easy for people to see what is the real focus
-            and we can compare the focus with human rationale and check if it is reasonable to make such judgement. For example, 
-            if the back ground of a sofa determines a cat, there might be something wrong with the model. And people may need to investigate or even retrain the model. 
-            Some might say it is okay to predict a cat from the surrounding environment as long as the prediction is correct. 
-            But the whole thing can be critical when safety is involved such as self-driving or criminal detection. 
-        </p>
-    </div>
+                return () => {
+                    clearTimeout(delayTimer);
+                    clearInterval(timer);
+                };
+            }, [text, speed, delay]);
 
-    <div class="block" id="Summary">
-        <h2>4. Key Takeout</h2>
-        <p>
-            <b>Grad-CAM = AI's highlight reel of what mattered most when it made a decision.</b> <br>
-            It helps us to understand how AI think and thus we can debug or train the AI based on human rationale (AI alignment). 
-            So next time your AI says "this is a cat," you can say: "Prove it. Show me the Grad-CAM result." 😼🔥
-        </p>
-        <figure>
-            <img src="./images/image_guangdang-thanks.png" alt="Thanks" width="250" height="250">
-        </figure>
-        
-    </div>
+            return (
+                <span className={className}>
+                    {text.substring(0, displayLength)} 
+                    {isTyping && <span className="cursor-blink"></span>}
+                </span>
+            );
+        };
 
-    <div class="block" id="Reference">
-        <h2> Reference and Thanks </h2>
-        <small style="font-style: italic;">1. Special thanks to <a href="https://pratt.duke.edu/people/brinnae-bent/">Dr. Brinnae Bent</a> who teaches AIPI590 XAI and introduced the model<br>
-        2. Cat meme sources: <a href="https://space.bilibili.com/2147413451">Guangdang</a> and <a href="https://space.bilibili.com/251664034">Bozai</a> Do not use for commercial purposes.<br>
-        3. ResNet <a href="https://arxiv.org/pdf/1512.03385">original paper</a>. Structure graph from: Stephen, A., Punitha, A. & Chandrasekar, <a href="https://link.springer.com/article/10.1007/s00521-022-07793-2">Designing self attention-based ResNet architecture for rice leaf disease classification.</a> Neural Comput & Applic 35, 6737–6751 (2023). https://doi.org/10.1007/s00521-022-07793-2<br>
-        4. EEG picture from <a href="https://www.healthresearch.org/eeg-brain-function-measurement/">EEG Brain Function Measurement</a>
-        </small>
-    </div>
-    <br>
-    <div class="block"><a href="../../index.html">
-        <figure>
-            <img src="./images/banana_cat.png" alt="Back to main page" width="80" height="125">
-            <figcaption>Back to main page</figcaption> 
-        </figure>
-    </a>
-    </div>
+        // --- 组件: 动态背景 ---
+        const CyberpunkBackground = () => {
+            const canvasRef = useRef(null);
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                let width, height, animationFrameId, frameCount = 0;
+                const layers = [4, 7, 7, 4];
+                const nodes = [], connections = [], signals = [];
+
+                const initNet = () => {
+                    nodes.length = 0; connections.length = 0;
+                    const layerWidth = width / (layers.length + 1);
+                    layers.forEach((count, lIdx) => {
+                        const x = (lIdx + 1) * layerWidth;
+                        const layerHeight = height / (count + 1);
+                        for(let i=0; i<count; i++) nodes.push({x, y: (i + 1) * layerHeight, layer: lIdx, id: `${lIdx}-${i}`, flash: 0});
+                    });
+                    for (let i = 0; i < nodes.length; i++) {
+                        for (let j = 0; j < nodes.length; j++) {
+                            if (nodes[j].layer === nodes[i].layer + 1) connections.push({from: nodes[i], to: nodes[j]});
+                        }
+                    }
+                };
+
+                const fireSignal = (fromNode, toNode, type) => {
+                    signals.push({from: fromNode, to: toNode, progress: 0, type, speed: 0.005 + Math.random() * 0.003});
+                };
+
+                const updateAndDraw = () => {
+                    ctx.fillStyle = 'rgba(2, 2, 2, 0.08)'; ctx.fillRect(0, 0, width, height);
+                    
+                    // Draw connections
+                    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0, 195, 217, 0.02)';
+                    ctx.beginPath(); connections.forEach(c => { ctx.moveTo(c.from.x, c.from.y); ctx.lineTo(c.to.x, c.to.y); }); ctx.stroke();
+
+                    // Trigger cycle
+                    if (frameCount % 600 === 0) {
+                        const inputs = nodes.filter(n => n.layer === 0);
+                        inputs.forEach(n => { n.flash = 0.8; connections.filter(c => c.from === n).forEach(c => { if(Math.random()>0.4) fireSignal(c.from, c.to, 'forward'); }); });
+                    }
+
+                    // Signals
+                    for (let i = signals.length - 1; i >= 0; i--) {
+                        const s = signals[i]; s.progress += s.speed;
+                        const cx = s.from.x + (s.to.x - s.from.x) * s.progress;
+                        const cy = s.from.y + (s.to.y - s.from.y) * s.progress;
+                        ctx.fillStyle = s.type === 'forward' ? 'rgba(0, 195, 217, 0.4)' : 'rgba(217, 0, 217, 0.4)';
+                        ctx.beginPath(); ctx.arc(cx, cy, 1.5, 0, Math.PI*2); ctx.fill();
+                        
+                        if (s.progress >= 1) {
+                            s.to.flash = 0.8;
+                            if (s.type === 'forward') {
+                                if (s.to.layer < layers.length - 1) {
+                                    const next = connections.filter(c => c.from === s.to);
+                                    if(next.length) fireSignal(s.to, next[Math.floor(Math.random()*next.length)].to, 'forward');
+                                } else {
+                                    connections.filter(c => c.to === s.to).forEach(c => { if(Math.random()>0.3) fireSignal(c.to, c.from, 'backward'); });
+                                }
+                            } else if (s.type === 'backward' && s.to.layer > 0) {
+                                const prev = connections.filter(c => c.to === s.to);
+                                if(prev.length) fireSignal(s.to, prev[Math.floor(Math.random()*prev.length)].from, 'backward');
+                            }
+                            signals.splice(i, 1);
+                        }
+                    }
+
+                    // Nodes
+                    nodes.forEach(n => {
+                        if (n.flash > 0) n.flash -= 0.01;
+                        ctx.beginPath(); ctx.arc(n.x, n.y, 3 + n.flash * 2, 0, Math.PI*2);
+                        ctx.fillStyle = n.flash > 0.5 ? 'rgba(230,230,230,0.6)' : (n.layer===0||n.layer===layers.length-1 ? 'rgba(0,195,217,0.15)' : 'rgba(30,30,30,0.3)');
+                        ctx.fill();
+                    });
+                    
+                    frameCount++; animationFrameId = requestAnimationFrame(updateAndDraw);
+                };
+
+                const init = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; initNet(); };
+                window.addEventListener('resize', () => init());
+                init(); updateAndDraw();
+                return () => { window.removeEventListener('resize', () => init()); cancelAnimationFrame(animationFrameId); };
+            }, []);
+            return <canvas ref={canvasRef} className="fixed inset-0 z-0 bg-cyber-black" />;
+        };
+
+        // --- 新增组件: 侧边栏 (Sidebar) ---
+        const Sidebar = () => {
+            // 模拟的其他博客数据
+            const otherBlogs = [
+                { id: 'Other Blogs', title: '[COMING SOON]', link: '#' }
+            ];
+
+            return (
+                /* 关键修复：
+                   1. sticky: 开启粘性定位
+                   2. top-24: 距离顶部 6rem (约96px) 处吸附
+                   3. h-fit 或 self-start: 让 aside 高度由内容决定，而不是被父容器拉伸
+                */
+                <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-24 h-fit self-start">
+                    <div className="cyber-card p-6 border-l-2 border-cyber-neonPink/50 bg-black/80 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                        
+                        {/* 返回主页按钮 */}
+                        <div className="mb-6 pb-4 border-b border-white/10">
+                            <a href="../../index.html" className="flex items-center gap-2 group text-cyber-neonBlue hover:text-white transition-colors cursor-pointer">
+                                <span className="text-xl group-hover:-translate-x-1 transition-transform">«</span> 
+                                <span className="font-bold tracking-widest text-xs">
+                                    <Typewriter text="RETURN_TO_MAINPAGE" speed={50} delay={500} />
+                                </span>
+                            </a>
+                        </div>
+
+                        <h3 className="text-cyber-neonBlue text-xs font-bold mb-6 tracking-widest border-b border-white/10 pb-2 flex items-center gap-2">
+                            <span className="w-2 h-2 bg-cyber-neonYellow animate-pulse"></span>
+                            <Typewriter text="DATABASE_NAV" speed={50} delay={1000} />
+                        </h3>
+                        <ul className="space-y-4">
+                            {otherBlogs.map((blog, idx) => (
+                                <li key={blog.id} className="group relative pl-4 border-l border-gray-800 hover:border-cyber-neonBlue transition-colors">
+                                    <div className="absolute left-[-1px] top-0 bottom-0 w-[2px] bg-cyber-neonBlue scale-y-0 group-hover:scale-y-100 transition-transform origin-top"></div>
+                                    
+                                    <a href={blog.link} className="block">
+                                        <div className="text-[10px] text-gray-500 group-hover:text-cyber-neonPink transition-colors mb-1 font-mono">
+                                            <Typewriter text={blog.id} speed={20} delay={1200 + idx * 100} />
+                                        </div>
+                                        <div className="text-xs text-gray-400 group-hover:text-white font-bold transition-colors">
+                                            {blog.title}
+                                        </div>
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="mt-6 pt-4 border-t border-white/5 text-[10px] text-gray-600 font-mono text-center">
+                            <Typewriter text="// END_OF_LIST" speed={30} delay={2000} />
+                        </div>
+                    </div>
+                </aside>
+            );
+        };
+
+        // --- 组件: 博客内容 ---
+        const BlogPage = () => {
+            return (
+                <div className="min-h-screen font-mono selection:bg-cyber-neonPink selection:text-white relative">
+                    <div className="scanlines"></div>
+                    <CyberpunkBackground />
+
+                    {/* 返回按钮 - 仅移动端显示 (lg:hidden) */}
+                    <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center pointer-events-none lg:hidden">
+                        <a href="../../index.html" className="pointer-events-auto flex items-center gap-2 text-cyber-neonBlue hover:text-white transition-colors group bg-black/50 px-4 py-2 border border-cyber-neonBlue/30 rounded hover:border-cyber-neonBlue backdrop-blur-md">
+                            <span className="text-xl group-hover:-translate-x-1 transition-transform">«</span> 
+                            <span className="font-bold tracking-widest">
+                                <Typewriter text="HQ_UPLINK" speed={20} />
+                            </span>
+                        </a>
+                    </nav>
+
+                    {/* 页面主体布局：Main 容器保持 items-start (重要，配合 sticky) */}
+                    <main className="relative z-10 max-w-6xl mx-auto px-6 py-24 flex flex-col lg:flex-row gap-12 items-start">
+                        
+                        {/* 左侧：文章内容 (自适应宽度) */}
+                        <article className="flex-1 min-w-0 w-full">
+                            
+                            {/* Header */}
+                            <header className="mb-12 text-center cyber-card p-10 border-t border-b border-cyber-neonBlue/20">
+                                <div className="inline-block mb-4 px-3 py-1 bg-cyber-neonPink/10 border border-cyber-neonPink/50 text-cyber-neonPink text-xs tracking-[0.2em] font-bold">
+                                    <Typewriter text="CLASSIFIED // AI_VISION_LOGS" speed={20} delay={500} />
+                                </div>
+                                <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter mb-4 glitch-text" data-text="HOW AI SEES CATS">
+                                    <Typewriter text="🐱 HOW AI SEES CATS ✨" speed={30} delay={1000} />
+                                </h1>
+                                <h2 className="text-lg md:text-2xl text-cyber-neonBlue font-bold mb-6">
+                                    <Typewriter text="Explaining Grad-CAM with Cat Memes in 10min" speed={15} delay={1800} />
+                                </h2>
+                                <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-400 font-mono">
+                                    <span className="border-b border-cyber-neonYellow/50 pb-1">
+                                        <Typewriter text="Notebook Tutorial" speed={10} delay={2500} />
+                                    </span>
+                                    <span className="border-b border-cyber-neonYellow/50 pb-1">
+                                        <Typewriter text="Explainable AI" speed={10} delay={2500} />
+                                    </span>
+                                    <span className="border-b border-cyber-neonYellow/50 pb-1">
+                                        <Typewriter text="Computer Vision" speed={10} delay={2700} />
+                                    </span>
+                                    <a href="https://github.com/Harrisous/AI-Tutorials/blob/main/GradCAM_Tutorial.ipynb" target="_blank" className="text-cyber-neonYellow hover:text-white hover:underline decoration-wavy">
+                                        <Typewriter text="[ ACCESS_SOURCE_CODE ]" speed={10} delay={3000} />
+                                    </a>
+                                </div>
+                            </header>
+
+                            {/* Content Block 1: Intro */}
+                            <section id="Introduction" className="mb-12 space-y-6 cyber-card p-8">
+                                <p className="text-gray-300 leading-relaxed border-l-2 border-cyber-neonPink pl-4">
+                                    <Typewriter text="Ever wondered how your neural implant (or iPhone) knows there's a cat in your photo — and not just a fluffy furry ball? To figure out how AI processes visual data, scientists engineered Grad-CAM (Gradient-weighted Class Activation Mapping), a thermal vision module that allows us to perceive the AI's focus area." speed={5} delay={3500} />
+                                </p>
+                                <p className="text-gray-400">
+                                    <Typewriter text="In this log, I'm going to illustrate this XAI tool using two famous meme cats from the database." speed={5} delay={5500} />
+                                </p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                    <figure className="text-center group">
+                                        <div className="relative overflow-hidden border-2 border-gray-800 cyber-img transition-all">
+                                            <img src="./images/image_bozai.png" alt="Bozai" className="w-full h-64 object-cover" 
+                                                 onError={(e) => e.target.src='https://placehold.co/400x400/1a1a1a/00c3d9?text=IMG_ERR:BOZAI'}/>
+                                            <div className="absolute bottom-0 left-0 bg-black/70 text-cyber-neonBlue text-xs px-2 py-1 font-bold w-full text-left">TARGET: BOZAI</div>
+                                        </div>
+                                    </figure>
+                                    <figure className="text-center group">
+                                        <div className="relative overflow-hidden border-2 border-gray-800 cyber-img transition-all">
+                                            <img src="./images/image_guangdang.png" alt="Guangdang" className="w-full h-64 object-cover" 
+                                                 onError={(e) => e.target.src='https://placehold.co/400x400/1a1a1a/d900d9?text=IMG_ERR:GUANGDANG'}/>
+                                            <div className="absolute bottom-0 left-0 bg-black/70 text-cyber-neonPink text-xs px-2 py-1 font-bold w-full text-left">TARGET: GUANGDANG</div>
+                                        </div>
+                                    </figure>
+                                </div>
+                            </section>
+
+                            {/* Content Block 2: Background */}
+                            <section id="Background" className="mb-12 space-y-6 cyber-card p-8">
+                                <h2 className="text-2xl font-bold text-cyber-neonYellow mb-4 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonYellow"></span>
+                                    <Typewriter text="1. BREACHING THE BLACK BOX" speed={20} />
+                                </h2>
+                                <p className="text-gray-300">
+                                    <Typewriter text="Below is the schematic of ResNet 50, a deep neural network architecture designed to transform raw pixel data into prediction probabilities." speed={5} />
+                                </p>
+                                <figure className="my-8 border border-cyber-neonBlue/20 p-2 bg-black/40">
+                                    <img src="./images/ResNet.png" alt="ResNet Structure" className="w-full h-auto opacity-90" 
+                                         onError={(e) => e.target.src='https://placehold.co/800x300/1a1a1a/e0e0e0?text=SCHEMATIC:RESNET50'}/>
+                                    <figcaption className="text-xs text-cyber-neonBlue mt-2 tracking-widest">
+                                        <Typewriter text="// FIG_1: NEURAL_ARCH_DIAGRAM" speed={20} delay={1000} />
+                                    </figcaption>
+                                </figure>
+                                
+                                <p className="text-gray-300 leading-relaxed">
+                                    <Typewriter text="The node lattice looks terrifying. How do we interpret this chaos? When you upload a cat image, the model outputs 1 (CAT) or 0 (NOT_CAT). Grad-CAM acts as an X-Ray filter, highlighting critical regions: RED for high activation (Critical), BLUE for low activation (Irrelevant)." speed={3} />
+                                </p>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                                    {/* Bozai Set */}
+                                    <div className="space-y-2">
+                                        <h4 className="text-xs font-bold text-gray-500 uppercase"><Typewriter text="Subject A: Analysis" speed={20} /></h4>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <img src="./images/image_bozai.png" className="w-full border border-gray-700 cyber-img" alt="Original" 
+                                                 onError={(e) => e.target.src='https://placehold.co/200/1a1a1a/00c3d9?text=RAW'}/>
+                                            <img src="./images/bozai_GradCAM.png" className="w-full border border-cyber-neonBlue cyber-img" alt="GradCAM" 
+                                                 onError={(e) => e.target.src='https://placehold.co/200/1a1a1a/ff0000?text=HEATMAP'}/>
+                                        </div>
+                                    </div>
+                                    {/* Guangdang Set */}
+                                    <div className="space-y-2">
+                                        <h4 className="text-xs font-bold text-gray-500 uppercase"><Typewriter text="Subject B: Analysis" speed={20} delay={500} /></h4>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <img src="./images/image_guangdang.png" className="w-full border border-gray-700 cyber-img" alt="Original"
+                                                 onError={(e) => e.target.src='https://placehold.co/200/1a1a1a/00c3d9?text=RAW'}/>
+                                            <img src="./images/guangdang_GradCAM.png" className="w-full border border-cyber-neonPink cyber-img" alt="GradCAM"
+                                                 onError={(e) => e.target.src='https://placehold.co/200/1a1a1a/ff0000?text=HEATMAP'}/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Content Block 3: Logic */}
+                            <section id="Logic" className="mb-12 space-y-6 cyber-card p-8">
+                                <h2 className="text-2xl font-bold text-cyber-neonBlue mb-4 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonBlue"></span>
+                                    <Typewriter text="2. SYSTEM LOGIC" speed={20} />
+                                </h2>
+                                <p className="text-gray-300 leading-relaxed">
+                                    <Typewriter text="Telemetry indicates the model prioritizes the nose structure to differentiate Feline from Canine entities. In the final convolutional layer, the image is decomposed into feature maps: fur textures, triangular ear geometry, etc. Grad-CAM backpropagates the 'Cat' prediction to find which feature maps spiked the gradients most intensely. Essentially, it asks the AI: 'Show me where your neural pathways fired 🧠💥 when you identified this entity.'" speed={3} />
+                                </p>
+                                <figure className="my-8 text-center">
+                                    <div className="inline-block relative cyber-img border-2 border-white/10 p-1">
+                                        <img src="./images/EEG.png" alt="Brain Scan" className="max-w-full h-auto" 
+                                             onError={(e) => e.target.src='https://placehold.co/500x300/000/fff?text=EEG_SCAN_SIMULATION'}/>
+                                        <div className="absolute top-0 left-0 w-full h-[2px] bg-cyber-neonBlue animate-[scrollScanlines_2s_linear_infinite]"></div>
+                                    </div>
+                                    <figcaption className="text-xs text-gray-500 mt-2">
+                                        <Typewriter text="Analogy: Human EEG Brain Function Measurement" speed={15} delay={1000} />
+                                    </figcaption>
+                                </figure>
+                                <div className="bg-cyber-neonBlue/5 border border-cyber-neonBlue/30 p-4 text-sm text-gray-300">
+                                    <span className="text-cyber-neonBlue font-bold">{">>> DOWNLOAD LINK:"}</span> 
+                                    <a href="https://github.com/Harrisous/AI-Tutorials/blob/main/GradCAM_Tutorial.ipynb" target="_blank" className="ml-2 text-white underline hover:text-cyber-neonPink transition-colors">
+                                        <Typewriter text="GradCAM_Tutorial.ipynb" speed={20} />
+                                    </a>
+                                    <p className="mt-2 opacity-70"><Typewriter text="Requirements: Python, PyTorch knowledge. Reward: Ability to replicate heatmaps." speed={5} delay={1000} /></p>
+                                </div>
+                            </section>
+
+                            {/* Content Block 4: Impact & Summary */}
+                            <div className="grid grid-cols-1 gap-8">
+                                <section id="Impact" className="cyber-card p-8 border-l-2 border-cyber-neonPink">
+                                    <h2 className="text-2xl font-bold text-cyber-neonPink mb-4">
+                                        <Typewriter text="3. CRITICALITY" speed={20} />
+                                    </h2>
+                                    <p className="text-gray-300">
+                                        <Typewriter text="Trust requires verification. If an AI identifies a cat based solely on the sofa background, the model is compromised (overfitting). In high-stakes scenarios like Autonomous Driving or Cybersecurity, blindly trusting a black box is fatal. Grad-CAM provides the necessary audit trail." speed={3} />
+                                    </p>
+                                </section>
+
+                                <section id="Summary" className="cyber-card p-8">
+                                    <h2 className="text-2xl font-bold text-white mb-4">
+                                        <Typewriter text="4. KEY TAKEAWAY" speed={20} />
+                                    </h2>
+                                    <div className="text-lg text-cyber-neonYellow font-bold mb-4 border-b border-white/10 pb-4">
+                                        <Typewriter text="Grad-CAM = The AI's 'Highlight Reel' for decision making." speed={10} delay={500} />
+                                    </div>
+                                    <p className="text-gray-300 mb-6">
+                                        <Typewriter text="It enables AI Alignment debugging. Next time an algorithm claims 'This is a cat,' demand proof:" speed={5} delay={1500} />
+                                        <br/>
+                                        <span className="font-mono text-cyber-neonBlue bg-black px-2 py-1 mt-2 inline-block">
+                                            <Typewriter text="> RUN_PROTOCOL: SHOW_GRAD_CAM_RESULT" speed={15} delay={3500} />
+                                        </span> 😼🔥
+                                    </p>
+                                    <div className="flex justify-center">
+                                        <figure className="w-48 cyber-img border border-gray-700">
+                                            <img src="./images/image_guangdang-thanks.png" alt="Thanks" className="w-full" 
+                                                 onError={(e) => e.target.src='https://placehold.co/250x250/1a1a1a/d9cc00?text=MISSION_COMPLETE'}/>
+                                        </figure>
+                                    </div>
+                                </section>
+                            </div>
+
+                            {/* Footer / Reference */}
+                            <footer className="mt-16 pt-8 border-t border-gray-900 text-xs text-gray-500 font-mono">
+                                <h2 className="text-sm font-bold text-gray-400 mb-4 uppercase">
+                                    <Typewriter text="Ack_&_References" speed={30} />
+                                </h2>
+                                <ul className="space-y-2 list-disc pl-4 marker:text-cyber-neonBlue">
+                                    <li><Typewriter text="Special thanks to Dr. Brinnae Bent (AIPI590 XAI)." speed={5} delay={500} /></li>
+                                    <li><Typewriter text="Data Sources: Guangdang & Bozai. (Non-commercial use only)" speed={5} delay={1000} /></li>
+                                    <li><Typewriter text="Original Paper: ResNet." speed={5} delay={1500} /></li>
+                                    <li><Typewriter text="EEG Visuals: HealthResearch.org" speed={5} delay={2000} /></li>
+                                </ul>
+                                
+                                <div className="mt-12 text-center pb-8">
+                                    <a href="../../index.html" className="inline-block group">
+                                        <figure className="opacity-70 group-hover:opacity-100 transition-opacity">
+                                            <img src="./images/banana_cat.png" alt="Return" width="60" className="mx-auto mb-2 animate-bounce" 
+                                                 onError={(e) => e.target.src='https://placehold.co/60x60/000/fff?text=🔙'}/>
+                                            <figcaption className="text-cyber-neonBlue font-bold">
+                                                <Typewriter text="RETURN TO MAINPAGE" speed={30} delay={2500} />
+                                            </figcaption>
+                                        </figure>
+                                    </a>
+                                </div>
+                            </footer>
+                        </article>
+
+                        {/* 右侧边栏：宽屏显示 */}
+                        <Sidebar />
+
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BlogPage />);
+    </script>
 </body>
 </html>
