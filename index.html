@@ -439,6 +439,7 @@
                 let animationFrameId;
                 let frameCount = 0;
 
+                // Reverting to fewer layers, spread wider
                 const layers = [4, 7, 7, 4];
                 const nodes = [];
                 const connections = [];
@@ -448,10 +449,16 @@
                     nodes.length = 0;
                     connections.length = 0;
                     
-                    const layerWidth = width / (layers.length + 1);
+                    // Logic to spread nodes wider across the screen (10% padding on sides)
+                    const availableWidth = width * 0.9;
+                    const xStart = width * 0.05;
+                    const layerSpacing = availableWidth / (layers.length - 1);
                     
                     layers.forEach((count, lIdx) => {
-                        const x = (lIdx + 1) * layerWidth;
+                        // Old: const x = (lIdx + 1) * layerWidth;
+                        // New: Start from 5% width, spread evenly to 95%
+                        const x = xStart + (lIdx * layerSpacing);
+                        
                         const layerHeight = height / (count + 1);
                         for(let i=0; i<count; i++) {
                             nodes.push({
@@ -683,9 +690,9 @@
                         <Typewriter text="// PROJECT_ARCHIVES" speed={30} delay={1000} />
                     </h2>
                     
-                    <div className="cyber-card flex flex-col md:flex-row gap-0 bg-cyber-dark/80 backdrop-blur-sm border-t border-r border-b border-cyber-dim min-h-[500px]">
+                    <div className="cyber-card flex flex-col md:flex-row gap-0 bg-cyber-dark/0 backdrop-blur-md border-t border-r border-b border-cyber-dim min-h-[500px]">
                         
-                        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-cyber-neonBlue/20 bg-black/40 overflow-y-auto">
+                        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-cyber-neonBlue/20 bg-black/20 overflow-y-auto">
                             <div className="p-4 border-b border-cyber-neonBlue/20 bg-cyber-neonBlue/5 flex items-center justify-between">
                                 <h3 className="text-xs font-mono text-cyber-neonBlue uppercase tracking-wider">
                                     <Typewriter text="[ DIRECTORY ]" speed={20} delay={1200} />
@@ -916,7 +923,7 @@
                         
                         <header className="flex flex-col items-center text-center space-y-8 mb-20 w-full max-w-4xl">
                             {/* Profile Card Wrapper */}
-                            <div className="cyber-card w-full p-10 bg-cyber-dark/80 backdrop-blur-md flex flex-col items-center border-r border-b border-t border-white/5 relative overflow-hidden">
+                            <div className="cyber-card w-full p-10 bg-cyber-dark/0 backdrop-blur-md flex flex-col items-center border-r border-b border-t border-white/5 relative overflow-hidden">
                                 
                                 {/* Avatar & Logic */}
                                 <div className="relative group cursor-pointer mb-6" onClick={handleAvatarClick}>
@@ -970,8 +977,8 @@
 
                                 {/* Name & Title */}
                                 <div className="space-y-4 flex flex-col items-center z-10 w-full">
-                                    <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter glitch-text" data-text="HAOCHEN LI">
-                                        <Typewriter text="HAOCHEN LI" speed={100} />
+                                    <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter glitch-text" data-text="Haochen LI">
+                                        <Typewriter text="Haochen LI" speed={100} />
                                     </h1>
                                     <span className="text-xl text-cyber-neonPink font-bold block tracking-[0.2em]">
                                         <Typewriter text="[ HARRY ]" speed={80} delay={1000} />
@@ -995,7 +1002,7 @@
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mb-8">
                             {/* Profile Card Refactored for better readability */}
-                            <div className="cyber-card md:col-span-2 bg-cyber-dark/90 p-8 hover:bg-black/80 transition-colors group relative overflow-hidden">
+                            <div className="cyber-card md:col-span-2 bg-cyber-dark/0 backdrop-blur-md p-8 hover:bg-black/80 transition-colors group relative overflow-hidden">
                                 {/* Decor */}
                                 <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-cyber-neonBlue/5 rounded-full blur-3xl group-hover:bg-cyber-neonBlue/10 transition-all"></div>
                                 
@@ -1005,7 +1012,7 @@
 
                                 <h2 className="text-2xl font-bold text-cyber-neonYellow mb-6 flex items-center gap-2 uppercase tracking-widest border-b border-gray-800 pb-2">
                                     <Icons.Zap size={20} />
-                                    <Typewriter text="// CORE_PROFILE" speed={50} delay={500} />
+                                    <Typewriter text="// CORE_IDENTITY" speed={50} delay={500} />
                                 </h2>
 
                                 <div className="space-y-6 font-mono relative z-10">
@@ -1069,7 +1076,7 @@
                             </div>
 
                             {/* Blog Card */}
-                            <div className="cyber-card bg-cyber-dark/90 p-8 group hover:border-l-4 hover:border-cyber-neonPink transition-all">
+                            <div className="cyber-card bg-cyber-dark/0 backdrop-blur-md p-8 group hover:border-l-4 hover:border-cyber-neonPink transition-all">
                                 <h2 className="text-xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2 uppercase tracking-widest">
                                     <Icons.Code size={18} />
                                     <Typewriter text="// Blog_Cache" speed={50} delay={1000} />
@@ -1095,7 +1102,7 @@
 
                             {/* Contact Card */}
                             <div className="flex flex-col gap-4">
-                                <div className="cyber-card flex-1 bg-cyber-dark/90 p-8 relative">
+                                <div className="cyber-card flex-1 bg-cyber-dark/0 backdrop-blur-md p-8 relative">
                                     <h2 className="text-xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2 uppercase tracking-widest">
                                         <Icons.Network size={18} />
                                         <Typewriter text="// Contact_Uplink" speed={50} delay={1200} />
