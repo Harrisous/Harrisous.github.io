@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Holiday Magic | Particle Tree</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b0f19;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            background: radial-gradient(circle at 50% 20%, #1a253a 0%, #0b0f19 100%);
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            pointer-events: none;
+            font-size: 2rem;
+            font-family: 'Georgia', serif;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            animation: glow 3s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+            }
+
+            to {
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.2);
+            }
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="controls"></div>
+
+    <canvas id="treeCanvas"></canvas>
+
+    <div class="overlay">
+        Merry Christmas
+    </div>
+
+    <script>
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let width, height;
+        let particles = [];
+        let snowParticles = [];
+        let gifts = [];
+        let time = 0;
+        let explosionForce = 0;
+
+        // Configuration
+        const config = {
+            particleCount: 1800,
+            snowCount: 200,
+            treeHeight: 0.75,
+            treeWidth: 0.3,
+            rotationSpeed: 0.0008,
+            verticalSpeed: 0.002,
+            blinkSpeed: 0.03,
+            colors: {
+                greens: ['#2E8B57', '#3CB371', '#00FA9A', '#98FB98', '#006400'],
+                gold: '#FFD700',
+                red: '#FF0000',
+                white: '#FFFFFF'
+            },
+            beltFrequency: 3.0,
+            beltWidth: 0.08
+        };
+
+        const GIFT_EMOJIS = ['🎁', '🎀', '🧸', '🔔', '🎄', '⭐', '🐱', '🐈', '🐾', '💨'];
+
+        class Particle {
+            constructor(reset = true) {
+                this.reset(reset);
+            }
+
+            reset(randomY = false) {
+                this.h = randomY ? Math.random() : 0;
+                this.angle = Math.random() * Math.PI * 2;
+                this.maxRadiusRatio = 1 - this.h;
+
+                // Spiral Gold Belt Logic
+                const normAngle = this.angle / (2 * Math.PI);
+                let isBelt = false;
+                const phase = (this.h * config.beltFrequency - normAngle);
+                const distToBelt = Math.abs(phase - Math.round(phase));
+
+                if (distToBelt < config.beltWidth) {
+                    isBelt = true;
+                }
+
+                if (isBelt) {
+                    this.color = config.colors.gold;
+                    this.isBelt = true;
+                    this.sizeMod = 1.2;
+                } else {
+                    const rand = Math.random();
+                    if (rand < 0.90) {
+                        this.color = config.colors.greens[Math.floor(Math.random() * config.colors.greens.length)];
+                    } else if (rand < 0.95) {
+                        this.color = config.colors.red;
+                    } else {
+                        this.color = config.colors.white;
+                    }
+                    this.isBelt = false;
+                    this.sizeMod = 1.0;
+                }
+
+                this.angleOffset = Math.random() * Math.PI * 2;
+                this.size = (Math.random() * 2.5 + 1) * this.sizeMod;
+                this.blinkPhase = Math.random() * Math.PI * 2;
+                this.speed = config.verticalSpeed * (0.5 + Math.random() * 0.5);
+            }
+
+            update() {
+                this.h += this.speed;
+                if (this.h > 1) this.reset(false);
+                this.angle += config.rotationSpeed;
+            }
+
+            draw(w, h, treeBaseWidth, treePixelHeight) {
+                const wave = Math.sin(this.h * 10 - time * 0.1) * explosionForce * 0.5;
+                const expansion = explosionForce * (1.0 - this.h) * 1.5;
+
+                const currentRadiusRatio = (1 - this.h) + wave + expansion;
+                const currentRadius = treeBaseWidth * Math.max(0, currentRadiusRatio) * 0.8;
+
+                const spiralAngle = this.angle + this.h * 8;
+
+                const x3d = Math.cos(spiralAngle) * currentRadius;
+                const z3d = Math.sin(spiralAngle) * currentRadius;
+                const y3d = (this.h - 0.5) * treePixelHeight;
+
+                const fov = 800;
+                const scale = fov / (fov + z3d);
+
+                const x2d = w / 2 + x3d * scale;
+                const y2d = h / 2 - y3d * scale + 50;
+
+                const alpha = 0.6 + 0.4 * Math.sin(time * config.blinkSpeed + this.blinkPhase);
+                const pSize = this.size * scale;
+
+                if (scale > 0) {
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(x2d, y2d, pSize, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    if (this.isBelt && scale > 0.9) {
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = '#FFD700';
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+        }
+
+        class SnowFlake {
+            constructor() {
+                this.reset(true);
+            }
+            reset(randomY = false) {
+                this.x = Math.random() * width;
+                this.y = randomY ? Math.random() * height : -10;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = Math.random() * 1 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(time * 0.01 + this.size) * 0.5;
+                if (this.y > height) this.reset(false);
+                if (this.x > width) this.x = 0;
+                if (this.x < 0) this.x = width;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#FFF';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Gift {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                // Slower and Bigger
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = -Math.random() * 4 - 2;
+                this.emoji = GIFT_EMOJIS[Math.floor(Math.random() * GIFT_EMOJIS.length)];
+                this.size = 40 + Math.random() * 30; // Bigger
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = (Math.random() - 0.5) * 3;
+                this.life = 1.0;
+                this.gravity = 0.15; // Floating
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.rotation += this.rotationSpeed;
+                this.life -= 0.005; // Longer life
+            }
+            draw() {
+                if (this.life <= 0) return;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.globalAlpha = this.life;
+                ctx.font = `${this.size}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.emoji, 0, 0);
+                ctx.restore();
+            }
+        }
+
+        function drawSanta(t) {
+            const moonX = width * 0.85;
+            const moonY = height * 0.15;
+            const moonSize = Math.min(width, height) * 0.1;
+
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#fff';
+            ctx.fillStyle = '#fffae3';
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moonSize, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            const sX = moonX - moonSize * 0.2;
+            const sY = moonY + moonSize * 0.1;
+            const scale = 0.6;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.save();
+            ctx.translate(sX, sY);
+            ctx.scale(scale, scale);
+
+            // Sleigh
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(20, 20, 50, 0);
+            ctx.lineTo(50, -10);
+            ctx.lineTo(40, -10);
+            ctx.lineTo(40, -25);
+            ctx.lineTo(10, -25);
+            ctx.lineTo(0, -10);
+            ctx.fill();
+
+            // Santa
+            ctx.beginPath();
+            ctx.arc(25, -30, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(25, -20, 10, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Reindeers
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(50, -5);
+            ctx.lineTo(120, -15);
+            ctx.stroke();
+
+            for (let i = 0; i < 3; i++) {
+                const rx = 70 + i * 25;
+                const ry = -10 + (i % 2) * 5;
+                ctx.beginPath();
+                ctx.ellipse(rx, ry, 12, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(rx + 10, ry - 5, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(rx + 10, ry - 5);
+                ctx.lineTo(rx + 14, ry - 12);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        function draw3DStar(centerX, centerY, t) {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+
+            // ** STATIC 3D STAR **
+            // rotY = 0 ensures one point aligns upwards (start -PI/2)
+            const rotY = 0.0;
+            const scale = (1 + 0.1 * Math.sin(t * 0.03)) * (1 + explosionForce * 0.5);
+            ctx.scale(scale, scale);
+
+            ctx.shadowBlur = 40;
+            ctx.shadowColor = '#FFD700';
+
+            const points = 5;
+            const outerRadius = 35;
+            const innerRadius = 15;
+
+            for (let i = 0; i < points * 2; i++) {
+                // Ensure first point (i=0) is up: -PI/2
+                const angle1 = (i * Math.PI) / points - Math.PI / 2 + rotY;
+                const angle2 = ((i + 1) * Math.PI) / points - Math.PI / 2 + rotY;
+
+                const r1 = i % 2 === 0 ? outerRadius : innerRadius;
+                const r2 = (i + 1) % 2 === 0 ? outerRadius : innerRadius;
+
+                const brightness = 50 + 20 * Math.sin(angle1 * 2);
+                const color = `hsl(50, 100%, ${brightness}%)`;
+
+                ctx.fillStyle = color;
+                ctx.strokeStyle = '#DAA520';
+                ctx.lineWidth = 1;
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+
+                let x1 = Math.cos(angle1) * r1;
+                let y1 = Math.sin(angle1) * r1;
+                let x2 = Math.cos(angle2) * r2;
+                let y2 = Math.sin(angle2) * r2;
+
+                ctx.lineTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        function init() {
+            resize();
+            for (let i = 0; i < config.particleCount; i++) particles.push(new Particle(true));
+            for (let i = 0; i < config.snowCount; i++) snowParticles.push(new SnowFlake());
+
+            window.addEventListener('resize', resize);
+
+            const trigger = (e) => {
+                e.preventDefault();
+                const touch = e.touches ? e.touches[0] : e;
+                triggerInteraction(touch);
+            };
+
+            canvas.addEventListener('mousedown', trigger);
+            canvas.addEventListener('touchstart', trigger, { passive: false });
+
+            loop();
+        }
+
+        function triggerInteraction(e) {
+            explosionForce = 0.8;
+            const clientX = e.clientX || width / 2;
+            const clientY = e.clientY || height / 2;
+            for (let i = 0; i < 8; i++) gifts.push(new Gift(clientX, clientY));
+        }
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        function loop() {
+            requestAnimationFrame(loop);
+
+            const skyGrad = ctx.createRadialGradient(width / 2, height * 0.2, 0, width / 2, height * 0.5, width);
+            skyGrad.addColorStop(0, '#1a253a');
+            skyGrad.addColorStop(1, '#0b0f19');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, width, height);
+
+            time++;
+            explosionForce *= 0.92;
+            if (explosionForce < 0.01) explosionForce = 0;
+
+            const minDim = Math.min(width, height);
+            const treeBaseWidth = minDim * config.treeWidth * 2;
+            const treePixelHeight = height * config.treeHeight;
+
+            drawSanta(time);
+
+            snowParticles.forEach(p => { p.update(); p.draw(); });
+
+            particles.forEach(p => p.update());
+            particles.forEach(p => p.draw(width, height, treeBaseWidth, treePixelHeight));
+
+            draw3DStar(width / 2, height / 2 - treePixelHeight / 2 * (800 / 800) + 50 - (explosionForce * 20), time);
+
+            for (let i = gifts.length - 1; i >= 0; i--) {
+                const g = gifts[i];
+                g.update();
+                g.draw();
+                if (g.life <= 0) gifts.splice(i, 1);
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
