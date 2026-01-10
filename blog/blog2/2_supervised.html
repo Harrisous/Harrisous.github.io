@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 02: Supervised Learning - Field Manual</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            white: '#f8f9fa',
+                            light: '#e9ecef',
+                            text: '#212529',
+                            neonBlue: '#0097a7',
+                            neonPink: '#c2185b',
+                            neonYellow: '#fbc02d',
+                            dim: 'rgba(0, 151, 167, 0.05)',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f2f5;
+            color: #212529;
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0097a7;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c2185b;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.03));
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Cyber Card */
+        .cyber-card {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            border-left: 3px solid #0097a7;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .cyber-card-pink {
+            border-left-color: #c2185b;
+        }
+
+        .cyber-card-yellow {
+            border-left-color: #fbc02d;
+        }
+
+        /* Quote */
+        .cyber-quote {
+            border-left: 4px solid #c2185b;
+            background: rgba(194, 24, 91, 0.05);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+
+        /* Highlight */
+        .highlight {
+            background: rgba(251, 192, 45, 0.2);
+            padding: 0 4px;
+            border-bottom: 2px solid #fbc02d;
+        }
+
+        /* TOC Active */
+        .toc-link.active {
+            color: #0097a7;
+            border-left-color: #0097a7;
+            background: rgba(0, 151, 167, 0.05);
+        }
+
+        /* Images */
+        .cyber-img {
+            border: 1px solid #ddd;
+            padding: 4px;
+            background: #fff;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 100%;
+            display: block;
+        }
+
+        /* Code Block */
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1em;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85em;
+            border: 1px solid #ddd;
+        }
+
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1em;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85em;
+            border: 1px solid #ddd;
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+            border-radius: 4px;
+            background: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            border: 1px solid #ced4da;
+        }
+
+        .tag-reg {
+            color: #0d6efd;
+            border-color: #0d6efd;
+            background: rgba(13, 110, 253, 0.1);
+        }
+
+        .tag-cls {
+            color: #d63384;
+            border-color: #d63384;
+            background: rgba(214, 51, 132, 0.1);
+        }
+
+        .tag-lin {
+            color: #198754;
+            border-color: #198754;
+            background: rgba(25, 135, 84, 0.1);
+        }
+
+        .tag-non {
+            color: #fd7e14;
+            border-color: #fd7e14;
+            background: rgba(253, 126, 20, 0.1);
+        }
+
+        .tag-ens {
+            color: #6610f2;
+            border-color: #6610f2;
+            background: rgba(102, 16, 242, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Typewriter = ({ text, speed = 10, delay = 0, className = "" }) => {
+            const [display, setDisplay] = useState("");
+            useEffect(() => {
+                let timer;
+                const start = () => {
+                    let i = 0;
+                    timer = setInterval(() => {
+                        if (i < text.length) {
+                            setDisplay(text.substring(0, i + 1));
+                            i++;
+                        } else clearInterval(timer);
+                    }, speed);
+                };
+                const delayTimer = setTimeout(start, delay);
+                return () => { clearTimeout(delayTimer); clearInterval(timer); };
+            }, [text, speed, delay]);
+            return <span className={className}>{display}</span>;
+        };
+
+        const SupervisedPage = () => {
+            const [activeSection, setActiveSection] = useState("linear-regression");
+
+            useEffect(() => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setActiveSection(entry.target.id);
+                        }
+                    });
+                }, { threshold: 0.2 });
+
+                const sections = document.querySelectorAll('section[id]');
+                sections.forEach((section) => observer.observe(section));
+
+                return () => observer.disconnect();
+            }, []);
+
+            useEffect(() => {
+                if (window.MathJax) {
+                    window.MathJax.typesetPromise && window.MathJax.typesetPromise();
+                }
+            });
+
+            const scrollToSection = (e, id) => {
+                e.preventDefault();
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                    setActiveSection(id);
+                }
+            };
+
+            const sections = [
+                { id: 'linear-regression', title: '01. LINEAR REGRESSION' },
+                { id: 'logistic-regression', title: '02. LOGISTIC REGRESSION' },
+                { id: 'decision-trees', title: '03. DECISION TREES' },
+                { id: 'random-forests', title: '04. RANDOM FORESTS' },
+                { id: 'boosting', title: '05. BOOSTING' },
+                { id: 'svm', title: '06. SVM' },
+                { id: 'knn', title: '07. KNN' },
+            ];
+
+            return (
+                <div className="min-h-screen relative pb-20">
+                    <div className="scanlines"></div>
+
+                    {/* Nav */}
+                    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                        <a href="./index.html" className="flex items-center gap-2 text-cyber-neonBlue hover:text-cyber-neonPink transition-colors font-bold group">
+                            <span className="text-xl group-hover:-translate-x-1 transition-transform">«</span>
+                            <span>BACK_TO_INDEX</span>
+                        </a>
+                        <div className="flex items-center gap-4">
+                            <span className="text-xs font-mono text-gray-400 ml-4 hidden md:inline">CH_02 // SUPERVISED_DEEP_DIVE</span>
+                        </div>
+                    </nav>
+
+                    <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12">
+                        {/* Sidebar */}
+                        <aside className="hidden lg:block w-64 flex-shrink-0">
+                            <div className="sticky top-24">
+                                <h4 className="text-xs font-bold text-gray-400 mb-4 tracking-widest uppercase border-b border-gray-200 pb-2">
+                                    // NAVIGATION
+                                </h4>
+                                <ul className="space-y-1 text-sm font-mono">
+                                    {sections.map(sec => (
+                                        <li key={sec.id}>
+                                            <a href={`#${sec.id}`}
+                                                onClick={(e) => scrollToSection(e, sec.id)}
+                                                className={`block py-2 px-3 border-l-2 transition-all duration-300 ${activeSection === sec.id ? 'border-cyber-neonBlue text-cyber-neonBlue bg-cyber-dim' : 'border-transparent text-gray-500 hover:text-cyber-text hover:border-gray-300'}`}>
+                                                {sec.title}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="mt-8 p-4 bg-gray-50 rounded-sm border border-gray-200 text-xs text-gray-400 font-mono">
+                                    <div className="mb-2 uppercase tracking-wide">Sys_Status:</div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        <span>ONLINE</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        {/* Main Content */}
+                        <main className="flex-1 max-w-3xl">
+                            <h1 className="text-3xl md:text-4xl font-black text-cyber-text mb-8">Chapter 2 Classic Supervised Models</h1>
+
+                            <div className="cyber-card p-6 mb-12">
+                                <h3 className="text-lg font-bold text-gray-800 mb-4">// MODEL CLASSIFICATION MATRIX</h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-xs text-left border-collapse font-mono">
+                                        <thead>
+                                            <tr className="bg-gray-100 border-b-2 border-gray-200">
+                                                <th className="p-2">Model</th>
+                                                <th className="p-2">Task Type</th>
+                                                <th className="p-2">Boundary</th>
+                                                <th className="p-2">Structure</th>
+                                                <th className="p-2">Learning</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            <tr>
+                                                <td className="p-2 font-bold text-cyber-neonBlue">Linear Regression</td>
+                                                <td className="p-2">Regression</td>
+                                                <td className="p-2">Linear</td>
+                                                <td className="p-2">Singular</td>
+                                                <td className="p-2">Model-based</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 font-bold text-cyber-neonPink">Logistic Regression</td>
+                                                <td className="p-2">Classification</td>
+                                                <td className="p-2">Linear</td>
+                                                <td className="p-2">Singular</td>
+                                                <td className="p-2">Model-based</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 font-bold text-cyber-neonBlue">Decision Trees</td>
+                                                <td className="p-2">Reg/Class</td>
+                                                <td className="p-2">Non-Linear</td>
+                                                <td className="p-2">Singular</td>
+                                                <td className="p-2">Model-based</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 font-bold text-cyber-neonBlue">Random Forests</td>
+                                                <td className="p-2">Reg/Class</td>
+                                                <td className="p-2">Non-Linear</td>
+                                                <td className="p-2">Ensemble</td>
+                                                <td className="p-2">Model-based</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 font-bold text-cyber-neonPink">Boosting (Ada/GBM)</td>
+                                                <td className="p-2">Reg/Class</td>
+                                                <td className="p-2">Non-Linear</td>
+                                                <td className="p-2">Ensemble</td>
+                                                <td className="p-2">Model-based</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 font-bold text-gray-600">SVM</td>
+                                                <td className="p-2">Reg/Class</td>
+                                                <td className="p-2">Linear/Kernel</td>
+                                                <td className="p-2">Singular</td>
+                                                <td className="p-2">Model-based</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 font-bold text-gray-600">KNN</td>
+                                                <td className="p-2">Reg/Class</td>
+                                                <td className="p-2">Non-Linear</td>
+                                                <td className="p-2">Singular</td>
+                                                <td className="p-2">Instance-based</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            {/* Section 1: Linear Regression */}
+                            <section id="linear-regression" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h1 className="text-4xl md:text-5xl font-black text-cyber-text mb-4">
+                                    <span className="text-cyber-neonBlue text-2xl block mb-2 font-mono">01.</span>
+                                    LINEAR REGRESSION
+                                </h1>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Regression</span>
+                                    <span className="tag tag-lin">Linear</span>
+                                    <span className="tag">Singular</span>
+                                    <span className="tag">Model-based</span>
+                                </div>
+                                <p className="text-xl text-gray-600 leading-relaxed font-mono mb-8">
+                                    <Typewriter text="Predicting continuous values by finding the line of best fit." speed={15} />
+                                </p>
+
+
+
+                                <div className="cyber-card p-6 md:p-8">
+                                    <h3 className="text-lg font-bold text-cyber-neonBlue mb-4">INTRODUCTION</h3>
+                                    <p className="mb-4 text-gray-700">Used for <strong>regression</strong> problems (e.g., predicting house prices, stock prices).</p>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <h4 className="font-bold text-md mt-6 mb-2">Formula</h4>
+                                            <ul className="list-disc pl-5 text-gray-700 mb-4 space-y-2">
+                                                <li><strong>Simple Linear Regression:</strong> {'$y = \\theta_0 + \\theta_1 x$'}</li>
+                                                <li><strong>Multiple Linear Regression:</strong> {'$y = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2 + ... + \\theta_n x_n$'}</li>
+                                            </ul>
+
+                                            <h4 className="font-bold text-md mt-6 mb-2">Cost Function: Mean Squared Error (MSE)</h4>
+                                            <div className="cyber-quote text-gray-600">
+                                                Goal: Minimize the average squared difference between predicted and actual values.
+                                            </div>
+                                            <p className="font-mono text-sm bg-gray-100 p-2 rounded mb-4 text-center">
+                                                {'$J(\\theta) = \\frac{1}{m} \\sum_{i=1}^{m} (y^{(i)} - \\hat{y}^{(i)})^2$'}
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Linear_regression.svg/1200px-Linear_regression.svg.png" alt="Linear Regression Fit" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Fitting a red line to blue data points to minimize the vertical distance (residuals).
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <h4 className="font-bold text-md mt-6 mb-2">Gradient Descent</h4>
+                                    <p className="mb-2 text-gray-700">An iterative optimization algorithm to find the minimum of the cost function.</p>
+                                    <p className="font-mono text-sm bg-gray-100 p-2 rounded mb-4 text-center">
+                                        {'$\\theta_j := \\theta_j - \\alpha \\frac{\\partial}{\\partial \\theta_j} J(\\theta)$'}
+                                    </p>
+                                    <div className="text-sm text-gray-500 italic mb-4">See "Hyperparameters" in context for $\alpha$ (learning rate).</div>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Gradient_descent.svg" alt="Gradient Descent Visualization" className="cyber-img w-1/2" />
+
+                                    <h4 className="font-bold text-md mt-6 mb-2">Closed Form Solution (Normal Equation)</h4>
+                                    <p className="mb-2 text-gray-700">Directly computes the best $\theta$ without iteration. (Computationally expensive for large $n$).</p>
+                                    <p className="font-mono text-sm bg-gray-100 p-2 rounded mb-4 text-center">
+                                        {'$\\theta = (X^T X)^{-1} X^T y$'}
+                                    </p>
+
+                                    <h4 className="font-bold text-md mt-6 mb-2">Key Assumptions</h4>
+                                    <ul className="list-disc pl-5 text-gray-700 mb-4 space-y-2">
+                                        <li><strong>Linearity:</strong> Relationship between $X$ and $y$ is linear. <span className="text-sm text-cyber-neonBlue">→ Check with Scatter Plot.</span></li>
+                                        <li><strong>Homoscedasticity:</strong> Constant variance of residuals. <span className="text-sm text-cyber-neonBlue">→ Check with Residual Plot (cone shape = bad).</span></li>
+                                        <li><strong>Normality:</strong> Residuals are normally distributed. <span className="text-sm text-cyber-neonBlue">→ Check with Histogram/Q-Q Plot.</span></li>
+                                        <li><strong>Independence:</strong> Observations are independent. <span className="text-sm text-cyber-neonBlue">→ Check Correlation Matrix (no multicollinearity).</span></li>
+                                    </ul>
+                                </div>
+
+                                <div className="cyber-card cyber-card-yellow p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonYellow text-black mb-4">FEATURE ENGINEERING</h3>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">Transformations</h4>
+                                    <p className="text-sm text-gray-700 mb-2">Log, Square Root, Box-Cox. Used to fix non-normality or heteroscedasticity.</p>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">Selection</h4>
+                                    <p className="text-sm text-gray-700 mb-2">Forward Selection, Backward Selection, RFE.</p>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">Polynomial Regression</h4>
+                                    <p className="text-sm text-gray-700 mb-2">Linear Regression is linear in <em>coefficients</em>, not features. We can model curves by adding powered features.</p>
+                                    <p className="font-mono text-xs bg-gray-100 p-2 rounded mb-2">
+                                        {'$y = \\theta_0 + \\theta_1 x + \\theta_2 x^2$'}
+                                    </p>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">Interaction Terms</h4>
+                                    <p className="text-sm text-gray-700 mb-2">When the effect of one feature depends on another.</p>
+                                    <p className="font-mono text-xs bg-gray-100 p-2 rounded mb-2">
+                                        {'$y = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2 + \\theta_3 (x_1 \\cdot x_2)$'}
+                                    </p>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+# Data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Inference
+predictions = model.predict(X_test)
+print("MSE:", mean_squared_error(y_test, predictions))`}</code></pre>
+                                </div>
+                            </section>
+
+                            {/* Section 2: Logistic Regression */}
+                            <section id="logistic-regression" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonPink"></span>
+                                    02. LOGISTIC REGRESSION
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-cls">Classification</span>
+                                    <span className="tag tag-lin">Linear Boundary</span>
+                                    <span className="tag">Singular</span>
+                                    <span className="tag">Model-based</span>
+                                </div>
+                                <p className="mb-6 text-gray-700">Used for <strong>classification</strong> problems (despite the name "Regression").</p>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonPink mb-4">BINARY CLASSIFICATION</h3>
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <h4 className="font-bold text-md mt-4 mb-2">Sigmoid Function</h4>
+                                            <p className="text-sm text-gray-700 mb-2">Squashes output between 0 and 1 (probability).</p>
+                                            <p className="font-mono text-sm bg-gray-100 p-2 rounded mb-4 text-center">
+                                                {'$\\sigma(z) = \\frac{1}{1 + e^{-z}}$'}
+                                            </p>
+                                            <p className="text-sm text-gray-700 mt-2"><strong>Thresholding:</strong> If probability &gt; 0.5, predict 1, else 0.</p>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/88/Logistic-curve.svg" alt="Sigmoid Curve" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                The S-shaped curve transforms any real value into a probability range [0, 1].
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonPink mb-4">MULTI-CLASS CLASSIFICATION</h3>
+                                    <ul className="list-disc pl-5 text-gray-700 mb-4 space-y-2">
+                                        <li><strong>One-vs-Rest (OvR):</strong> Train $N$ models (Red vs Not-Red, Blue vs Not-Blue). Choose highest confidence.</li>
+                                        <li><strong>One-vs-One (OvO):</strong> Train $N(N-1)/2$ models (Red vs Blue, Red vs Green...). Majority vote wins.</li>
+                                        <li><strong>Softmax (Multinomial):</strong> Generalization of Sigmoid for $K$ classes. Output sums to 1.</li>
+                                    </ul>
+                                    <p className="font-mono text-sm bg-gray-100 p-2 rounded mb-4 text-center">
+                                        {'$\\text{Softmax}(z_i) = \\frac{e^{z_i}}{\\sum_{j=1}^{K} e^{z_j}}$'}
+                                    </p>
+                                </div>
+
+                                <div className="cyber-card cyber-card-yellow p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonYellow text-black mb-4">METRICS</h3>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">Training: Log Loss / Cross Entropy</h4>
+                                    <p className="text-sm text-gray-700 mb-2">Penalizes confident wrong answers heavily.</p>
+                                    <div className="font-mono text-xs bg-gray-100 p-2 rounded mb-2">
+                                        {'J(\\theta) = - \\frac{1}{m} \\sum_{i=1}^{m} [y^{(i)} \\log(p^{(i)}) + (1-y^{(i)}) \\log(1-p^{(i)})]'}
+                                    </div>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">Evaluation</h4>
+                                    <p className="text-sm text-gray-700 mb-2">Accuracy, Precision, Recall, F1-Score, ROC-AUC. (See Ch.1)</p>
+                                    <p className="text-sm text-gray-700 mb-2"><strong>Simpson's Paradox:</strong> A trend appears in different groups of data but disappears or reverses when these groups are combined.</p>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.linear_model import LogisticRegression
+
+# Model (supports multi_class='auto' -> 'ovr' or 'multinomial')
+clf = LogisticRegression(random_state=0).fit(X_train, y_train)
+
+# Inference
+preds = clf.predict(X_test)
+probs = clf.predict_proba(X_test) # Get probabilities`}</code></pre>
+                                </div>
+                            </section>
+
+                            {/* Section 3: Decision Trees */}
+                            <section id="decision-trees" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonBlue"></span>
+                                    03. DECISION TREES
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Reg</span>
+                                    <span className="tag tag-cls">Class</span>
+                                    <span className="tag tag-non">Non-Linear</span>
+                                    <span className="tag">Singular</span>
+                                    <span className="tag">Model-based</span>
+                                </div>
+                                <p className="mb-6 text-gray-700">For Classification and Regression. Learns simple decision rules.</p>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonBlue mb-4">HOW IT WORKS</h3>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <p className="mb-4 text-gray-700">Recursively splits data to maximize <strong>Information Gain</strong> (reduce impurity).</p>
+                                            <ul className="list-disc pl-5 text-gray-700 text-sm space-y-1">
+                                                <li><strong>Root Node:</strong> The feature that best splits the data.</li>
+                                                <li><strong>Decision Node:</strong> A sub-node that splits further.</li>
+                                                <li><strong>Leaf Node:</strong> The final output (class or value).</li>
+                                            </ul>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/CART_tree_titanic_survivors.png" alt="Decision Tree Example" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                A simple tree predicting Titanic survival. <strong>60%</strong> of passengers in the root node died.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">Measures of Impurity</h4>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div className="bg-gray-50 p-3 rounded">
+                                            <div className="font-bold text-sm mb-1">Entropy</div>
+                                            <div className="font-mono text-xs mb-2">{'$- \\sum p_i \\log_2(p_i)$'}</div>
+                                            <div className="text-xs text-gray-500">Measure of disorder. 0 = Pure via Log base 2.</div>
+                                        </div>
+                                        <div className="bg-gray-50 p-3 rounded">
+                                            <div className="font-bold text-sm mb-1">Gini Impurity</div>
+                                            <div className="font-mono text-xs mb-2">{'$1 - \\sum p_i^2$'}</div>
+                                            <div className="text-xs text-gray-500">Prob. of misclassifying a random element. Faster (no log).</div>
+                                        </div>
+                                    </div>
+
+                                    <h4 className="font-bold text-md mt-6 mb-2">Process</h4>
+                                    <ol className="list-decimal pl-5 text-gray-700 space-y-1 text-sm">
+                                        <li>Start with all data at root.</li>
+                                        <li>Calculate impurity for every possible split on every feature.</li>
+                                        <li>Choose split with highest Information Gain (Impurity Before - Impurity After).</li>
+                                        <li>Repeat until leaf is pure or max depth reached.</li>
+                                    </ol>
+
+                                    <h4 className="font-bold text-md mt-6 mb-2">Key Hyperparameters</h4>
+                                    <ul className="list-disc pl-5 text-gray-700 space-y-1 text-sm">
+                                        <li><code>max_depth</code>: Controls complexity (prevent overfitting).</li>
+                                        <li><code>min_samples_split</code>: Min samples required to split a node.</li>
+                                        <li><code>min_samples_leaf</code>: Min samples required to be at a leaf node.</li>
+                                    </ul>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+
+dt = DecisionTreeClassifier(max_depth=3, criterion='entropy')
+dt.fit(X_train, y_train)
+
+# Inference
+predictions = dt.predict(X_test)
+
+# Visualization
+plt.figure(figsize=(10,10))
+plot_tree(dt, filled=True)
+plt.show()`}</code></pre>
+                                </div>
+                            </section>
+
+                            {/* Section 4: Random Forests */}
+                            <section id="random-forests" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonBlue"></span>
+                                    04. RANDOM FORESTS
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Reg</span>
+                                    <span className="tag tag-cls">Class</span>
+                                    <span className="tag tag-non">Non-Linear</span>
+                                    <span className="tag tag-ens">Ensemble (Bagging)</span>
+                                    <span className="tag">Model-based</span>
+                                </div>
+                                <p className="mb-6 text-gray-700"><strong>Ensemble</strong> method using Bagging (Bootstrap Aggregation).</p>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonBlue mb-4">BAGGING (BOOTSTRAP AGGREGATION)</h3>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <p className="mb-4 text-gray-700">Reduces Variance (Overfitting) without increasing Bias.</p>
+                                            <ul className="list-disc pl-5 text-gray-700 space-y-2 text-sm">
+                                                <li><strong>Bootstrap:</strong> Create $N$ subsets of data by sampling <em>with replacement</em>.</li>
+                                                <li><strong>Train:</strong> Train a Decision Tree on each subset indepedently.</li>
+                                                <li><strong>Feature Randomness:</strong> Random feature subset at each split.</li>
+                                                <li><strong>Aggregate:</strong> Majority vote (Class) or Average (Reg).</li>
+                                            </ul>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-full flex justify-center my-4">
+                                                <svg viewBox="0 0 400 220" className="w-full max-w-md">
+                                                    {/* Styles */}
+                                                    <defs>
+                                                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                                            <path d="M0,0 L0,6 L9,3 z" fill="#aaa" />
+                                                        </marker>
+                                                    </defs>
+
+                                                    {/* Input Data */}
+                                                    <rect x="20" y="85" width="60" height="50" rx="4" fill="#eee" stroke="#333" strokeWidth="2" />
+                                                    <text x="50" y="115" textAnchor="middle" fontSize="10" fontWeight="bold">Training</text>
+                                                    <text x="50" y="127" textAnchor="middle" fontSize="10" fontWeight="bold">Data</text>
+
+                                                    {/* Bootstrap Arrows */}
+                                                    <path d="M85 110 L130 50" stroke="#aaa" strokeWidth="2" markerEnd="url(#arrow)" />
+                                                    <path d="M85 110 L130 110" stroke="#aaa" strokeWidth="2" markerEnd="url(#arrow)" />
+                                                    <path d="M85 110 L130 170" stroke="#aaa" strokeWidth="2" markerEnd="url(#arrow)" />
+
+                                                    {/* Trees */}
+                                                    {/* Tree 1 */}
+                                                    <polygon points="150,60 170,20 190,60" fill="#0ff" stroke="#000" strokeWidth="1" opacity="0.8" />
+                                                    <rect x="165" y="60" width="10" height="10" fill="#555" />
+                                                    <text x="170" y="85" textAnchor="middle" fontSize="10">Tree 1</text>
+
+                                                    {/* Tree 2 */}
+                                                    <polygon points="150,120 170,80 190,120" fill="#0ff" stroke="#000" strokeWidth="1" opacity="0.8" />
+                                                    <rect x="165" y="120" width="10" height="10" fill="#555" />
+                                                    <text x="170" y="145" textAnchor="middle" fontSize="10">Tree 2</text>
+
+                                                    {/* Tree 3 */}
+                                                    <polygon points="150,180 170,140 190,180" fill="#0ff" stroke="#000" strokeWidth="1" opacity="0.8" />
+                                                    <rect x="165" y="180" width="10" height="10" fill="#555" />
+                                                    <text x="170" y="205" textAnchor="middle" fontSize="10">Tree 3</text>
+
+                                                    {/* Aggregation Arrows */}
+                                                    <path d="M195 50 L260 100" stroke="#aaa" strokeWidth="2" markerEnd="url(#arrow)" />
+                                                    <path d="M195 110 L260 110" stroke="#aaa" strokeWidth="2" markerEnd="url(#arrow)" />
+                                                    <path d="M195 170 L260 120" stroke="#aaa" strokeWidth="2" markerEnd="url(#arrow)" />
+
+                                                    {/* Aggregation */}
+                                                    <circle cx="290" cy="110" r="30" fill="#f0f" stroke="#333" strokeWidth="2" opacity="0.2" />
+                                                    <text x="290" y="105" textAnchor="middle" fontSize="9" fontWeight="bold">Majority</text>
+                                                    <text x="290" y="115" textAnchor="middle" fontSize="9" fontWeight="bold">Vote</text>
+                                                    <text x="290" y="125" textAnchor="middle" fontSize="8">(Average)</text>
+
+                                                    {/* Final Output Arrow */}
+                                                    <path d="M320 110 L350 110" stroke="#aaa" strokeWidth="2" markerEnd="url(#arrow)" />
+
+                                                    {/* Final Output */}
+                                                    <rect x="355" y="90" width="40" height="40" rx="4" fill="#333" stroke="#0f0" strokeWidth="2" />
+                                                    <text x="375" y="115" textAnchor="middle" fontSize="10" fill="#0f0" fontWeight="bold">Result</text>
+                                                </svg>
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Diagram: How Random Forest splits data into trees and aggregates their votes.
+                                            </p>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div className="cyber-quote text-gray-600">
+                                        "A large number of relatively uncorrelated models (trees) operating as a committee will outperform any of the individual constituent models."
+                                    </div>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+
+# Hyperparameter Grid
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [None, 10, 20]
+}
+
+# Grid Search with CV=3
+rf = RandomForestClassifier()
+grid_search = GridSearchCV(rf, param_grid, cv=3)
+grid_search.fit(X_train, y_train)
+
+# Retrain best model (GridSearchCV does this automatically on refit=True default)
+best_rf = grid_search.best_estimator_
+
+# Inference
+predictions = best_rf.predict(X_test)`}</code></pre>
+                                </div>
+                            </section>
+
+                            {/* Section 5: Boosting */}
+                            <section id="boosting" className="mb-16 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonPink"></span>
+                                    05. BOOSTING
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Reg</span>
+                                    <span className="tag tag-cls">Class</span>
+                                    <span className="tag tag-non">Non-Linear</span>
+                                    <span className="tag tag-ens">Ensemble (Boosting)</span>
+                                    <span className="tag">Model-based</span>
+                                </div>
+
+                                <div className="mb-8">
+                                    <h3 className="text-lg font-bold text-gray-800 mb-2">Introduction</h3>
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <p className="text-gray-700 mb-4">
+                                                Ensemble method where models are trained <strong>sequentially</strong>. Each new model attempts to correct the errors of the previous ones.
+                                                <br /><span className="text-sm italic text-gray-500">"Focuses on the hard students."</span>
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Ensemble_Boosting.svg/800px-Ensemble_Boosting.svg.png" alt="Boosting Concept" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Models are added one by one, with each new model focusing on the errors of the ensemble so far.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid gap-6">
+
+                                    <div className="cyber-card cyber-card-pink p-6">
+                                        <h3 className="text-lg font-bold text-cyber-neonPink mb-2">AdaBoost (Adaptive Boosting)</h3>
+                                        <p className="text-sm text-gray-700 mb-2">Uses <strong>Decision Stumps</strong> (1-split trees).</p>
+                                        <ul className="list-disc pl-5 text-gray-700 text-sm space-y-2">
+                                            <li>Train weak learner.</li>
+                                            <li>Increase weight of misclassified examples.</li>
+                                            <li>Train next learner on weighted data.</li>
+                                            <li>Final prediction is weighted sum of learners.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="cyber-card cyber-card-pink p-6">
+                                        <h3 className="text-lg font-bold text-cyber-neonPink mb-2">Gradient Boosting (GBM)</h3>
+                                        <p className="text-sm text-gray-700 mb-2">Generalizes boosting to arbitrary differentiable loss functions.</p>
+                                        <ul className="list-disc pl-5 text-gray-700 text-sm space-y-2">
+                                            <li>Train weak learner.</li>
+                                            <li>Calculate <strong>Residuals</strong> (Errors) {'($y - \\hat{y}$)'}.</li>
+                                            <li>Train <em>next learner to predict the residuals</em>.</li>
+                                            <li>Add new prediction to total (scaled by learning rate).</li>
+                                        </ul>
+                                        <div className="mt-4 bg-yellow-50 p-3 rounded text-sm">
+                                            <strong className="block text-yellow-800 mb-1">Methods to Reduce Overfitting:</strong>
+                                            <ol className="list-decimal pl-4 space-y-1">
+                                                <li>Constrain depth (usually shallow, depth 3-8).</li>
+                                                <li>Shrinkage (Learning Rate): Small steps ($\eta &lt; 0.1$).</li>
+                                                <li>Subsampling: Stochastic Gradient Boosting (row/col sampling).</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+
+                                    <div className="cyber-card p-6">
+                                        <h3 className="text-lg font-bold text-gray-800 mb-4">Modern Implementations</h3>
+                                        <div className="grid md:grid-cols-3 gap-4 text-sm">
+                                            <div className="border p-3 rounded">
+                                                <div className="font-bold text-cyber-neonBlue">XGBoost</div>
+                                                <div className="text-gray-600">Extreme Gradient Boosting. Speed & Regularization.</div>
+                                            </div>
+                                            <div className="border p-3 rounded">
+                                                <div className="font-bold text-cyber-neonBlue">LightGBM</div>
+                                                <div className="text-gray-600">Microsoft. Leaf-wise growth. Faster on huge data.</div>
+                                            </div>
+                                            <div className="border p-3 rounded">
+                                                <div className="font-bold text-cyber-neonBlue">CatBoost</div>
+                                                <div className="text-gray-600">Yandex. Handles categorical data natively.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {/* Comparison Table */}
+                                <div className="mt-8 overflow-x-auto">
+                                    <h3 className="text-lg font-bold text-gray-800 mb-4">Bagging vs Boosting</h3>
+                                    <table className="w-full text-sm text-left border-collapse border border-gray-300">
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                                <th className="p-3 border border-gray-300">Feature</th>
+                                                <th className="p-3 border border-gray-300">Bagging (Random Forest)</th>
+                                                <th className="p-3 border border-gray-300">Boosting (GBM)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td className="p-2 border border-gray-300 font-bold">Training</td>
+                                                <td className="p-2 border border-gray-300">Parallel (Independent)</td>
+                                                <td className="p-2 border border-gray-300">Sequential (Dependent)</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 border border-gray-300 font-bold">Goal</td>
+                                                <td className="p-2 border border-gray-300">Reduce Variance (Overfitting)</td>
+                                                <td className="p-2 border border-gray-300">Reduce Bias (Underfitting)</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 border border-gray-300 font-bold">Prediction</td>
+                                                <td className="p-2 border border-gray-300">Unweighted Average / Vote</td>
+                                                <td className="p-2 border border-gray-300">Weighted Sum</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 border border-gray-300 font-bold">Overfitting</td>
+                                                <td className="p-2 border border-gray-300">Robust</td>
+                                                <td className="p-2 border border-gray-300">Prone (needs tuning)</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100 mt-8">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
+
+# AdaBoost
+ada = AdaBoostClassifier(n_estimators=100)
+ada.fit(X_train, y_train)
+ada_preds = ada.predict(X_test)
+
+# Gradient Boosting
+gb = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=3)
+gb.fit(X_train, y_train)
+gb_preds = gb.predict(X_test)`}</code></pre>
+                                </div>
+                            </section>
+
+                            {/* Section 6: SVM */}
+                            <section id="svm" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonBlue"></span>
+                                    06. SUPPORT VECTOR MACHINES
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Regression</span>
+                                    <span className="tag tag-cls">Classification</span>
+                                    <span className="tag tag-lin">Linear/Kernel</span>
+                                    <span className="tag">Singular</span>
+                                    <span className="tag">Model-based</span>
+                                </div>
+                                <p className="mb-6 text-gray-700">Finds the optimal <strong>Hyperplane</strong> that maximizes the <strong>Margin</strong> between classes.</p>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonBlue mb-4">CORE CONCEPTS</h3>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <h4 className="font-bold text-md mb-2">The Margin</h4>
+                                            <p className="text-sm text-gray-700 mb-2">The "street" or gap between the two classes. SVM aims to find the widest possible street.</p>
+                                            <ul className="list-disc pl-5 text-gray-700 text-sm space-y-1">
+                                                <li><strong>Hyperplane:</strong> The decision boundary line.</li>
+                                                <li><strong>Support Vectors:</strong> The specific data points closest to the line that "support" or define the margin.</li>
+                                                <li><strong>Hard Margin:</strong> Strictly no errors (requires linearly separable data).</li>
+                                                <li><strong>Soft Margin:</strong> Allows some misclassification to handle noise/outliers.</li>
+                                            </ul>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/SVM_margin.png/300px-SVM_margin.png" alt="SVM Margin Explanation" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Visualizing the optimal hyperplane (solid line) and margins (dashed lines) defined by support vectors.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center border-t border-dashed border-gray-300 pt-6 mt-6">
+                                        <div>
+                                            <h4 className="font-bold text-md mb-2">The Kernel Trick</h4>
+                                            <p className="text-sm text-gray-700 mb-2">
+                                                Data that isn't linearly separable in 2D might be separable in 3D. The "kernel trick" allows us to compute the dot product in this higher-dimensional space without explicitly transforming the data points, saving huge computational cost.
+                                            </p>
+                                            <div className="bg-gray-50 p-3 rounded text-sm font-mono border-l-4 border-cyber-neonPink mb-2">
+                                                {'$K(x, x\') = \\langle \\Phi(x), \\Phi(x\') \\rangle$'}
+                                            </div>
+                                            <p className="text-xs text-gray-500 mb-2">
+                                                Instead of calculating specific coordinates in 3D, we just use a function $K$ that gives the "similarity" in that space.
+                                            </p>
+                                            <ul className="list-disc pl-5 text-gray-700 text-xs space-y-1">
+                                                <li><strong>Linear:</strong> $K(x, x') = x \cdot x'$</li>
+                                                <li><strong>Polynomial:</strong> $K(x, x') = (\gamma x \cdot x' + r)^d$</li>
+                                                <li><strong>RBF (Radial Basis Function):</strong> Infinite dimensions! <br /> $K(x, x') = \exp(-\gamma ||x - x'||^2)$</li>
+                                            </ul>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Kernel_trick_idea.svg" alt="Kernel Trick Visualization" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Mapping non-linear 2D data (left) into 3D space (right) where a flat plane can separate the red and blue classes.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.svm import SVC, SVR
+
+# Classifier (Kernel='rbf' is default)
+clf = SVC(kernel='rbf', C=1.0)
+clf.fit(X_train, y_train)
+
+# Inference
+preds = clf.predict(X_test)`}</code></pre>
+                                </div>
+                            </section>
+
+
+                            {/* Section 7: KNN */}
+                            <section id="knn" className="mb-16 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonPink"></span>
+                                    07. K-NEAREST NEIGHBORS
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Regression</span>
+                                    <span className="tag tag-cls">Classification</span>
+                                    <span className="tag tag-non">Non-Linear</span>
+                                    <span className="tag">Singular</span>
+                                    <span className="tag">Instance-based</span>
+                                </div>
+                                <p className="mb-6 text-gray-700"><strong>Lazy Learning</strong>. Classifies a new data point based on the majority class of its $k$ closest neighbors.</p>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonPink mb-4">HOW IT WORKS</h3>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <ol className="list-decimal pl-5 text-gray-700 mb-4 space-y-2 text-sm">
+                                                <li>Choose neighbor count $k$ (e.g., 3 or 5).</li>
+                                                <li>Calculate distance from new point to all training points.</li>
+                                                <li>Select the top $k$ nearest points.</li>
+                                                <li><strong>Vote:</strong> Assign class based on majority.</li>
+                                            </ol>
+                                            <div className="bg-yellow-50 p-2 rounded text-xs text-yellow-800 border-l-2 border-yellow-400">
+                                                <strong>Note:</strong> $k=3$ (solid circle) might classify as Triangle Δ. <br /> $k=5$ (dashed circle) might classify as Square ■.
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/KnnClassification.svg/220px-KnnClassification.svg.png" alt="KNN Classification Example" className="cyber-img bg-white w-48" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                The green circle (new point) is classified either as a red triangle or a blue square depending on $k$.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">Distance Metric</h4>
+                                            <p className="font-mono text-xs text-gray-600 mb-2">Euclidean Distance:</p>
+                                            <div className="font-mono text-xs bg-gray-100 p-2 rounded">
+                                                {'$d(p, q) = \\sqrt{\\sum (p_i - q_i)^2}$'}
+                                            </div>
+                                        </div>
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">Choosing K</h4>
+                                            <ul className="text-xs text-gray-600 space-y-1">
+                                                <li><strong>Small K:</strong> Sensitive to noise/outliers (Overfitting).</li>
+                                                <li><strong>Large K:</strong> Smoothes boundaries too much (Underfitting).</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 p-3 bg-red-50 text-red-800 text-sm rounded border border-red-100">
+                                        <strong>⚠️ Curse of Dimensionality:</strong> KNN performs poorly in high dimensions because "closeness" loses meaning (all points become roughly equidistant).
+                                    </div>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.neighbors import KNeighborsClassifier
+
+# Model (k=5 is default)
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train) 
+
+# Inference
+preds = knn.predict(X_test)`}</code></pre>
+                                </div>
+                            </section>
+
+                            <div className="mt-12 pt-8 border-t border-gray-300 flex justify-between">
+                                <span className="text-gray-400 font-mono text-sm">END_OF_MODULE</span>
+                                <a href="./3_unsupervised.html" className="font-bold text-cyber-neonBlue hover:text-cyber-neonPink transition-colors">
+                                    NEXT: UNSUPERVISED &raquo;
+                                </a>
+                            </div>
+
+                        </main>
+                    </div >
+                </div >
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<SupervisedPage />);
+    </script>
+</body>
+
+</html>

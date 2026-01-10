@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Haochen LI (Harry)</title>
-    
+
     <!-- 1. 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,9 +16,9 @@
                         cyber: {
                             black: '#020202',
                             dark: '#050508',
-                            neonBlue: '#00c3d9', 
-                            neonPink: '#d900d9', 
-                            neonYellow: '#d9cc00', 
+                            neonBlue: '#00c3d9',
+                            neonPink: '#d900d9',
+                            neonYellow: '#d9cc00',
                             dim: 'rgba(0, 195, 217, 0.05)',
                         }
                     },
@@ -28,11 +29,11 @@
             }
         }
     </script>
-    
+
     <!-- 2. 引入 React 和 ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
+
     <!-- 3. 引入 Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -49,8 +50,13 @@
 
         /* 扫描线动画 */
         @keyframes scrollScanlines {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100%; }
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 100%;
+            }
         }
 
         .scanlines {
@@ -59,13 +65,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.1) 50%,
-                rgba(0,0,0,0.1)
-            );
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0),
+                    rgba(255, 255, 255, 0) 50%,
+                    rgba(0, 0, 0, 0.1) 50%,
+                    rgba(0, 0, 0, 0.1));
             background-size: 100% 4px;
             z-index: 9999;
             pointer-events: none;
@@ -74,13 +78,11 @@
         }
 
         .cyber-card {
-            clip-path: polygon(
-                0 0, 
-                100% 0, 
-                100% calc(100% - 20px), 
-                calc(100% - 20px) 100%, 
-                0 100%
-            );
+            clip-path: polygon(0 0,
+                    100% 0,
+                    100% calc(100% - 20px),
+                    calc(100% - 20px) 100%,
+                    0 100%);
             border-left: 2px solid #00c3d9;
             position: relative;
         }
@@ -88,12 +90,13 @@
         .clip-path-polygon {
             clip-path: polygon(0 0, 100% 0, 100% 70%, 95% 100%, 0 100%);
         }
-        
+
         /* 故障文字特效 */
         .glitch-text {
             position: relative;
             color: #eeeeee;
         }
+
         .glitch-text::before,
         .glitch-text::after {
             content: attr(data-text);
@@ -104,12 +107,14 @@
             height: 100%;
             background: #020202;
         }
+
         .glitch-text::before {
             left: 2px;
             text-shadow: -1px 0 #d900d9;
             clip: rect(44px, 450px, 56px, 0);
             animation: glitch-anim 5s infinite linear alternate-reverse;
         }
+
         .glitch-text::after {
             left: -2px;
             text-shadow: -1px 0 #00c3d9;
@@ -118,66 +123,156 @@
         }
 
         @keyframes glitch-anim {
-            0% { clip: rect(13px, 9999px, 81px, 0); }
-            5% { clip: rect(88px, 9999px, 19px, 0); }
-            10% { clip: rect(3px, 9999px, 8px, 0); }
-            15% { clip: rect(30px, 9999px, 3px, 0); }
-            20% { clip: rect(67px, 9999px, 2px, 0); }
-            100% { clip: rect(58px, 9999px, 95px, 0); }
+            0% {
+                clip: rect(13px, 9999px, 81px, 0);
+            }
+
+            5% {
+                clip: rect(88px, 9999px, 19px, 0);
+            }
+
+            10% {
+                clip: rect(3px, 9999px, 8px, 0);
+            }
+
+            15% {
+                clip: rect(30px, 9999px, 3px, 0);
+            }
+
+            20% {
+                clip: rect(67px, 9999px, 2px, 0);
+            }
+
+            100% {
+                clip: rect(58px, 9999px, 95px, 0);
+            }
         }
+
         @keyframes glitch-anim2 {
-            0% { clip: rect(62px, 9999px, 21px, 0); }
-            5% { clip: rect(40px, 9999px, 35px, 0); }
-            10% { clip: rect(93px, 9999px, 7px, 0); }
-            15% { clip: rect(10px, 9999px, 60px, 0); }
-            20% { clip: rect(2px, 9999px, 4px, 0); }
-            100% { clip: rect(35px, 9999px, 86px, 0); }
+            0% {
+                clip: rect(62px, 9999px, 21px, 0);
+            }
+
+            5% {
+                clip: rect(40px, 9999px, 35px, 0);
+            }
+
+            10% {
+                clip: rect(93px, 9999px, 7px, 0);
+            }
+
+            15% {
+                clip: rect(10px, 9999px, 60px, 0);
+            }
+
+            20% {
+                clip: rect(2px, 9999px, 4px, 0);
+            }
+
+            100% {
+                clip: rect(35px, 9999px, 86px, 0);
+            }
         }
 
         /* 鼠标悬停时的微弱噪点 */
         @keyframes glitch-noise {
-            0% { transform: translate(0); filter: none; }
-            20% { transform: translate(-3px, 1px); filter: hue-rotate(90deg) contrast(1.5); }
-            40% { transform: translate(3px, -2px); filter: hue-rotate(-45deg) contrast(1.2) brightness(1.2); }
-            60% { transform: translate(-2px, 3px); filter: invert(0.2); }
-            80% { transform: translate(1px, -1px); filter: hue-rotate(45deg) saturate(1.5); }
-            100% { transform: translate(0); filter: none; }
+            0% {
+                transform: translate(0);
+                filter: none;
+            }
+
+            20% {
+                transform: translate(-3px, 1px);
+                filter: hue-rotate(90deg) contrast(1.5);
+            }
+
+            40% {
+                transform: translate(3px, -2px);
+                filter: hue-rotate(-45deg) contrast(1.2) brightness(1.2);
+            }
+
+            60% {
+                transform: translate(-2px, 3px);
+                filter: invert(0.2);
+            }
+
+            80% {
+                transform: translate(1px, -1px);
+                filter: hue-rotate(45deg) saturate(1.5);
+            }
+
+            100% {
+                transform: translate(0);
+                filter: none;
+            }
         }
+
         .group:hover .glitch-effect {
             animation: glitch-noise 0.25s infinite linear;
         }
 
         /* 音乐播放时的律动动画 */
         @keyframes audio-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(217, 0, 217, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(217, 0, 217, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(217, 0, 217, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(217, 0, 217, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(217, 0, 217, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(217, 0, 217, 0);
+            }
         }
+
         .animate-audio-pulse {
             animation: audio-pulse 1.5s infinite;
-            border-color: #d900d9 !important; /* 播放时边框变粉 */
+            border-color: #d900d9 !important;
+            /* 播放时边框变粉 */
         }
 
         /* 强烈的图片出场坏闪动画 */
         @keyframes glitch-appear {
-            0% { 
-                opacity: 0; 
+            0% {
+                opacity: 0;
                 clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
                 filter: hue-rotate(90deg) contrast(2) blur(5px);
                 transform: scale(1.1);
             }
-            10% { opacity: 1; clip-path: polygon(0 0, 100% 0, 100% 10%, 0 20%); }
-            20% { filter: invert(1); transform: translate(-5px, 2px); }
-            40% { filter: hue-rotate(180deg); transform: translate(5px, -2px); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);}
-            60% { filter: contrast(1.5) brightness(1.5); }
-            80% { transform: translate(-2px, 2px); }
-            100% { 
-                filter: none; 
-                transform: none; 
-                opacity: 1; 
+
+            10% {
+                opacity: 1;
+                clip-path: polygon(0 0, 100% 0, 100% 10%, 0 20%);
+            }
+
+            20% {
+                filter: invert(1);
+                transform: translate(-5px, 2px);
+            }
+
+            40% {
+                filter: hue-rotate(180deg);
+                transform: translate(5px, -2px);
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+
+            60% {
+                filter: contrast(1.5) brightness(1.5);
+            }
+
+            80% {
+                transform: translate(-2px, 2px);
+            }
+
+            100% {
+                filter: none;
+                transform: none;
+                opacity: 1;
                 clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
             }
         }
+
         .animate-glitch-appear {
             animation: glitch-appear 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         }
@@ -192,13 +287,25 @@
             vertical-align: text-bottom;
             margin-left: 2px;
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
 
         /* 滑块样式重写 */
         input[type="range"] {
             -webkit-appearance: none;
             background: transparent;
         }
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 12px;
@@ -208,6 +315,7 @@
             margin-top: -4px;
             box-shadow: 0 0 5px #d900d9;
         }
+
         input[type="range"]::-webkit-slider-runnable-track {
             width: 100%;
             height: 4px;
@@ -216,11 +324,20 @@
             border: 1px solid #555;
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0f; }
-        ::-webkit-scrollbar-thumb { background: #00c3d9; }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00c3d9;
+        }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
@@ -236,10 +353,10 @@
                 // 重置状态
                 setDisplayLength(0);
                 setIsTyping(false);
-                
+
                 let i = 0;
                 let timer;
-                
+
                 const startTyping = () => {
                     setIsTyping(true);
                     timer = setInterval(() => {
@@ -264,7 +381,7 @@
 
             return (
                 <span className={className}>
-                    {text.substring(0, displayLength)} 
+                    {text.substring(0, displayLength)}
                     {isTyping && <span className="cursor-blink"></span>}
                 </span>
             );
@@ -272,27 +389,27 @@
 
         // --- 0. 图标 ---
         const Icons = {
-            Github: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>,
-            Linkedin: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>,
-            Mail: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
-            Terminal: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>,
-            Cpu: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>,
-            Network: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>,
-            ChevronRight: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>,
-            ExternalLink: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>,
-            Code: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-            Folder: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 2H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>,
-            FileCode: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/></svg>,
-            ArrowRight: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>,
-            Layers: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>,
-            Monitor: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>,
-            Zap: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-            Heart: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
-            Music: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>,
-            Volume2: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
-            Refresh: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>,
-            GraduationCap: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>,
-            Target: ({size, className}) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Github: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" /><path d="M9 18c-4.51 2-5-2-7-2" /></svg>,
+            Linkedin: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg>,
+            Mail: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>,
+            Terminal: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5" /><line x1="12" x2="20" y1="19" y2="19" /></svg>,
+            Cpu: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><path d="M15 2v2" /><path d="M15 20v2" /><path d="M2 15h2" /><path d="M2 9h2" /><path d="M20 15h2" /><path d="M20 9h2" /><path d="M9 2v2" /><path d="M9 20v2" /></svg>,
+            Network: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="16" y="16" width="6" height="6" rx="1" /><rect x="2" y="16" width="6" height="6" rx="1" /><rect x="9" y="2" width="6" height="6" rx="1" /><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" /><path d="M12 12V8" /></svg>,
+            ChevronRight: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>,
+            ExternalLink: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" x2="21" y1="14" y2="3" /></svg>,
+            Code: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>,
+            Folder: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 2H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" /></svg>,
+            FileCode: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="m10 13-2 2 2 2" /><path d="m14 17 2-2-2-2" /></svg>,
+            ArrowRight: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>,
+            Layers: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" /><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" /><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" /></svg>,
+            Monitor: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2" /><line x1="8" x2="16" y1="21" y2="21" /><line x1="12" x2="12" y1="17" y2="21" /></svg>,
+            Zap: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>,
+            Heart: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>,
+            Music: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>,
+            Volume2: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></svg>,
+            Refresh: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" /></svg>,
+            GraduationCap: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>,
+            Target: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
         };
 
         const projects = [
@@ -301,17 +418,17 @@
                 title: 'Blue-Devil-ChatBot',
                 category: 'Agentic AI',
                 description:
-                'An agentic AI chatbot for Duke knowledge retrieval, built on the LangGraph framework with a multi-tool toolbox: existing API calls, targeted web scraping, and Tavily-powered open web search. Core tech stack: Web Scraping (bs4), LangGraph, agentic search, and production-grade API orchestration.',
+                    'An agentic AI chatbot for Duke knowledge retrieval, built on the LangGraph framework with a multi-tool toolbox: existing API calls, targeted web scraping, and Tavily-powered open web search. Core tech stack: Web Scraping (bs4), LangGraph, agentic search, and production-grade API orchestration.',
                 stack: [
-                'Python',
-                'LangGraph',
-                'LangChain',
-                'Streamlit',
-                'BeautifulSoup',
-                'Tavily',
-                'RESTful API',
-                'AWS',
-                'OpenAI API',
+                    'Python',
+                    'LangGraph',
+                    'LangChain',
+                    'Streamlit',
+                    'BeautifulSoup',
+                    'Tavily',
+                    'RESTful API',
+                    'AWS',
+                    'OpenAI API',
                 ],
                 link: 'https://github.com/Harrisous/AIPI590LLM-project-2-DukeChatbot',
             },
@@ -320,7 +437,7 @@
                 title: 'Text-to-SQL',
                 category: 'LLM Fine-tuning',
                 description:
-                "Fine-tuned a local LLM on the BIRD benchmark to boost text-to-SQL reasoning. Achieved ~50% accuracy gains on simple text-to-SQL tasks, intentionally trading off some performance on the most complex queries to optimize for real-world, everyday analytics use cases.",
+                    "Fine-tuned a local LLM on the BIRD benchmark to boost text-to-SQL reasoning. Achieved ~50% accuracy gains on simple text-to-SQL tasks, intentionally trading off some performance on the most complex queries to optimize for real-world, everyday analytics use cases.",
                 stack: ['Python', 'Unsloth', 'PEFT (LoRA)', 'Local LLM', 'BIRD Database', 'Hugging Face'],
                 link: 'https://github.com/Duke-AIPI-LLM-Course/project-1-maiga',
             },
@@ -329,22 +446,22 @@
                 title: 'Pido-AI-Pet',
                 category: 'Edge AI',
                 description:
-                "An edge-native AI pet robot that lives entirely on a Raspberry Pi 4B, designed for comfort and companionship. Pido can track and follow its owner, interpret voice commands (“barks”), express emotions on an LCD, and actuate a tail and chassis using a battery-powered motor and servo stack.",
+                    "An edge-native AI pet robot that lives entirely on a Raspberry Pi 4B, designed for comfort and companionship. Pido can track and follow its owner, interpret voice commands (“barks”), express emotions on an LCD, and actuate a tail and chassis using a battery-powered motor and servo stack.",
                 stack: [
-                'Python',
-                'Raspberry Pi 4B',
-                'Edge AI',
-                'OpenCV',
-                'aruco',
-                'Google Web Speech API',
-                'SpeechRecognition',
-                'Ultrasonic distance sensor',
-                'DC motorized chassis',
-                'Servo motors',
-                'LCD screen display',
-                'Camera',
-                'Microphone',
-                'Physical button',
+                    'Python',
+                    'Raspberry Pi 4B',
+                    'Edge AI',
+                    'OpenCV',
+                    'aruco',
+                    'Google Web Speech API',
+                    'SpeechRecognition',
+                    'Ultrasonic distance sensor',
+                    'DC motorized chassis',
+                    'Servo motors',
+                    'LCD screen display',
+                    'Camera',
+                    'Microphone',
+                    'Physical button',
                 ],
                 link: 'https://github.com/Harrisous/AIPI590AIPhysicialWorld-AIPet',
             },
@@ -353,16 +470,16 @@
                 title: 'Stock-Market-Transformer',
                 category: 'Financial AI',
                 description:
-                'A deep learning pipeline for stock prediction that fuses autoencoder-based market state embeddings with a Transformer enhanced by Mixture-of-Experts and multi-head attention. Deployed a working Streamlit app that delivers promising short-horizon opening price forecasts, with a roadmap for broader targets and tighter loss.',
+                    'A deep learning pipeline for stock prediction that fuses autoencoder-based market state embeddings with a Transformer enhanced by Mixture-of-Experts and multi-head attention. Deployed a working Streamlit app that delivers promising short-horizon opening price forecasts, with a roadmap for broader targets and tighter loss.',
                 stack: [
-                'Python',
-                'PyTorch',
-                'Transformer architecture (DeepSeek V3–inspired)',
-                'Mixture-of-Experts (MoE)',
-                'Multi-head attention',
-                'Autoencoder',
-                'Financial time series modeling',
-                'Streamlit',
+                    'Python',
+                    'PyTorch',
+                    'Transformer architecture (DeepSeek V3–inspired)',
+                    'Mixture-of-Experts (MoE)',
+                    'Multi-head attention',
+                    'Autoencoder',
+                    'Financial time series modeling',
+                    'Streamlit',
                 ],
                 link: 'https://github.com/Harrisous/StockMarketTransformer',
             },
@@ -371,18 +488,18 @@
                 title: 'Dual-Stream-Emotion-XAI',
                 category: 'Explainable AI',
                 description:
-                'A dual-stream emotion analysis and XAI dashboard: Wav2Vec2 for acoustic emotion, RoBERTa + Whisper ASR for semantic sentiment, and PCA-based latent-space visualizations to contrast “how you sound” vs. “what you say” in side-by-side 3D embedding spaces. Surfaces clusters, nearest neighbors, and cross-modal conflicts (e.g., sarcasm) for human-centered explainability.',
+                    'A dual-stream emotion analysis and XAI dashboard: Wav2Vec2 for acoustic emotion, RoBERTa + Whisper ASR for semantic sentiment, and PCA-based latent-space visualizations to contrast “how you sound” vs. “what you say” in side-by-side 3D embedding spaces. Surfaces clusters, nearest neighbors, and cross-modal conflicts (e.g., sarcasm) for human-centered explainability.',
                 stack: [
-                'Python',
-                'Streamlit',
-                'Hugging Face',
-                'Wav2Vec2',
-                'RoBERTa',
-                'Whisper ASR',
-                'Plotly',
-                'Librosa',
-                'PCA',
-                'joblib',
+                    'Python',
+                    'Streamlit',
+                    'Hugging Face',
+                    'Wav2Vec2',
+                    'RoBERTa',
+                    'Whisper ASR',
+                    'Plotly',
+                    'Librosa',
+                    'PCA',
+                    'joblib',
                 ],
                 link: 'https://github.com/Harrisous/XAI-Final-Project',
             },
@@ -391,17 +508,17 @@
                 title: 'Sentinel-AI',
                 category: 'AML AI',
                 description:
-                'An AI-native Anti-Money Laundering (AML) engine for blockchain wallets that scores risk in real time over 1B+ on-chain transactions, with a focus on USDT/USDC flows (~$2.9T monthly volume). Combines BigQuery-scale feature extraction with gradient-boosted models to flag high-risk entities from transaction graphs, smart-contract relationships, and KYC activity; awarded the Academic Award at the 2025 FINOS DTCC Hackathon.',
+                    'An AI-native Anti-Money Laundering (AML) engine for blockchain wallets that scores risk in real time over 1B+ on-chain transactions, with a focus on USDT/USDC flows (~$2.9T monthly volume). Combines BigQuery-scale feature extraction with gradient-boosted models to flag high-risk entities from transaction graphs, smart-contract relationships, and KYC activity; awarded the Academic Award at the 2025 FINOS DTCC Hackathon.',
                 stack: [
-                'Python',
-                'Google BigQuery',
-                'SQL',
-                'XGBoost',
-                'CatBoost',
-                'LightGBM',
-                'Random Forest',
-                'Model evaluation',
-                'Financial machine learning',
+                    'Python',
+                    'Google BigQuery',
+                    'SQL',
+                    'XGBoost',
+                    'CatBoost',
+                    'LightGBM',
+                    'Random Forest',
+                    'Model evaluation',
+                    'Financial machine learning',
                 ],
                 link: 'https://github.com/finos-labs/dtcch-2025-OpenAML',
             },
@@ -410,24 +527,24 @@
                 title: 'FlashBack',
                 category: 'Companion AI',
                 description:
-                'An end-to-end, memory-augmented personal AI built on a Raspberry Pi with camera and mic, continuously capturing first-person lifelog video. A Flask + GCP backend syncs audio–video to cloud storage and exposes a Gemini-powered API so users can query past in-person interactions—who you met, what you discussed, and when—via a web UI. Winner of 1st place in the Education track at the 2024 Duke AI Hackathon.',
+                    'An end-to-end, memory-augmented personal AI built on a Raspberry Pi with camera and mic, continuously capturing first-person lifelog video. A Flask + GCP backend syncs audio–video to cloud storage and exposes a Gemini-powered API so users can query past in-person interactions—who you met, what you discussed, and when—via a web UI. Winner of 1st place in the Education track at the 2024 Duke AI Hackathon.',
                 stack: [
-                'Raspberry Pi',
-                'Camera',
-                'Microphone',
-                'Full-stack development',
-                'Python',
-                'Flask',
-                'Docker',
-                'CI/CD',
-                'GCP',
-                'Gemini API',
-                'Multimodal AI',
-                'Audio–video processing pipeline',
+                    'Raspberry Pi',
+                    'Camera',
+                    'Microphone',
+                    'Full-stack development',
+                    'Python',
+                    'Flask',
+                    'Docker',
+                    'CI/CD',
+                    'GCP',
+                    'Gemini API',
+                    'Multimodal AI',
+                    'Audio–video processing pipeline',
                 ],
                 link: 'https://github.com/finos-labs/dtcch-2025-OpenAML',
             },
-            ];
+        ];
 
         const CyberpunkBackground = () => {
             const canvasRef = useRef(null);
@@ -448,25 +565,25 @@
                 const initNet = () => {
                     nodes.length = 0;
                     connections.length = 0;
-                    
+
                     // Logic to spread nodes wider across the screen (10% padding on sides)
                     const availableWidth = width * 0.9;
                     const xStart = width * 0.05;
                     const layerSpacing = availableWidth / (layers.length - 1);
-                    
+
                     layers.forEach((count, lIdx) => {
                         // Old: const x = (lIdx + 1) * layerWidth;
                         // New: Start from 5% width, spread evenly to 95%
                         const x = xStart + (lIdx * layerSpacing);
-                        
+
                         const layerHeight = height / (count + 1);
-                        for(let i=0; i<count; i++) {
+                        for (let i = 0; i < count; i++) {
                             nodes.push({
                                 x: x,
                                 y: (i + 1) * layerHeight,
                                 layer: lIdx,
                                 id: `${lIdx}-${i}`,
-                                flash: 0 
+                                flash: 0
                             });
                         }
                     });
@@ -488,14 +605,14 @@
                         from: fromNode,
                         to: toNode,
                         progress: 0,
-                        type: type, 
-                        speed: 0.005 + Math.random() * 0.003 
+                        type: type,
+                        speed: 0.005 + Math.random() * 0.003
                     });
                 };
 
                 const updateAndDrawNet = () => {
                     ctx.lineWidth = 1;
-                    ctx.strokeStyle = 'rgba(0, 195, 217, 0.02)'; 
+                    ctx.strokeStyle = 'rgba(0, 195, 217, 0.02)';
                     ctx.beginPath();
                     connections.forEach(conn => {
                         ctx.moveTo(conn.from.x, conn.from.y);
@@ -503,13 +620,13 @@
                     });
                     ctx.stroke();
 
-                    if (frameCount % 600 === 0) { 
+                    if (frameCount % 600 === 0) {
                         const inputs = nodes.filter(n => n.layer === 0);
                         inputs.forEach(startNode => {
-                            startNode.flash = 0.8; 
+                            startNode.flash = 0.8;
                             const nextConns = connections.filter(c => c.from === startNode);
                             nextConns.forEach(c => {
-                                if(Math.random() > 0.4) fireSignal(c.from, c.to, 'forward');
+                                if (Math.random() > 0.4) fireSignal(c.from, c.to, 'forward');
                             });
                         });
                     }
@@ -521,67 +638,67 @@
                         const currX = s.from.x + (s.to.x - s.from.x) * s.progress;
                         const currY = s.from.y + (s.to.y - s.from.y) * s.progress;
 
-                        ctx.fillStyle = s.type === 'forward' ? 'rgba(0, 195, 217, 0.4)' : 'rgba(217, 0, 217, 0.4)'; 
-                        ctx.shadowBlur = 3; 
+                        ctx.fillStyle = s.type === 'forward' ? 'rgba(0, 195, 217, 0.4)' : 'rgba(217, 0, 217, 0.4)';
+                        ctx.shadowBlur = 3;
                         ctx.shadowColor = ctx.fillStyle;
                         ctx.beginPath();
-                        ctx.arc(currX, currY, 1.5, 0, Math.PI * 2); 
+                        ctx.arc(currX, currY, 1.5, 0, Math.PI * 2);
                         ctx.fill();
                         ctx.shadowBlur = 0;
 
                         if (s.progress >= 1) {
                             s.to.flash = 0.8;
-                            
+
                             if (s.type === 'forward') {
                                 if (s.to.layer < layers.length - 1) {
                                     const nextConns = connections.filter(c => c.from === s.to);
                                     if (nextConns.length > 0) {
                                         const target = nextConns[Math.floor(Math.random() * nextConns.length)];
                                         fireSignal(s.to, target.to, 'forward');
-                                        
+
                                         if (Math.random() > 0.7 && nextConns.length > 1) {
-                                             const target2 = nextConns[Math.floor(Math.random() * nextConns.length)];
-                                             fireSignal(s.to, target2.to, 'forward');
+                                            const target2 = nextConns[Math.floor(Math.random() * nextConns.length)];
+                                            fireSignal(s.to, target2.to, 'forward');
                                         }
                                     }
                                 } else {
                                     const prevConns = connections.filter(c => c.to === s.to);
                                     prevConns.forEach(c => {
-                                         if(Math.random() > 0.3) fireSignal(c.to, c.from, 'backward'); 
+                                        if (Math.random() > 0.3) fireSignal(c.to, c.from, 'backward');
                                     });
                                 }
                             } else if (s.type === 'backward') {
-                                if (s.to.layer > 0) { 
-                                     const prevConns = connections.filter(c => c.to === s.to);
-                                     if (prevConns.length > 0) {
-                                         const target = prevConns[Math.floor(Math.random() * prevConns.length)];
-                                         fireSignal(s.to, target.from, 'backward');
-                                     }
+                                if (s.to.layer > 0) {
+                                    const prevConns = connections.filter(c => c.to === s.to);
+                                    if (prevConns.length > 0) {
+                                        const target = prevConns[Math.floor(Math.random() * prevConns.length)];
+                                        fireSignal(s.to, target.from, 'backward');
+                                    }
                                 }
                             }
-                            signals.splice(i, 1); 
+                            signals.splice(i, 1);
                         }
                     }
 
                     nodes.forEach(n => {
-                        if (n.flash > 0) n.flash -= 0.01; 
-                        
+                        if (n.flash > 0) n.flash -= 0.01;
+
                         ctx.beginPath();
-                        ctx.arc(n.x, n.y, 3 + n.flash * 2, 0, Math.PI * 2); 
-                        
+                        ctx.arc(n.x, n.y, 3 + n.flash * 2, 0, Math.PI * 2);
+
                         if (n.flash > 0.5) {
-                            ctx.fillStyle = 'rgba(230, 230, 230, 0.6)'; 
+                            ctx.fillStyle = 'rgba(230, 230, 230, 0.6)';
                         } else {
-                            ctx.fillStyle = n.layer === 0 || n.layer === layers.length -1 
-                                ? 'rgba(0, 195, 217, 0.15)' 
+                            ctx.fillStyle = n.layer === 0 || n.layer === layers.length - 1
+                                ? 'rgba(0, 195, 217, 0.15)'
                                 : 'rgba(30, 30, 30, 0.3)';
                         }
-                        
+
                         if (n.flash > 0.1) {
                             ctx.shadowBlur = 6;
                             ctx.shadowColor = n.layer === layers.length - 1 ? '#d900d9' : '#00c3d9';
                         }
-                        
+
                         ctx.fill();
                         ctx.shadowBlur = 0;
                     });
@@ -589,42 +706,42 @@
 
                 const drops = [];
                 const fontSize = 14;
-                
+
                 const initRain = () => {
                     if (width) {
                         const columns = Math.floor(width / fontSize);
-                        for(let i=0; i<columns; i++) {
+                        for (let i = 0; i < columns; i++) {
                             drops[i] = Math.random() * -100;
                         }
                     }
                 }
 
                 const drawRain = () => {
-                    ctx.fillStyle = 'rgba(0, 195, 217, 0.2)'; 
+                    ctx.fillStyle = 'rgba(0, 195, 217, 0.2)';
                     ctx.font = fontSize + 'px monospace';
-                    
-                    for(let i=0; i<drops.length; i++) {
-                        if (Math.random() > 0.98) continue; 
+
+                    for (let i = 0; i < drops.length; i++) {
+                        if (Math.random() > 0.98) continue;
 
                         let text;
                         const rand = Math.random();
-                        if (rand > 0.8) { 
+                        if (rand > 0.8) {
                             text = String.fromCharCode(0x30A0 + Math.random() * 96);
-                        } else { 
+                        } else {
                             text = Math.random() > 0.5 ? '1' : '0';
                         }
-                        
+
                         if (text === '1' || text === '0') {
-                             if (Math.random() > 0.995) ctx.fillStyle = '#d900d9';
-                             else if (Math.random() > 0.995) ctx.fillStyle = '#d9cc00';
-                             else ctx.fillStyle = 'rgba(0, 195, 217, 0.2)';
+                            if (Math.random() > 0.995) ctx.fillStyle = '#d900d9';
+                            else if (Math.random() > 0.995) ctx.fillStyle = '#d9cc00';
+                            else ctx.fillStyle = 'rgba(0, 195, 217, 0.2)';
                         } else {
                             ctx.fillStyle = 'rgba(0, 195, 217, 0.2)';
                         }
 
                         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                        
-                        if(drops[i] * fontSize > height && Math.random() > 0.98) {
+
+                        if (drops[i] * fontSize > height && Math.random() > 0.98) {
                             drops[i] = 0;
                         }
                         drops[i] += 0.3;
@@ -637,7 +754,7 @@
                         const y = Math.random() * height;
                         const w = Math.random() * 100 + 50;
                         const h = Math.random() * 2 + 1;
-                        
+
                         ctx.fillStyle = Math.random() > 0.5 ? '#d900d9' : '#d9cc00';
                         ctx.globalAlpha = 0.15;
                         ctx.fillRect(x, y, w, h);
@@ -653,13 +770,13 @@
                 };
 
                 const animate = () => {
-                    ctx.fillStyle = 'rgba(2, 2, 2, 0.08)'; 
+                    ctx.fillStyle = 'rgba(2, 2, 2, 0.08)';
                     ctx.fillRect(0, 0, width, height);
 
-                    updateAndDrawNet(); 
-                    drawRain(); 
-                    drawGlitch(); 
-                    
+                    updateAndDrawNet();
+                    drawRain();
+                    drawGlitch();
+
                     frameCount++;
                     animationFrameId = requestAnimationFrame(animate);
                 };
@@ -684,14 +801,14 @@
             const activeProject = projects.find(p => p.id === activeId);
 
             return (
-                <div className="w-full mt-12 animate-fade-in-down" style={{animationDelay: '0.2s'}}>
+                <div className="w-full mt-12 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
                     <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2 px-1 tracking-widest border-b border-cyber-neonBlue/30 pb-2">
                         <Icons.Monitor className="text-cyber-neonPink" size={24} />
                         <Typewriter text="// PROJECT_ARCHIVES" speed={30} delay={1000} />
                     </h2>
-                    
+
                     <div className="cyber-card flex flex-col md:flex-row gap-0 bg-cyber-dark/0 backdrop-blur-md border-t border-r border-b border-cyber-dim min-h-[500px]">
-                        
+
                         <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-cyber-neonBlue/20 bg-black/20 overflow-y-auto">
                             <div className="p-4 border-b border-cyber-neonBlue/20 bg-cyber-neonBlue/5 flex items-center justify-between">
                                 <h3 className="text-xs font-mono text-cyber-neonBlue uppercase tracking-wider">
@@ -699,8 +816,8 @@
                                 </h3>
                                 <div className="flex gap-1">
                                     <span className="w-2 h-2 bg-cyber-neonPink animate-pulse"></span>
-                                    <span className="w-2 h-2 bg-cyber-neonBlue animate-pulse" style={{animationDelay: '0.2s'}}></span>
-                                    <span className="w-2 h-2 bg-cyber-neonYellow animate-pulse" style={{animationDelay: '0.4s'}}></span>
+                                    <span className="w-2 h-2 bg-cyber-neonBlue animate-pulse" style={{ animationDelay: '0.2s' }}></span>
+                                    <span className="w-2 h-2 bg-cyber-neonYellow animate-pulse" style={{ animationDelay: '0.4s' }}></span>
                                 </div>
                             </div>
                             <div className="p-2 space-y-1">
@@ -708,11 +825,10 @@
                                     <button
                                         key={project.id}
                                         onClick={() => setActiveId(project.id)}
-                                        className={`w-full text-left p-3 text-sm font-mono transition-all flex items-center gap-3 group relative overflow-hidden clip-path-polygon ${
-                                            activeId === project.id 
-                                                ? 'bg-cyber-neonBlue/20 text-cyber-neonBlue border-l-4 border-cyber-neonBlue' 
-                                                : 'text-gray-500 hover:bg-white/5 hover:text-cyber-neonPink border-l-4 border-transparent hover:border-cyber-neonPink'
-                                        }`}
+                                        className={`w-full text-left p-3 text-sm font-mono transition-all flex items-center gap-3 group relative overflow-hidden clip-path-polygon ${activeId === project.id
+                                            ? 'bg-cyber-neonBlue/20 text-cyber-neonBlue border-l-4 border-cyber-neonBlue'
+                                            : 'text-gray-500 hover:bg-white/5 hover:text-cyber-neonPink border-l-4 border-transparent hover:border-cyber-neonPink'
+                                            }`}
                                     >
                                         <Icons.Folder size={16} className={`${activeId === project.id ? 'text-cyber-neonBlue' : 'text-gray-600 group-hover:text-cyber-neonPink'}`} />
                                         <span className="truncate font-bold tracking-tight">
@@ -725,9 +841,9 @@
                         </div>
 
                         <div className="flex-1 p-6 md:p-8 relative flex flex-col bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]">
-                            <div className="absolute inset-0 bg-cyber-neonBlue/5 pointer-events-none" 
-                                 style={{ backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 2px, 3px 100%' }}></div>
-                            
+                            <div className="absolute inset-0 bg-cyber-neonBlue/5 pointer-events-none"
+                                style={{ backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 2px, 3px 100%' }}></div>
+
                             <div className="relative z-10 h-full flex flex-col">
                                 <div className="flex justify-between items-start mb-6 border-b border-dashed border-gray-700 pb-4">
                                     <div className="space-y-2">
@@ -752,9 +868,9 @@
                                     <div className="absolute top-0 left-0 bg-cyber-neonBlue text-black text-xs font-bold px-2 py-1 z-10">
                                         VISUAL_RECORD: {activeProject.id}
                                     </div>
-                                    <img 
+                                    <img
                                         key={activeProject.id + 'img'}
-                                        src={`./images/project_${activeProject.id.split('_')[1]}.png`} 
+                                        src={`./images/project_${activeProject.id.split('_')[1]}.png`}
                                         alt={activeProject.title}
                                         className="w-full h-48 md:h-64 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 animate-glitch-appear"
                                         onError={(e) => {
@@ -775,7 +891,7 @@
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
                                         <div>
                                             <h4 className="text-[10px] font-mono text-cyber-neonBlue mb-3 uppercase tracking-wider flex items-center gap-1">
-                                                <Icons.Layers size={10} /> 
+                                                <Icons.Layers size={10} />
                                                 <Typewriter text="SYSTEM_DEPENDENCIES" speed={30} delay={500} />
                                             </h4>
                                             <div className="flex flex-wrap gap-2">
@@ -823,7 +939,7 @@
         // --- 新增：互动点赞组件 ---
         const LikeButton = () => {
             const [likes, setLikes] = useState(() => {
-                return parseInt(localStorage.getItem('cyber_likes_v2') || '0'); 
+                return parseInt(localStorage.getItem('cyber_likes_v2') || '0');
             });
             const [isLiked, setIsLiked] = useState(false);
 
@@ -841,13 +957,13 @@
                 >
                     <Icons.Heart size={20} className={`transition-all duration-300 ${isLiked ? 'fill-cyber-neonPink scale-110' : 'group-hover:scale-110'}`} />
                     <span className="font-mono font-bold tracking-widest text-lg">
-                        <Typewriter text={likes.toLocaleString()} speed={100} delay={800} /> 
+                        <Typewriter text={likes.toLocaleString()} speed={100} delay={800} />
                         <span className="text-xs text-gray-600 ml-1">KUDOS</span>
                     </span>
-                    
+
                     <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-neonPink opacity-75 ${isLiked ? '' : 'hidden'}`}></span>
-                      <span className={`relative inline-flex rounded-full h-3 w-3 bg-cyber-neonPink ${isLiked ? '' : 'hidden'}`}></span>
+                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-neonPink opacity-75 ${isLiked ? '' : 'hidden'}`}></span>
+                        <span className={`relative inline-flex rounded-full h-3 w-3 bg-cyber-neonPink ${isLiked ? '' : 'hidden'}`}></span>
                     </span>
                 </button>
             );
@@ -880,15 +996,15 @@
                     index++;
                     if (index > fullText.length) clearInterval(interval);
                 }, 40);
-                
+
                 if (iframeRef.current && window.SC) {
                     const widget = window.SC.Widget(iframeRef.current);
                     widgetRef.current = widget;
-                    
+
                     widget.bind(window.SC.Widget.Events.PLAY, () => setMusicPlaying(true));
                     widget.bind(window.SC.Widget.Events.PAUSE, () => setMusicPlaying(false));
                     widget.bind(window.SC.Widget.Events.FINISH, () => setMusicPlaying(false));
-                    
+
                     widget.bind(window.SC.Widget.Events.READY, () => {
                         widget.setVolume(10);
                     });
@@ -914,17 +1030,17 @@
             return (
                 <div className="min-h-screen font-mono selection:bg-cyber-neonPink selection:text-white relative">
                     <div className="scanlines"></div>
-                    
+
                     <CyberpunkBackground />
-                    
+
                     <ThemeSwitcher />
 
                     <main className="relative z-10 max-w-5xl mx-auto px-6 py-20 flex flex-col items-center">
-                        
+
                         <header className="flex flex-col items-center text-center space-y-8 mb-20 w-full max-w-4xl">
                             {/* Profile Card Wrapper */}
                             <div className="cyber-card w-full p-10 bg-cyber-dark/0 backdrop-blur-md flex flex-col items-center border-r border-b border-t border-white/5 relative overflow-hidden">
-                                
+
                                 {/* Avatar & Logic */}
                                 <div className="relative group cursor-pointer mb-6" onClick={handleAvatarClick}>
                                     <iframe
@@ -936,18 +1052,18 @@
                                         scrolling="no"
                                         frameBorder="no"
                                         allow="autoplay"
-                                        style={{ display: 'none' }} 
+                                        style={{ display: 'none' }}
                                     ></iframe>
 
                                     <div className={`absolute -inset-2 border-2 border-dashed border-cyber-neonBlue rounded-full animate-[spin_10s_linear_infinite] opacity-40 ${musicPlaying ? 'animate-audio-pulse border-cyber-neonPink' : ''}`}></div>
                                     <div className={`absolute -inset-1 bg-cyber-neonPink rounded-full opacity-20 blur-md group-hover:opacity-50 transition duration-300 ${musicPlaying ? 'opacity-60' : ''}`}></div>
                                     <div className={`relative w-32 h-32 rounded-full overflow-hidden border-2 ${musicPlaying ? 'border-cyber-neonPink' : 'border-cyber-neonYellow'} bg-black transition duration-500`}>
-                                        <img 
-                                            src="images/profile.png" 
-                                            alt="Haochen LI" 
+                                        <img
+                                            src="images/profile.png"
+                                            alt="Haochen LI"
                                             className="w-full h-full object-cover group-hover:glitch-effect"
                                             onError={(e) => {
-                                                e.target.onerror = null; 
+                                                e.target.onerror = null;
                                                 e.target.src = "https://ui-avatars.com/api/?name=Haochen+Li&background=0D8ABC&color=fff";
                                             }}
                                         />
@@ -960,11 +1076,11 @@
                                 <div className={`transition-all duration-500 ease-in-out overflow-hidden ${musicPlaying ? 'max-h-20 opacity-100 mb-6' : 'max-h-0 opacity-0 mb-0'}`}>
                                     <div className="flex items-center gap-3 bg-black/60 px-4 py-2 border border-cyber-neonPink/30 rounded-full">
                                         <Icons.Volume2 size={16} className="text-cyber-neonPink" />
-                                        <input 
-                                            type="range" 
-                                            min="0" 
-                                            max="100" 
-                                            value={volume} 
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            value={volume}
                                             onChange={handleVolumeChange}
                                             className="w-32 h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyber-neonPink"
                                             style={{
@@ -983,19 +1099,19 @@
                                     <span className="text-xl text-cyber-neonPink font-bold block tracking-[0.2em]">
                                         <Typewriter text="[ HARRY ]" speed={80} delay={1000} />
                                     </span>
-                                    
+
                                     <div className="flex items-center justify-center gap-2 text-cyber-neonBlue font-mono text-sm md:text-base h-6 bg-black/50 px-4 py-1 border border-cyber-neonBlue/30 mb-2 mt-4">
                                         <Icons.Terminal size={14} className="animate-pulse" />
                                         <span>{text}</span>
                                         <span className="w-2 h-4 bg-cyber-neonBlue animate-pulse"></span>
                                     </div>
                                 </div>
-                                
+
                                 <div className="absolute top-4 right-4 opacity-20 pointer-events-none">
-                                     <Icons.Cpu size={64} className="text-cyber-neonBlue" />
+                                    <Icons.Cpu size={64} className="text-cyber-neonBlue" />
                                 </div>
                                 <div className="absolute bottom-4 left-4 opacity-20 pointer-events-none">
-                                     <Icons.Code size={48} className="text-cyber-neonPink" />
+                                    <Icons.Code size={48} className="text-cyber-neonPink" />
                                 </div>
                             </div>
                         </header>
@@ -1005,14 +1121,14 @@
                             <div className="cyber-card md:col-span-2 bg-cyber-dark/0 backdrop-blur-md p-8 hover:bg-black/80 transition-colors group relative overflow-hidden">
                                 {/* Decor */}
                                 <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-cyber-neonBlue/5 rounded-full blur-3xl group-hover:bg-cyber-neonBlue/10 transition-all"></div>
-                                
+
                                 <div className="absolute top-2 right-2 text-cyber-neonBlue opacity-50 group-hover:opacity-100 group-hover:rotate-180 transition-all duration-500">
                                     <Icons.Cpu size={48} />
                                 </div>
 
                                 <h2 className="text-2xl font-bold text-cyber-neonYellow mb-6 flex items-center gap-2 uppercase tracking-widest border-b border-gray-800 pb-2">
                                     <Icons.Zap size={20} />
-                                    <Typewriter text="// CORE_IDENTITY" speed={50} delay={500} />
+                                    <Typewriter text="// BACKGROUND" speed={50} delay={500} />
                                 </h2>
 
                                 <div className="space-y-6 font-mono relative z-10">
@@ -1075,13 +1191,26 @@
                                 </div>
                             </div>
 
-                            {/* Blog Card */}
+                            {/* Contact Card - Moved & Full Width */}
+                            <div className="cyber-card md:col-span-2 bg-cyber-dark/0 backdrop-blur-md p-8 relative">
+                                <h2 className="text-xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2 uppercase tracking-widest">
+                                    <Icons.Network size={18} />
+                                    <Typewriter text="// Contact_Info" speed={50} delay={1200} />
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <SocialLink href="mailto:harryli12321@gmail.com" Icon={<Icons.Mail size={18} />} label="E_MAIL" value="harryli12321@gmail.com" />
+                                    <SocialLink href="https://www.linkedin.com/in/haochen-harry-li" Icon={<Icons.Linkedin size={18} />} label="LinkedIn" value="haochen-harry-li" />
+                                    <SocialLink href="https://github.com/Harrisous" Icon={<Icons.Github size={18} />} label="GitHub_PROFILE" value="Harrisous" />
+                                </div>
+                            </div>
+
+                            {/* Blog Cache Card - Spark Projects */}
                             <div className="cyber-card bg-cyber-dark/0 backdrop-blur-md p-8 group hover:border-l-4 hover:border-cyber-neonPink transition-all">
                                 <h2 className="text-xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2 uppercase tracking-widest">
                                     <Icons.Code size={18} />
                                     <Typewriter text="// Blog_Cache" speed={50} delay={1000} />
                                 </h2>
-                                <div className="space-y-4">
+                                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
                                     <a href="./blog/blog1/blog1.html" className="block p-4 border border-gray-800 bg-black/40 hover:bg-cyber-neonBlue/10 hover:border-cyber-neonBlue transition-all group/item relative">
                                         <div className="flex justify-between items-start">
                                             <span className="text-[10px] font-bold text-cyber-neonPink mb-1 block">
@@ -1094,24 +1223,31 @@
                                         </h3>
                                         <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-cyber-neonBlue group-hover/item:w-full transition-all duration-300"></div>
                                     </a>
-                                    <div className="p-4 border border-dashed border-gray-800 flex items-center justify-center text-xs text-gray-600 uppercase tracking-widest">
-                                        <Typewriter text="[ No further transmission ]" speed={30} delay={3000} />
-                                    </div>
                                 </div>
                             </div>
 
-                            {/* Contact Card */}
-                            <div className="flex flex-col gap-4">
-                                <div className="cyber-card flex-1 bg-cyber-dark/0 backdrop-blur-md p-8 relative">
-                                    <h2 className="text-xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2 uppercase tracking-widest">
-                                        <Icons.Network size={18} />
-                                        <Typewriter text="// Contact_Uplink" speed={50} delay={1200} />
-                                    </h2>
-                                    <div className="space-y-3">
-                                        <SocialLink href="mailto:harryli12321@gmail.com" Icon={<Icons.Mail size={18} />} label="E_MAIL" value="harryli12321@gmail.com" />
-                                        <SocialLink href="https://www.linkedin.com/in/haochen-harry-li" Icon={<Icons.Linkedin size={18} />} label="LINKED_IN_NET" value="haochen-harry-li" />
-                                        <SocialLink href="https://github.com/Harrisous" Icon={<Icons.Github size={18} />} label="GIT_PROFILE" value="Harrisous" />
-                                    </div>
+                            {/* Field Manual Card - Systematic Manuals */}
+                            <div className="cyber-card bg-cyber-dark/0 backdrop-blur-md p-8 group hover:border-l-4 hover:border-cyber-neonYellow transition-all">
+                                <h2 className="text-xl font-bold text-cyber-neonYellow mb-6 flex items-center gap-2 uppercase tracking-widest">
+                                    <Icons.Terminal size={18} />
+                                    <Typewriter text="// FIELD_MANUAL" speed={50} delay={1000} />
+                                </h2>
+                                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                                    <a href="./blog/blog2/index.html" className="block p-4 border border-gray-800 bg-black/40 hover:bg-cyber-neonBlue/10 hover:border-cyber-neonYellow transition-all group/item relative">
+                                        <div className="flex justify-between items-start">
+                                            <span className="text-[10px] font-bold text-cyber-neonYellow mb-1 block">
+                                                <Typewriter text="FIELD_MANUAL_001" speed={30} delay={2500} />
+                                            </span>
+                                            <Icons.ExternalLink size={14} className="text-gray-600 group-hover/item:text-cyber-neonYellow" />
+                                        </div>
+                                        <h3 className="text-gray-200 font-bold group-hover/item:text-white group-hover/item:tracking-wide transition-all">
+                                            <Typewriter text="Traditional ML Field Manual" speed={20} delay={3000} />
+                                        </h3>
+                                        <p className="text-xs text-gray-500 mt-1 font-mono">
+                                            <Typewriter text="> Bright_Mode_Enabled" speed={50} delay={3500} />
+                                        </p>
+                                        <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-cyber-neonYellow group-hover/item:w-full transition-all duration-300"></div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -1120,7 +1256,7 @@
 
                         <footer className="mt-20 text-center text-gray-600 text-xs font-mono z-10 w-full border-t border-gray-900 pt-8 pb-8">
                             <p className="mb-2 uppercase tracking-widest">
-                                <Typewriter text="System_Version: 2.0.77 //" speed={20} delay={4000} /> 
+                                <Typewriter text="System_Version: 2.0.77 //" speed={20} delay={4000} />
                                 <span className="text-cyber-neonBlue">ONLINE</span>
                             </p>
                             <p>© 2025 Haochen Li. All rights reserved.</p>
@@ -1137,4 +1273,5 @@
         root.render(<Portfolio />);
     </script>
 </body>
+
 </html>

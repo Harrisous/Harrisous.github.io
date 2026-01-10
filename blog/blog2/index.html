@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Traditional Machine Learning Field Manual</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            white: '#f8f9fa',
+                            light: '#e9ecef',
+                            text: '#212529', // Dark text
+                            neonBlue: '#0097a7', // Darker cyan for light mode contrast
+                            neonPink: '#c2185b', // Darker pink for light mode contrast
+                            neonYellow: '#fbc02d',
+                            dim: 'rgba(0, 151, 167, 0.05)',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f2f5;
+            color: #212529;
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0097a7;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c2185b;
+        }
+
+        /* 扫描线动画 (Adapted for Light Mode - Dark Lines) */
+        @keyframes scrollScanlines {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 100%;
+            }
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.03));
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: scrollScanlines 0.5s linear infinite;
+        }
+
+        /* 切角卡片 (Light Mode) */
+        .cyber-card {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            border-left: 3px solid #0097a7;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(5px);
+        }
+
+        /* 故障文字 (Adapted for Light Mode) */
+        .glitch-text {
+            position: relative;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f0f2f5;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #c2185b;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #0097a7;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(13px, 9999px, 81px, 0);
+            }
+
+            20% {
+                clip: rect(67px, 9999px, 2px, 0);
+            }
+
+            100% {
+                clip: rect(58px, 9999px, 95px, 0);
+            }
+        }
+
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(62px, 9999px, 21px, 0);
+            }
+
+            20% {
+                clip: rect(2px, 9999px, 4px, 0);
+            }
+
+            100% {
+                clip: rect(35px, 9999px, 86px, 0);
+            }
+        }
+
+        /* 打字机光标 */
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background-color: #0097a7;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const Typewriter = ({ text, speed = 20, delay = 0, className = "", onComplete }) => {
+            const [displayLength, setDisplayLength] = useState(0);
+            const [isTyping, setIsTyping] = useState(false);
+
+            useEffect(() => {
+                setDisplayLength(0);
+                setIsTyping(false);
+                let i = 0;
+                let timer;
+                const startTyping = () => {
+                    setIsTyping(true);
+                    timer = setInterval(() => {
+                        if (i < text.length) {
+                            i++;
+                            setDisplayLength(i);
+                        } else {
+                            clearInterval(timer);
+                            setIsTyping(false);
+                            if (onComplete) onComplete();
+                        }
+                    }, speed);
+                };
+                const delayTimer = setTimeout(startTyping, delay);
+                return () => { clearTimeout(delayTimer); clearInterval(timer); };
+            }, [text, speed, delay]);
+
+            return (
+                <span className={className}>
+                    {text.substring(0, displayLength)}
+                    {isTyping && <span className="cursor-blink"></span>}
+                </span>
+            );
+        };
+
+        const TableOfContents = () => {
+            const chapters = [
+                { id: 'CH_01', title: 'Introduction to Machine Learning', desc: 'Core concepts, Supervised vs Unsupervised, and terminology.', link: './1_introduction.html', active: true },
+                { id: 'CH_02', title: 'Classic Supervised Machine Learning Models Deep Dive', desc: 'Linear Regression, Logistic Regression, Decision Trees, Random Forests, Boosting.', link: './2_supervised.html', active: true },
+                { id: 'CH_03', title: 'Unsupervised Learning', desc: 'K-Means, PCA, and t-SNE.', link: './3_unsupervised.html', active: true },
+                { id: 'CH_04', title: 'Deep Learning', desc: 'Neural Networks, Backprop, CNNs.', link: './4_deep_learning.html', active: true },
+                { id: 'CH_05', title: 'Reinforcement Learning', desc: 'Agents, Environments, Rewards.', link: '#', active: false },
+            ];
+
+            return (
+                <div className="min-h-screen relative pb-20">
+                    <div className="scanlines"></div>
+
+                    {/* Header */}
+                    <div className="bg-white/80 border-b border-cyber-neonBlue/20 backdrop-blur-md sticky top-0 z-50">
+                        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <a href="../../index.html" className="text-cyber-neonBlue font-bold text-xl hover:text-cyber-neonPink transition-colors">
+                                    &lt;HARRISOUS_DEV /&gt;
+                                </a>
+                            </div>
+                            <div className="text-xs font-mono text-gray-500 uppercase tracking-widest hidden sm:block">
+                                <Typewriter text="SYS_STATUS: ONLINE // MODE: BRIGHT_CYBER" speed={30} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <main className="max-w-4xl mx-auto px-6 py-12">
+
+                        {/* Title Section */}
+                        <div className="text-center mb-16 relative">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-cyber-neonBlue rounded-full"></div>
+                            <h1 className="text-4xl md:text-6xl font-black text-cyber-text tracking-tighter mb-4 mt-8 glitch-text" data-text="TRADITIONAL ML">
+                                Traditional Machine Learning
+                            </h1>
+                            <p className="text-xl text-cyber-neonBlue font-bold tracking-widest uppercase">
+                                <Typewriter text="Quick Guide & Field Manual" speed={20} delay={500} />
+                            </p>
+                            <p className="mt-4 text-gray-600 max-w-lg mx-auto leading-relaxed">
+                                A quick guide to traditional machine learning algorithms. Use it for quick intro, flashback and interview preperation.
+                            </p>
+                        </div>
+
+                        {/* Chapter Grid */}
+                        <div className="grid gap-6">
+                            {chapters.map((chapter, idx) => (
+                                <a key={chapter.id} href={chapter.link} className={`block group relative ${chapter.active ? '' : 'pointer-events-none opacity-60 grayscale'}`}>
+                                    <div className="cyber-card p-6 md:p-8 hover:translate-x-2 transition-transform duration-300 border-l-[6px] border-l-cyber-neonBlue group-hover:border-l-cyber-neonPink">
+
+                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                            <div>
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <span className="bg-cyber-neonBlue text-white text-xs font-bold px-2 py-1 rounded-sm">
+                                                        {chapter.id}
+                                                    </span>
+                                                    {!chapter.active && (
+                                                        <span className="text-gray-400 text-xs font-bold border border-gray-300 px-2 py-1 rounded-sm">
+                                                            LOCKED
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <h2 className="text-2xl font-bold text-cyber-text group-hover:text-cyber-neonPink transition-colors">
+                                                    {chapter.title}
+                                                </h2>
+                                                <p className="text-gray-600 mt-2 font-mono text-sm border-l-2 border-gray-300 pl-3 group-hover:border-cyber-neonYellow transition-colors">
+                                                    {chapter.desc}
+                                                </p>
+                                            </div>
+
+                                            <div className="md:text-right">
+                                                {chapter.active ? (
+                                                    <span className="inline-flex items-center gap-2 text-cyber-neonBlue font-bold group-hover:underline decoration-wavy underline-offset-4">
+                                                        ACCESS_DATA <span className="text-xl">»</span>
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-400 font-mono text-xs">
+                                                        [ DATA_CORRUPTED / PENDING ]
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+
+                        {/* Footer Decoration */}
+                        <div className="mt-16 text-center">
+                            <div className="inline-block px-4 py-2 border border-gray-300 text-gray-400 text-xs font-mono">
+                                <Typewriter text="END_OF_INDEX // AWAITING_UPDATES..." speed={50} delay={1500} />
+                            </div>
+                        </div>
+
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TableOfContents />);
+    </script>
+</body>
+
+</html>
