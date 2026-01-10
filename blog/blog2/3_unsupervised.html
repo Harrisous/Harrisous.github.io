@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 03: Unsupervised Learning - Field Manual</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            white: '#f8f9fa',
+                            light: '#e9ecef',
+                            text: '#212529',
+                            neonBlue: '#0097a7',
+                            neonPink: '#c2185b',
+                            neonYellow: '#fbc02d',
+                            dim: 'rgba(0, 151, 167, 0.05)',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f2f5;
+            color: #212529;
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0097a7;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c2185b;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.03));
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Cyber Card */
+        .cyber-card {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            border-left: 3px solid #0097a7;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .cyber-card-pink {
+            border-left-color: #c2185b;
+        }
+
+        .cyber-card-yellow {
+            border-left-color: #fbc02d;
+        }
+
+        /* Quote */
+        .cyber-quote {
+            border-left: 4px solid #c2185b;
+            background: rgba(194, 24, 91, 0.05);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+
+        /* Highlight */
+        .highlight {
+            background: rgba(251, 192, 45, 0.2);
+            padding: 0 4px;
+            border-bottom: 2px solid #fbc02d;
+        }
+
+        /* TOC Active */
+        .toc-link.active {
+            color: #0097a7;
+            border-left-color: #0097a7;
+            background: rgba(0, 151, 167, 0.05);
+        }
+
+        /* Images */
+        .cyber-img {
+            border: 1px solid #ddd;
+            padding: 4px;
+            background: #fff;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 100%;
+            display: block;
+        }
+
+        /* Code Block */
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1em;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85em;
+            border: 1px solid #ddd;
+        }
+
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1em;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85em;
+            border: 1px solid #ddd;
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+            border-radius: 4px;
+            background: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            border: 1px solid #ced4da;
+        }
+
+        .tag-reg {
+            color: #0d6efd;
+            border-color: #0d6efd;
+            background: rgba(13, 110, 253, 0.1);
+        }
+
+        .tag-cls {
+            color: #d63384;
+            border-color: #d63384;
+            background: rgba(214, 51, 132, 0.1);
+        }
+
+        .tag-lin {
+            color: #198754;
+            border-color: #198754;
+            background: rgba(25, 135, 84, 0.1);
+        }
+
+        .tag-non {
+            color: #fd7e14;
+            border-color: #fd7e14;
+            background: rgba(253, 126, 20, 0.1);
+        }
+
+        .tag-ens {
+            color: #6610f2;
+            border-color: #6610f2;
+            background: rgba(102, 16, 242, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Typewriter = ({ text, speed = 10, delay = 0, className = "" }) => {
+            const [display, setDisplay] = useState("");
+            useEffect(() => {
+                let timer;
+                const start = () => {
+                    let i = 0;
+                    timer = setInterval(() => {
+                        if (i < text.length) {
+                            setDisplay(text.substring(0, i + 1));
+                            i++;
+                        } else clearInterval(timer);
+                    }, speed);
+                };
+                const delayTimer = setTimeout(start, delay);
+                return () => { clearTimeout(delayTimer); clearInterval(timer); };
+            }, [text, speed, delay]);
+            return <span className={className}>{display}</span>;
+        };
+
+        const TsnePlot = () => {
+            // Simulating 10 clusters (digits 0-9) for t-SNE
+            const clusters = [
+                { id: 0, color: "#E53935", cx: 200, cy: 150, spread: 20 },
+                { id: 1, color: "#D81B60", cx: 100, cy: 300, spread: 30 },
+                { id: 2, color: "#8E24AA", cx: 300, cy: 100, spread: 25 },
+                { id: 3, color: "#5E35B1", cx: 350, cy: 250, spread: 20 },
+                { id: 4, color: "#3949AB", cx: 150, cy: 350, spread: 25 },
+                { id: 5, color: "#1E88E5", cx: 100, cy: 200, spread: 30 },
+                { id: 6, color: "#039BE5", cx: 250, cy: 350, spread: 20 },
+                { id: 7, color: "#00ACC1", cx: 350, cy: 350, spread: 25 },
+                { id: 8, color: "#43A047", cx: 250, cy: 200, spread: 15 },
+                { id: 9, color: "#FDD835", cx: 150, cy: 100, spread: 25 },
+            ];
+
+            // deterministic random
+            let seed = 42;
+            const random = () => {
+                const x = Math.sin(seed++) * 10000;
+                return x - Math.floor(x);
+            }
+
+            const points = [];
+            clusters.forEach(c => {
+                for (let i = 0; i < 40; i++) {
+                    // Box-Muller transform for normal distribution approximation
+                    const u = 1 - random();
+                    const v = random();
+                    const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+
+                    points.push({
+                        x: c.cx + z * c.spread,
+                        y: c.cy + (Math.sqrt(-2.0 * Math.log(u)) * Math.sin(2.0 * Math.PI * v)) * c.spread,
+                        color: c.color
+                    });
+                }
+            });
+
+            return (
+                <div className="bg-white border text-center p-2 rounded shadow-sm">
+                    <svg viewBox="0 0 400 400" className="w-full h-auto max-w-xs mx-auto overflow-visible">
+                        {points.map((p, i) => (
+                            <circle key={i} cx={p.x} cy={p.y} r="2.5" fill={p.color} opacity="0.7" />
+                        ))}
+                    </svg>
+                    <div className="flex flex-wrap justify-center gap-2 mt-2 px-4">
+                        {clusters.map((c, i) => (
+                            <span key={i} className="text-[10px] font-bold px-1" style={{ color: c.color }}>
+                                {i}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const UnsupervisedPage = () => {
+            const [activeSection, setActiveSection] = useState("linear-regression");
+
+            useEffect(() => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setActiveSection(entry.target.id);
+                        }
+                    });
+                }, { threshold: 0.2 });
+
+                const sections = document.querySelectorAll('section[id]');
+                sections.forEach((section) => observer.observe(section));
+
+                return () => observer.disconnect();
+            }, []);
+
+            useEffect(() => {
+                if (window.MathJax) {
+                    window.MathJax.typesetPromise && window.MathJax.typesetPromise();
+                }
+            });
+
+            const scrollToSection = (e, id) => {
+                e.preventDefault();
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                    setActiveSection(id);
+                }
+            };
+
+            const sections = [
+                { id: 'kmeans', title: '01. K-MEANS CLUSTERING' },
+                { id: 'pca', title: '02. PCA' },
+                { id: 'tsne', title: '03. t-SNE' },
+            ];
+
+            return (
+                <div className="min-h-screen relative pb-20">
+                    <div className="scanlines"></div>
+
+                    {/* Nav */}
+                    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                        <a href="./index.html" className="flex items-center gap-2 text-cyber-neonBlue hover:text-cyber-neonPink transition-colors font-bold group">
+                            <span className="text-xl group-hover:-translate-x-1 transition-transform">«</span>
+                            <span>BACK_TO_INDEX</span>
+                        </a>
+                        <div className="flex items-center gap-4">
+                            <span className="text-xs font-mono text-gray-400 ml-4 hidden md:inline">CH_03 // UNSUPERVISED_DEEP_DIVE</span>
+                        </div>
+                    </nav>
+
+                    <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12">
+                        {/* Sidebar */}
+                        <aside className="hidden lg:block w-64 flex-shrink-0">
+                            <div className="sticky top-24">
+                                <h4 className="text-xs font-bold text-gray-400 mb-4 tracking-widest uppercase border-b border-gray-200 pb-2">
+                                    // NAVIGATION
+                                </h4>
+                                <ul className="space-y-1 text-sm font-mono">
+                                    {sections.map(sec => (
+                                        <li key={sec.id}>
+                                            <a href={`#${sec.id}`}
+                                                onClick={(e) => scrollToSection(e, sec.id)}
+                                                className={`block py-2 px-3 border-l-2 transition-all duration-300 ${activeSection === sec.id ? 'border-cyber-neonBlue text-cyber-neonBlue bg-cyber-dim' : 'border-transparent text-gray-500 hover:text-cyber-text hover:border-gray-300'}`}>
+                                                {sec.title}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="mt-8 p-4 bg-gray-50 rounded-sm border border-gray-200 text-xs text-gray-400 font-mono">
+                                    <div className="mb-2 uppercase tracking-wide">Sys_Status:</div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        <span>ONLINE</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        {/* Main Content */}
+                        <main className="flex-1 max-w-3xl">
+                            <h1 className="text-4xl md:text-5xl font-black text-cyber-text mb-4">
+                                <span className="text-cyber-neonBlue text-2xl block mb-2 font-mono">03.</span>
+                                UNSUPERVISED LEARNING
+                            </h1>
+                            <div className="flex items-center gap-4 mb-8 text-sm font-mono text-gray-500">
+                                <span>STATUS: <span className="text-green-500">ONLINE</span></span>
+                                <span>//</span>
+                                <span>MODE: CLUSTERING & REDUCTION</span>
+                            </div>
+
+                            <div className="cyber-quote text-gray-600 mb-12">
+                                "Finding hidden patterns and structures in unlabeled data. No teacher, just data." <br />
+                                <span className="text-cyber-neonBlue">无监督学习：找隐藏模式和结构，没有label，只有features。</span>
+                            </div>
+
+                            {/* Section 1: K-Means */}
+                            <section id="kmeans" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonBlue"></span>
+                                    01. K-MEANS CLUSTERING
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Clustering</span>
+                                    <span className="tag tag-lin">Iterative</span>
+                                    <span className="tag">Centroid-based</span>
+                                </div>
+                                <p className="mb-6 text-gray-700">Partitions data into $k$ distinct clusters based on distance to the centroid of a cluster.</p>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonBlue mb-4">HOW IT WORKS</h3>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <h4 className="font-bold text-md mb-2">The Algorithm</h4>
+                                            <ol className="list-decimal pl-5 text-gray-700 text-sm space-y-2">
+                                                <li><strong>Init:</strong> Choose $k$ random points as initial centroids. 随机选k个点做初始中心。</li>
+                                                <li><strong>Assign:</strong> Assign each data point to the nearest centroid (Euclidean distance). 算距离，把每个点分给最近的中心。</li>
+                                                <li><strong>Update:</strong> Recalculate centroids as the mean of all points in the cluster. 重新算每个簇的平均值作为新中心。</li>
+                                                <li><strong>Repeat:</strong> Steps 2-3 until convergence (centroids don't move). 重复直到中心不动（收敛）。</li>
+                                            </ol>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/K-means_convergence.gif/614px-K-means_convergence.gif" alt="K-Means Convergence Animation" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Iteratively moving centroids (X) to the center of their assigned points.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-gray-50 p-3 rounded text-sm font-mono border-l-4 border-cyber-neonBlue mb-4">
+                                        <strong>Objective:</strong> Minimize Inertia (Sum of Squared Distances within clusters).
+                                        <br />
+                                        {'$J = \\sum_{i=1}^{k} \\sum_{x \\in C_i} ||x - \\mu_i||^2$'}
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6 mt-6">
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">Choosing K (Elbow Method)</h4>
+                                            <p className="text-xs text-gray-600">Plot Inertia vs. K. Look for the "elbow" where improvements diminish.</p>
+                                        </div>
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">Limitations</h4>
+                                            <p className="text-xs text-gray-600">Assumes spherical clusters. Sensitive to outliers and initial centroid placement.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.cluster import KMeans
+
+# Model
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X)
+
+# Results
+labels = kmeans.labels_
+centroids = kmeans.cluster_centers_
+
+# Inference for new data
+new_labels = kmeans.predict(new_data)`}</code></pre>
+                                </div>
+                            </section>
+
+                            {/* Section 2: PCA */}
+                            <section id="pca" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonPink"></span>
+                                    02. PRINCIPAL COMPONENT ANALYSIS (PCA)
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Dim Reduction</span>
+                                    <span className="tag tag-lin">Linear</span>
+                                    <span className="tag">Projection</span>
+                                </div>
+                                <p className="mb-6 text-gray-700">Reduces dimensionality by projecting data onto orthogonal axes (Principal Components) that explain the maximum variance.</p>
+                                <p className="mb-6 text-gray-700">在所有可能的线性投影里，找一组正交方向，使投影后的数据方差尽可能大，同时用尽量少的维度保留尽可能多的信息。</p>
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonPink mb-4">DEEP DIVE: PCA</h3>
+
+                                    <div className="mb-6">
+                                        <h4 className="font-bold text-sm mb-2 text-black">Main Idea</h4>
+                                        <p className="text-sm text-gray-700">
+                                            Find a new set of orthogonal axes (Principal Components) such that the first axis captures the maximum variance in the data, the second captures the remaining maximum variance, and so on.
+                                        </p>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-start">
+                                        <div>
+                                            <h4 className="font-bold text-md mb-2">Training Steps</h4>
+                                            <ol className="list-decimal pl-5 text-gray-700 text-sm space-y-2">
+                                                <li><strong>Standardize:</strong> Center the data (mean=0, variance=1). 数据标准化（去均值，归一化）。</li>
+                                                <li><strong>Covariance Matrix:</strong> Compute the relationship between features. 算协方差矩阵，看特征间的关系。</li>
+                                                <li><strong>Eigendecomposition:</strong> Calculate eigenvectors (directions) and eigenvalues (magnitude/variance) of the covariance matrix. 算特征值和特征向量（找主方向）。</li>
+                                                <li><strong>Sort & Select:</strong> Keep the top $k$ eigenvectors with the largest eigenvalues. 选特征值最大的前k个特征向量。</li>
+                                                <li><strong>Project:</strong> Transform the original data onto these new $k$ axes. 把数据投影到这k个方向上。</li>
+                                            </ol>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/GaussianScatterPCA.svg" alt="PCA Visualization" className="cyber-img bg-white" />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Visualizing the Principal Components (Eigenvectors) of a dataset.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-gray-50 p-3 rounded text-sm font-mono border-l-4 border-cyber-neonPink mb-6">
+                                        <strong>Key Formulas:</strong>
+                                        <div className="grid gap-2 mt-2">
+                                            <div>
+                                                <span className="text-xs text-gray-500 block">Covariance Matrix:</span>
+                                                {'$\\Sigma = \\frac{1}{n-1} X^T X$'}
+                                            </div>
+                                            <div>
+                                                <span className="text-xs text-gray-500 block">Eigendecomposition:</span>
+                                                {'$\\Sigma v = \\lambda v$'}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">ProS</h4>
+                                            <ul className="text-xs text-gray-600 list-disc pl-4 space-y-1">
+                                                <li>Removes correlated features (Multicollinearity).</li>
+                                                <li>Improves algorithm performance & speed.</li>
+                                                <li>Reduces overfitting.</li>
+                                                <li>Easily visualized (2D/3D).</li>
+                                            </ul>
+                                        </div>
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">ConS</h4>
+                                            <ul className="text-xs text-gray-600 list-disc pl-4 space-y-1">
+                                                <li><strong>Linear assumption:</strong> Fails to capture non-linear manifolds.</li>
+                                                <li><strong>Uninterpretable:</strong> Principal components are mixtures of original features.</li>
+                                                <li>Sensitive to outliers (variance based).</li>
+                                                <li>Information loss (if $k$ is too low).</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 p-3 bg-red-50 text-red-800 text-sm rounded border border-red-100">
+                                        <strong>⚠️ Prerequisite:</strong> Always <strong>scale/standardize</strong> data (`StandardScaler`) before PCA.
+                                    </div>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+# Preprocessing
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Model
+pca = PCA(n_components=2) # Reduce to 2 dimensions
+X_pca = pca.fit_transform(X_scaled)
+
+# Analyis
+print(pca.explained_variance_ratio_)`}</code></pre>
+                                </div>
+                            </section>
+
+                            {/* Section 3: t-SNE */}
+                            <section id="tsne" className="mb-16 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonYellow mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonYellow"></span>
+                                    03. t-SNE
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Dim Reduction</span>
+                                    <span className="tag tag-non">Non-Linear</span>
+                                    <span className="tag">Visualization</span>
+                                    <span className="tag">Manifold Learning</span>
+                                </div>
+                                <p className="mb-6 text-gray-700"><strong>t-Distributed Stochastic Neighbor Embedding</strong>. Maps high-dimensional data to 2D/3D for visualization, preserving local structure (neighbors).</p>
+                                <p className="mb-6 text-gray-700">通过“保持相邻关系的概率分布”来做一种非线性降维。</p>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonYellow mb-4">DEEP DIVE: t-SNE</h3>
+
+                                    <div className="mb-6">
+                                        <h4 className="font-bold text-sm mb-2 text-black">Main Idea</h4>
+                                        <p className="text-sm text-gray-700">
+                                            A non-linear technique that maps minimal distances in high-dimensional space to minimal distances in low-dimensional space, effectively preserving local neighborhoods/clusters.
+                                        </p>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-start">
+                                        <div>
+                                            <h4 className="font-bold text-md mb-2">Training Steps</h4>
+                                            <ol className="list-decimal pl-5 text-gray-700 text-sm space-y-2">
+                                                <li><strong>High-Dim Similarity ({'$p_{j | i}$'}):</strong> Calculate conditional probabilities between points in high-dim space using a <strong>Gaussian</strong> distribution. 在高维空间里，用高斯分布把点与点之间的相似度转成概率p，近的点概率大，远的点概率小，描述“谁是邻居”。</li>
+                                                <li><strong>Low-Dim Similarity ({'$q_{ij}$'}):</strong> Initialize points randomly in low-dim space and calculate probabilities using a <strong>Student's t-distribution</strong> (heavier tails). 在低维空间里，用自由度为1的t分布（Cauchy型，长尾）定义另一套概率 q，同样表示“谁是邻居”。</li>
+                                                <li><strong>Compare Distributions:</strong> Measure the difference between $P$ and $Q$ using Kullback-Leibler (KL) Divergence. 用KL散度衡量两个分布（P和Q）的差异。</li>
+                                                <li><strong>Minimize Cost:</strong> Use Gradient Descent to move low-dim points to minimize KL Divergence. 通过梯度下降最小化高维分布 p 和低维分布 q 之间的KL散度，使得低维嵌入中：高维的近邻仍然靠在一起，不相似的点被推远。这个过程就是它的“压缩”。</li>
+                                            </ol>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <TsnePlot />
+                                            <p className="text-xs text-gray-500 mt-2 text-center italic">
+                                                Visualizing the 784-dimensional MNIST digit dataset in 2D. Similar digits cluster tightly together.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-gray-50 p-3 rounded text-sm font-mono border-l-4 border-cyber-neonYellow mb-6">
+                                        <strong>Key Formulas:</strong>
+                                        <div className="grid gap-2 mt-2">
+                                            <div>
+                                                <span className="text-xs text-gray-500 block">Cost Function (KL Divergence):</span>
+                                                {'$C = \\sum_i KL(P_i || Q_i) = \\sum_i \\sum_j p_{j|i} \\log \\frac{p_{j|i}}{q_{j|i}}$'}
+                                            </div>
+                                            <div>
+                                                <span className="text-xs text-gray-500 block">Why Student t?</span>
+                                                To handle the "Crowding Problem" (preventing points from collapsing on top of each other).
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">ProS</h4>
+                                            <ul className="text-xs text-gray-600 list-disc pl-4 space-y-1">
+                                                <li>Handles <strong>Non-Linear</strong> data extremely well.</li>
+                                                <li>Great for visualizing clusters/structure.</li>
+                                                <li>Preserves local structure better than PCA.</li>
+                                            </ul>
+                                        </div>
+                                        <div className="cyber-card cyber-card-yellow p-4 mb-0">
+                                            <h4 className="font-bold text-sm mb-2 text-black">ConS</h4>
+                                            <ul className="text-xs text-gray-600 list-disc pl-4 space-y-1">
+                                                <li><strong>Stochastic:</strong> Different runs give different results.</li>
+                                                <li><strong>Computational cost:</strong> $O(N^2)$, slow for large N.</li>
+                                                <li>Preserves <strong>local</strong> structure, not global distances.</li>
+                                                <li>Hyperparameter sensitive (Perplexity).</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 bg-yellow-50 p-3 rounded text-sm mt-6">
+                                        <strong className="block text-yellow-800 mb-1">Practical Tips:</strong>
+                                        <ul className="list-disc pl-4 text-xs text-gray-700 space-y-1">
+                                            <li><strong>Perplexity:</strong> Main hyperparameter (5-50). Related to number of nearest neighbors.</li>
+                                            <li><strong>Initialization:</strong> Use 'pca' or 'spectral' for better stability.</li>
+                                            <li><strong>Computationally Expensive:</strong> Slow on large datasets (use UMAP for speed).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="cyber-card p-4 bg-gray-800 text-gray-100">
+                                    <h3 className="text-sm font-bold text-green-400 mb-2">// SKLEARN IMPLEMENTATION</h3>
+                                    <pre><code className="language-python">{`from sklearn.manifold import TSNE
+
+# Model (Run PCA first if >50 features for speed)
+tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+X_embedded = tsne.fit_transform(X) # No transform() method, only fit_transform
+
+# Plotting
+plt.scatter(X_embedded[:,0], X_embedded[:,1])`}</code></pre>
+                                </div>
+                            </section>
+
+                            <div className="mt-12 pt-8 border-t border-gray-300 flex justify-between">
+                                <a href="./2_supervised.html" className="font-bold text-cyber-neonBlue hover:text-cyber-neonPink transition-colors">
+                                    &laquo; PREV: SUPERVISED
+                                </a>
+                                <a href="./4_deep_learning.html" className="font-bold text-cyber-neonBlue hover:text-cyber-neonPink transition-colors">
+                                    NEXT: DEEP LEARNING &raquo;
+                                </a>
+                            </div>
+
+                        </main>
+                    </div >
+                </div >
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<UnsupervisedPage />);
+    </script>
+</body>
+
+</html>

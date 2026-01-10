@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 04: Deep Learning - Field Manual</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            white: '#f8f9fa',
+                            light: '#e9ecef',
+                            text: '#212529',
+                            neonBlue: '#0097a7',
+                            neonPink: '#c2185b',
+                            neonYellow: '#fbc02d',
+                            dim: 'rgba(0, 151, 167, 0.05)',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f2f5;
+            color: #212529;
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0097a7;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c2185b;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.03));
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Cyber Card */
+        .cyber-card {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            border-left: 3px solid #0097a7;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .cyber-card-pink {
+            border-left-color: #c2185b;
+        }
+
+        .cyber-card-yellow {
+            border-left-color: #fbc02d;
+        }
+
+        /* Quote */
+        .cyber-quote {
+            border-left: 4px solid #c2185b;
+            background: rgba(194, 24, 91, 0.05);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+
+        /* Highlight */
+        .highlight {
+            background: rgba(251, 192, 45, 0.2);
+            padding: 0 4px;
+            border-bottom: 2px solid #fbc02d;
+        }
+
+        /* TOC Active */
+        .toc-link.active {
+            color: #0097a7;
+            border-left-color: #0097a7;
+            background: rgba(0, 151, 167, 0.05);
+        }
+
+        /* Images */
+        .cyber-img {
+            border: 1px solid #ddd;
+            padding: 4px;
+            background: #fff;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 100%;
+            display: block;
+        }
+
+        /* Code Block */
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1em;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85em;
+            border: 1px solid #ddd;
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+            border-radius: 4px;
+            background: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            border: 1px solid #ced4da;
+        }
+
+        .tag-reg {
+            color: #0d6efd;
+            border-color: #0d6efd;
+            background: rgba(13, 110, 253, 0.1);
+        }
+
+        .tag-cls {
+            color: #d63384;
+            border-color: #d63384;
+            background: rgba(214, 51, 132, 0.1);
+        }
+
+        .tag-lin {
+            color: #198754;
+            border-color: #198754;
+            background: rgba(25, 135, 84, 0.1);
+        }
+
+        .tag-non {
+            color: #fd7e14;
+            border-color: #fd7e14;
+            background: rgba(253, 126, 20, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+
+
+        const NeuralNetworkViz = () => {
+            return (
+                <div className="bg-white border text-center p-4 rounded shadow-sm">
+                    <svg viewBox="0 0 400 250" className="w-full max-w-md mx-auto overflow-visible">
+                        {/* Layers Text */}
+                        <text x="50" y="20" textAnchor="middle" fontSize="10" fill="#666" fontWeight="bold">INPUT LAYER</text>
+                        <text x="200" y="20" textAnchor="middle" fontSize="10" fill="#666" fontWeight="bold">HIDDEN LAYER</text>
+                        <text x="350" y="20" textAnchor="middle" fontSize="10" fill="#666" fontWeight="bold">OUTPUT LAYER</text>
+
+                        {/* Connections */}
+                        {/* Input 1 to Hidden */}
+                        <line x1="50" y1="80" x2="200" y2="50" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="80" x2="200" y2="100" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="80" x2="200" y2="150" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="80" x2="200" y2="200" stroke="#ddd" strokeWidth="1" />
+
+                        {/* Input 2 to Hidden */}
+                        <line x1="50" y1="130" x2="200" y2="50" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="130" x2="200" y2="100" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="130" x2="200" y2="150" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="130" x2="200" y2="200" stroke="#ddd" strokeWidth="1" />
+
+                        {/* Input 3 to Hidden */}
+                        <line x1="50" y1="180" x2="200" y2="50" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="180" x2="200" y2="100" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="180" x2="200" y2="150" stroke="#ddd" strokeWidth="1" />
+                        <line x1="50" y1="180" x2="200" y2="200" stroke="#ddd" strokeWidth="1" />
+
+                        {/* Hidden to Output */}
+                        <line x1="200" y1="50" x2="350" y2="130" stroke="#ddd" strokeWidth="1" />
+                        <line x1="200" y1="100" x2="350" y2="130" stroke="#ddd" strokeWidth="1" />
+                        <line x1="200" y1="150" x2="350" y2="130" stroke="#ddd" strokeWidth="1" />
+                        <line x1="200" y1="200" x2="350" y2="130" stroke="#ddd" strokeWidth="1" />
+
+                        {/* Nodes */}
+                        {/* Input */}
+                        <circle cx="50" cy="80" r="15" fill="#e9ecef" stroke="#0097a7" strokeWidth="2" />
+                        <text x="50" y="84" textAnchor="middle" fontSize="10">$x_1$</text>
+
+                        <circle cx="50" cy="130" r="15" fill="#e9ecef" stroke="#0097a7" strokeWidth="2" />
+                        <text x="50" y="134" textAnchor="middle" fontSize="10">$x_2$</text>
+
+                        <circle cx="50" cy="180" r="15" fill="#e9ecef" stroke="#0097a7" strokeWidth="2" />
+                        <text x="50" y="184" textAnchor="middle" fontSize="10">$x_3$</text>
+
+                        {/* Hidden */}
+                        <circle cx="200" cy="50" r="15" fill="#e9ecef" stroke="#c2185b" strokeWidth="2" />
+                        <text x="200" y="54" textAnchor="middle" fontSize="10">$h_1$</text>
+
+                        <circle cx="200" cy="100" r="15" fill="#e9ecef" stroke="#c2185b" strokeWidth="2" />
+                        <text x="200" y="104" textAnchor="middle" fontSize="10">$h_2$</text>
+
+                        <circle cx="200" cy="150" r="15" fill="#e9ecef" stroke="#c2185b" strokeWidth="2" />
+                        <text x="200" y="154" textAnchor="middle" fontSize="10">$h_3$</text>
+
+                        <circle cx="200" cy="200" r="15" fill="#e9ecef" stroke="#c2185b" strokeWidth="2" />
+                        <text x="200" y="204" textAnchor="middle" fontSize="10">$h_4$</text>
+
+                        {/* Output */}
+                        <circle cx="350" cy="130" r="15" fill="#e9ecef" stroke="#fbc02d" strokeWidth="2" />
+                        <text x="350" y="134" textAnchor="middle" fontSize="10">{'$\\hat{y}$'}</text>
+                    </svg>
+                    <p className="text-xs text-gray-500 mt-2 italic">
+                        A simple fully connected network (Multi-Layer Perceptron).
+                    </p>
+                </div>
+            )
+        }
+
+        const DeepLearningPage = () => {
+            const [activeSection, setActiveSection] = useState("neural-networks");
+
+            useEffect(() => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setActiveSection(entry.target.id);
+                        }
+                    });
+                }, { threshold: 0.2 });
+
+                const sections = document.querySelectorAll('section[id]');
+                sections.forEach((section) => observer.observe(section));
+
+                return () => observer.disconnect();
+            }, []);
+
+            useEffect(() => {
+                if (window.MathJax) {
+                    window.MathJax.typesetPromise && window.MathJax.typesetPromise();
+                }
+            }, [activeSection]);
+
+            const scrollToSection = (e, id) => {
+                e.preventDefault();
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                    setActiveSection(id);
+                }
+            };
+
+            const sections = [
+                { id: 'neural-networks', title: '01. NEURAL NETWORKS' },
+                { id: 'normalization', title: '02. NORMALIZATION' },
+                { id: 'cnn', title: '03. CNN' },
+                { id: 'rnn', title: '04. RNN' },
+                { id: 'transformers', title: '05. TRANSFORMERS' },
+            ];
+
+            return (
+                <div className="min-h-screen relative pb-20">
+                    <div className="scanlines"></div>
+
+                    {/* Nav */}
+                    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                        <a href="./index.html" className="flex items-center gap-2 text-cyber-neonBlue hover:text-cyber-neonPink transition-colors font-bold group">
+                            <span className="text-xl group-hover:-translate-x-1 transition-transform">«</span>
+                            <span>BACK_TO_INDEX</span>
+                        </a>
+                        <div className="flex items-center gap-4">
+                            <span className="text-xs font-mono text-gray-400 ml-4 hidden md:inline">CH_04 // DEEP_LEARNING</span>
+                        </div>
+                    </nav>
+
+                    <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12">
+                        {/* Sidebar */}
+                        <aside className="hidden lg:block w-64 flex-shrink-0">
+                            <div className="sticky top-24">
+                                <h4 className="text-xs font-bold text-gray-400 mb-4 tracking-widest uppercase border-b border-gray-200 pb-2">
+                                    // NAVIGATION
+                                </h4>
+                                <ul className="space-y-1 text-sm font-mono">
+                                    {sections.map(sec => (
+                                        <li key={sec.id}>
+                                            <a href={`#${sec.id}`}
+                                                onClick={(e) => scrollToSection(e, sec.id)}
+                                                className={`block py-2 px-3 border-l-2 transition-all duration-300 ${activeSection === sec.id ? 'border-cyber-neonBlue text-cyber-neonBlue bg-cyber-dim' : 'border-transparent text-gray-500 hover:text-cyber-text hover:border-gray-300'}`}>
+                                                {sec.title}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="mt-8 p-4 bg-gray-50 rounded-sm border border-gray-200 text-xs text-gray-400 font-mono">
+                                    <div className="mb-2 uppercase tracking-wide">Sys_Status:</div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        <span>ONLINE</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        {/* Main Content */}
+                        <main className="flex-1 max-w-3xl">
+                            <h1 className="text-4xl md:text-5xl font-black text-cyber-text mb-4">
+                                <span className="text-cyber-neonBlue text-2xl block mb-2 font-mono">04.</span>
+                                DEEP LEARNING
+                            </h1>
+                            <div className="flex items-center gap-4 mb-8 text-sm font-mono text-gray-500">
+                                <span>STATUS: <span className="text-green-500">ONLINE</span></span>
+                                <span>//</span>
+                                <span>MODE: NEURAL ARCHITECTURES</span>
+                            </div>
+
+                            <div className="cyber-quote text-gray-600 mb-12">
+                                "Biology-inspired algorithms that mimic the way the human brain operates to recognize relationships in data." <br />
+                                <span className="text-cyber-neonBlue">深度学习：模拟人脑神经元结构，通过多层网络提取高阶特征。</span>
+                            </div>
+
+                            {/* Section 1: Neural Networks */}
+                            {/* Section 1: Neural Networks */}
+                            <section id="neural-networks" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonBlue"></span>
+                                    01. NEURAL NETWORKS
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Universal Approx</span>
+                                    <span className="tag tag-lin">Non-Linear</span>
+                                    <span className="tag">Black Box</span>
+                                </div>
+
+                                <div className="cyber-card p-6">
+                                    <h3 className="text-lg font-bold text-cyber-neonBlue mb-4">INTRODUCTION</h3>
+                                    <div className="grid md:grid-cols-2 gap-8 mb-6 items-center">
+                                        <div>
+                                            <h4 className="font-bold text-md mb-2">Why we use it?</h4>
+                                            <p className="text-sm text-gray-700 mb-4">
+                                                Traditional ML (Linear Regression, etc.) struggles with complex, high-dimensional, non-linear data (like images or text). Neural Networks can theoretically approximate <em>any</em> function given enough neurons.
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <NeuralNetworkViz />
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-lg font-bold text-cyber-neonBlue mb-4 border-t pt-6 border-gray-100">TRAINING PROCESS</h3>
+
+                                    <h4 className="font-bold text-md mt-4 mb-2">1. Forward Pass</h4>
+                                    <p className="text-sm text-gray-700 mb-2">Data flows from Input $\rightarrow$ Hidden $\rightarrow$ Output.</p>
+                                    <div className="bg-gray-50 p-3 rounded text-sm font-mono border-l-4 border-cyber-neonBlue mb-4">
+                                        {'$z = Wx + b$'} <br />
+                                        {'$a = \\sigma(z)$'} <br />
+                                        <span className="text-gray-500 text-xs">// Linear transformation followed by Non-linear Activation</span>
+                                    </div>
+
+                                    <div className="cyber-card cyber-card-yellow p-4 mb-4">
+                                        <h5 className="font-bold text-sm mb-2">Activation Functions</h5>
+                                        <div className="grid grid-cols-2 gap-4 text-xs">
+                                            <div>
+                                                <strong className="block text-cyber-text">Sigmoid</strong>
+                                                <span className="text-gray-600 block mb-1">{'$\\frac{1}{1+e^{-x}}$'}</span>
+                                                Squashes to [0, 1]. <br />
+                                                <span className="text-red-500">Problem: Vanishing Gradient.</span>
+                                            </div>
+                                            <div>
+                                                <strong className="block text-cyber-text">ReLU (Rectified Linear Unit)</strong>
+                                                <span className="text-gray-600 block mb-1">{'$max(0, x)$'}</span>
+                                                Updates are fast. <br />
+                                                <span className="text-green-500">Standard for Hidden Layers.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded">
+                                        <h5 className="font-bold text-sm text-red-800 mb-2">⚠️ The Vanishing Gradient Problem</h5>
+                                        <p className="text-xs text-gray-700 mb-2">
+                                            In deep networks using Sigmoid, gradients get smaller and smaller during backprop (derivative of sigmoid is max 0.25). By the time the signal reaches early layers, the updates are effectively zero, and the network stops learning.
+                                        </p>
+                                        <p className="text-xs text-gray-700">
+                                            <strong>Solution:</strong> Use <strong>ReLU</strong> (derivative is 1 for positive x) and <strong>Residual Connections</strong> (ResNet).
+                                        </p>
+                                    </div>
+
+                                    <h4 className="font-bold text-md mt-6 mb-2">2. Backpropagation</h4>
+                                    <p className="text-sm text-gray-700 mb-2">How we update the weights. We compute the gradient of the Loss function w.r.t weights using the <strong>Chain Rule</strong>, and move in the opposite direction.</p>
+                                    <div className="bg-gray-50 p-3 rounded text-sm font-mono border-l-4 border-cyber-neonPink mb-4">
+                                        {'$\\frac{\\partial L}{\\partial w} = \\frac{\\partial L}{\\partial a} \\cdot \\frac{\\partial a}{\\partial z} \\cdot \\frac{\\partial z}{\\partial w}$'}
+                                        <br />
+                                        {'$w_{new} = w_{old} - \\alpha \\frac{\\partial L}{\\partial w}$'}
+                                    </div>
+
+                                    <h4 className="font-bold text-md mt-6 mb-2">3. Inference</h4>
+                                    <p className="text-sm text-gray-700 mb-2">Just run the Forward Pass once with trained weights. No Backprop.</p>
+                                </div>
+                            </section>
+
+                            {/* Section 2: Normalization (COMMENTED OUT TO TEST) */}
+                            {/*
+                            <section id="normalization" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <section id="normalization" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonPink"></span>
+                                    02. NORMALIZING FEATURE VALUES
+                                </h2>
+                                <p className="mb-6 text-gray-700">Scaling input features to a similar range. Critical for Deep Learning convergence.</p>
+                            </section>
+                            */}
+                            <div className="p-4 border border-orange-500 text-orange-500 mb-16">
+                                SECTION 2 (NORMALIZATION) TEMPORARILY DISABLED
+                            </div>
+
+
+                            {/* Section 3: CNN */}
+                            <section id="cnn" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonYellow mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonYellow"></span>
+                                    03. CONVOLUTIONAL NEURAL NETWORKS (CNN)
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Vision</span>
+                                    <span className="tag tag-lin">Spatial</span>
+                                    <span className="tag">Filters</span>
+                                </div>
+                                <p className="text-gray-600 italic mb-4">Will dive deeper in future modules...</p>
+                                <div className="cyber-card p-4 bg-yellow-50 border-l-4 border-cyber-neonYellow">
+                                    <h4 className="font-bold text-md mb-2">Brief Summary</h4>
+                                    <p className="text-sm text-gray-700">
+                                        Specialized for grid-like data (Images). Uses <strong>Convolutions</strong> (sliding filters) to detect local patterns (edges, shapes) regardless of position.
+                                    </p>
+                                </div>
+                            </section>
+
+                            {/* Section 4: RNN */}
+                            <section id="rnn" className="mb-16 border-b-2 border-dashed border-gray-300 pb-10 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonBlue"></span>
+                                    04. RECURRENT NEURAL NETWORKS (RNN)
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">Sequence</span>
+                                    <span className="tag tag-lin">Temporal</span>
+                                    <span className="tag">Memory</span>
+                                </div>
+                                <p className="text-gray-600 italic mb-4">Will dive deeper in future modules...</p>
+                                <div className="cyber-card p-4 bg-blue-50 border-l-4 border-cyber-neonBlue">
+                                    <h4 className="font-bold text-md mb-2">Brief Summary</h4>
+                                    <p className="text-sm text-gray-700">
+                                        Specialized for sequential data (Text, Time-series). Has an internal "hidden state" (memory) that passes information from previous steps to the current step.
+                                    </p>
+                                </div>
+                            </section>
+
+                            {/* Section 5: Transformers */}
+                            <section id="transformers" className="mb-16 scroll-mt-24">
+                                <h2 className="text-2xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2">
+                                    <span className="w-2 h-6 bg-cyber-neonPink"></span>
+                                    05. TRANSFORMERS
+                                </h2>
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    <span className="tag tag-reg">NLP</span>
+                                    <span className="tag tag-lin">Attention</span>
+                                    <span className="tag">SOTA</span>
+                                </div>
+                                <p className="text-gray-600 italic mb-4">Will dive deeper in future modules...</p>
+                                <div className="cyber-card p-4 bg-pink-50 border-l-4 border-cyber-neonPink">
+                                    <h4 className="font-bold text-md mb-2">Brief Summary</h4>
+                                    <p className="text-sm text-gray-700">
+                                        Propels modern AI (GPT, BERT). Replaces RNNs with <strong>Self-Attention</strong> mechanisms efficiently processing entire sequences in parallel.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <div className="mt-12 pt-8 border-t border-gray-300 flex justify-between">
+                                <a href="./3_unsupervised.html" className="font-bold text-cyber-neonBlue hover:text-cyber-neonPink transition-colors">
+                                    &laquo; PREV: UNSUPERVISED
+                                </a>
+                                <span className="text-gray-400 font-mono text-sm">END_OF_MANUAL_V1</span>
+                            </div>
+
+                        </main>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<DeepLearningPage />);
+    </script>
+</body>
+
+</html>
