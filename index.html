@@ -728,6 +728,84 @@
       window.addEventListener('resize', onResize);
       buildRain();
 
+      /* ---------- Terminal Process Logs ---------- */
+      const numTermCols = 24; // Up to 24 columns for super ultrawide
+      const termColumns = Array.from({ length: numTermCols }, () => []);
+      const maxLogs = 100; // Expanded vertical coverage
+      
+      const logSnippetsLeft = [
+        "sys.init(0x00) -> SUCCESS", 
+        "allocating mem... OK [0x2A4F]", 
+        "CONNECT TCP 10.0.0.1:443",
+        "WARN: buffer overflow detected at 0x0F", 
+        "kernel.boot() -> mounting /dev/sda1", 
+        "thread_spawn(40) -> PID 8934",
+        "EXEC /bin/sh -c 'rm -rf /tmp/cache'", 
+        "[OK] module loaded: cyber_core.so",
+        "accessing main.db -> query OK (12ms)", 
+        "TIMEOUT 404: peer unreachable",
+        "socket.listen(8080) -> READY",
+        "SIGKILL received on process 442",
+        "dumping core... saved to /var/crash", 
+        "cache miss: fetching from remote", 
+        "rebuilding index -> tree balanced",
+        "scan network -> 4 hosts up"
+      ];
+
+      const logSnippetsRight = [
+        "decrypting hash [RSA-4096]", 
+        "fetching records... 2404 items", 
+        "SYNERGY protocol active (v2.4.1)", 
+        "bypassing firewall -> proxy 127.0.0.1", 
+        "AUTH REQUIRED: Enter passkey", 
+        "granting root... access level 9", 
+        "injecting payload [0x44 0x89 0xFA]",
+        "compiling neural net model",
+        "extracting telemetry data",
+        "tracing IP packets -> origin unknown",
+        "uploading firmware v3.11",
+        "synchronizing temporal nodes",
+        "parsing biometric logs",
+        "executing brute_force.sh",
+        "corrupting data cluster 04",
+        "establishing quantum link",
+        "downloading sub-routine 7A"
+      ];
+
+      const generateProgressBar = () => {
+        const percent = Math.floor(Math.random() * 100);
+        const bars = Math.floor(percent / 10);
+        const empty = 10 - bars;
+        return `[${'█'.repeat(bars)}${'░'.repeat(empty)}] ${percent.toString().padStart(3, ' ')}%`;
+      };
+
+      const generateLogLeft = (offsetMs = 0) => {
+        const time = new Date(Date.now() - offsetMs).toISOString().split('T')[1].slice(0, 8);
+        const snippet = logSnippetsLeft[Math.floor(Math.random() * logSnippetsLeft.length)];
+        const hex = Math.floor(Math.random() * 0xffff).toString(16).padStart(4, '0').toUpperCase();
+        return `[${time}] 0x${hex} - ${snippet}`;
+      };
+
+      const generateLogRight = (offsetMs = 0) => {
+        const time = new Date(Date.now() - offsetMs).toISOString().split('T')[1].slice(0, 8);
+        const snippet = logSnippetsRight[Math.floor(Math.random() * logSnippetsRight.length)];
+        const hex = Math.floor(Math.random() * 0xffff).toString(16).padStart(4, '0').toUpperCase();
+        
+        let output = `[${time}] 0x${hex} - ${snippet}`;
+        // Attach a progress bar ~40% of the time to make it wider
+        if (Math.random() > 0.6) {
+          output += ` ${generateProgressBar()}`;
+        }
+        return output;
+      };
+      
+      for (let i = 0; i < numTermCols; i++) {
+        for (let j = 0; j < maxLogs; j++) {
+          const offsetMs = (maxLogs - j) * 1000;
+          termColumns[i].push(generateLogLeft(offsetMs));
+        }
+      }
+
       const getProjectedPoint = (vx, vy, t, w, h) => {
         const proj = (vx - vy) * 0.004;
         const wave1 = Math.sin(proj - t);
@@ -887,6 +965,39 @@
             // Ocean movement is now calculated per-vertex in getProjectedPoint
             drawHexagon(cx, cy, hexRadius, t, breath, width, height);
           }
+        }
+
+        /* ----- Draw Terminal Logs (Desktop Only) ----- */
+        if (!isMobile()) {
+          ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.fillStyle = 'rgba(200, 0, 50, 0.28)'; // Drop opacity slightly since it fills the screen
+          ctx.shadowBlur = 0;
+
+          const colWidth = 320; // 320px per column
+          const visibleCols = Math.min(numTermCols, Math.max(2, Math.ceil(width / colWidth)));
+          
+          for (let c = 0; c < visibleCols; c++) {
+            const isRight = (c === visibleCols - 1);
+            const speed = 10 + (c % 5) * 3; // Speeds between 10 and 22 frames per line
+
+            if (frame % speed === 0) {
+              termColumns[c].shift();
+              termColumns[c].push(isRight ? generateLogRight(0) : generateLogLeft(0));
+            }
+
+            if (isRight) {
+              ctx.textAlign = 'right';
+              for (let j = 0; j < maxLogs; j++) {
+                ctx.fillText(termColumns[c][j], width - 20, 30 + j * 16);
+              }
+            } else {
+              ctx.textAlign = 'left';
+              for (let j = 0; j < maxLogs; j++) {
+                ctx.fillText(termColumns[c][j], 20 + c * colWidth, 30 + j * 16);
+              }
+            }
+          }
+          ctx.textAlign = 'left'; // reset
         }
 
         if (!reduced) raf = requestAnimationFrame(draw);
