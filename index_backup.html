@@ -1,1277 +1,2001 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haochen LI (Harry)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HARRY // GRAPH_OS — Haochen Li</title>
+<link rel="icon" type="image/png" href="./images/profile.png" />
 
-    <!-- 1. 引入 Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cyber: {
-                            black: '#020202',
-                            dark: '#050508',
-                            neonBlue: '#00c3d9',
-                            neonPink: '#d900d9',
-                            neonYellow: '#d9cc00',
-                            dim: 'rgba(0, 195, 217, 0.05)',
-                        }
-                    },
-                    fontFamily: {
-                        mono: ['Courier New', 'Courier', 'monospace'],
-                    }
-                }
-            }
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cyber: {
+            black:     '#020202',
+            dark:      '#050508',
+            darker:    '#0a0a12',
+            panel:     '#0c0c18',
+            line:      'rgba(0,195,217,0.18)',
+            neonBlue:  '#00e5ff',
+            neonCyan:  '#00c3d9',
+            neonPink:  '#ff00c8',
+            neonMag:   '#d900d9',
+            neonYellow:'#f5e663',
+            neonLime:  '#a7ff4c',
+            dim:       'rgba(0, 195, 217, 0.05)',
+            dimPink:   'rgba(255, 0, 200, 0.08)',
+          }
+        },
+        fontFamily: {
+          mono:    ['"JetBrains Mono"', '"Courier New"', 'Courier', 'monospace'],
+          display: ['"Share Tech Mono"', '"Courier New"', 'monospace'],
         }
-    </script>
+      }
+    }
+  };
+</script>
 
-    <!-- 2. 引入 React 和 ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-    <!-- 3. 引入 Babel -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- React -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- 4. 引入 SoundCloud Widget API -->
-    <script src="https://w.soundcloud.com/player/api.js"></script>
+<!-- SoundCloud Widget API (preloaded so window.SC is ready on first avatar click) -->
+<script src="https://w.soundcloud.com/player/api.js"></script>
 
-    <style>
-        body {
-            background-color: #020202;
-            color: #cccccc;
-            overflow-x: hidden;
-            font-family: 'Courier New', Courier, monospace;
-        }
+<style>
+  html, body {
+    background: #020202;
+    color: #e6fbff;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(0, 229, 255, 0.10), transparent 55%),
+      radial-gradient(ellipse at 85% 90%, rgba(255, 0, 200, 0.08), transparent 60%),
+      linear-gradient(180deg, #020205 0%, #04040a 100%);
+    min-height: 100vh;
+  }
 
-        /* 扫描线动画 */
-        @keyframes scrollScanlines {
-            0% {
-                background-position: 0 0;
-            }
+  /* ------- Scrollbar ------- */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #00c3d9; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #ff00c8; }
 
-            100% {
-                background-position: 0 100%;
-            }
-        }
+  /* ------- Scanlines ------- */
+  @keyframes scrollScanlines { 0% { background-position: 0 0; } 100% { background-position: 0 200px; } }
+  .scanlines {
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 229, 255, 0.03) 0px,
+      rgba(0, 229, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+    animation: scrollScanlines 8s linear infinite;
+    pointer-events: none; z-index: 60; mix-blend-mode: screen;
+  }
+  .vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: 59;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
+  }
 
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom,
-                    rgba(255, 255, 255, 0),
-                    rgba(255, 255, 255, 0) 50%,
-                    rgba(0, 0, 0, 0.1) 50%,
-                    rgba(0, 0, 0, 0.1));
-            background-size: 100% 4px;
-            z-index: 9999;
-            pointer-events: none;
-            animation: scrollScanlines 0.5s linear infinite;
-            opacity: 0.2;
-        }
+  /* ------- Glitch text ------- */
+  @keyframes glitch-1 {
+    0%,100%{clip-path:inset(0 0 90% 0)} 20%{clip-path:inset(40% 0 50% 0)}
+    40%{clip-path:inset(10% 0 80% 0)} 60%{clip-path:inset(60% 0 20% 0)}
+    80%{clip-path:inset(30% 0 55% 0)}
+  }
+  @keyframes glitch-2 {
+    0%,100%{clip-path:inset(80% 0 2% 0)} 20%{clip-path:inset(15% 0 70% 0)}
+    40%{clip-path:inset(55% 0 25% 0)} 60%{clip-path:inset(5% 0 85% 0)}
+    80%{clip-path:inset(70% 0 10% 0)}
+  }
+  .glitch-text { position: relative; display: inline-block; }
+  .glitch-text::before, .glitch-text::after {
+    content: attr(data-text); position: absolute; inset: 0;
+    background: transparent; overflow: hidden; pointer-events: none;
+  }
+  .glitch-text::before { color: #00e5ff; transform: translate(-2px, 1px); animation: glitch-1 2.6s infinite linear alternate-reverse; opacity: .9; }
+  .glitch-text::after  { color: #ff00c8; transform: translate( 2px,-1px); animation: glitch-2 3.1s infinite linear alternate-reverse; opacity: .9; }
 
-        .cyber-card {
-            clip-path: polygon(0 0,
-                    100% 0,
-                    100% calc(100% - 20px),
-                    calc(100% - 20px) 100%,
-                    0 100%);
-            border-left: 2px solid #00c3d9;
-            position: relative;
-        }
+  /* ------- Reveal ------- */
+  @keyframes glitch-appear {
+    0%   { clip-path: inset(45% 0 45% 0); opacity: 0; transform: translateY(6px); }
+    20%  { clip-path: inset(10% 0 70% 0); opacity: 1; }
+    40%  { clip-path: inset(60% 0 10% 0); }
+    60%  { clip-path: inset(20% 0 40% 0); }
+    80%  { clip-path: inset(0 0 10% 0);   }
+    100% { clip-path: inset(0);            opacity: 1; transform: translateY(0); }
+  }
+  .glitch-appear { animation: glitch-appear .7s steps(6) both; }
 
-        .clip-path-polygon {
-            clip-path: polygon(0 0, 100% 0, 100% 70%, 95% 100%, 0 100%);
-        }
+  @keyframes fade-up { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+  .fade-up { animation: fade-up .45s ease-out both; }
 
-        /* 故障文字特效 */
-        .glitch-text {
-            position: relative;
-            color: #eeeeee;
-        }
+  /* ------- Cursor blink ------- */
+  @keyframes blink { 50% { opacity: 0; } }
+  .blink { animation: blink 1s steps(1) infinite; }
 
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #020202;
-        }
+  /* ------- Panel ------- */
+  .cyber-panel {
+    background:
+      linear-gradient(140deg, rgba(0,229,255,0.05), transparent 45%),
+      rgba(10, 12, 22, 0.82);
+    border: 1px solid rgba(0, 229, 255, 0.22);
+    backdrop-filter: blur(6px);
+    box-shadow:
+      0 0 0 1px rgba(0,229,255,0.05) inset,
+      0 10px 40px rgba(0,0,0,0.6);
+    clip-path: polygon(0 12px, 14px 0, calc(100% - 14px) 0, 100% 12px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .cyber-panel::before {
+    content: ""; position: absolute; left: 0; top: 18%; height: 64%; width: 2px;
+    background: linear-gradient(180deg, transparent, #00e5ff, transparent);
+    box-shadow: 0 0 8px #00e5ff;
+  }
+  .cyber-chip {
+    border: 1px solid rgba(0, 229, 255, 0.35);
+    background: rgba(0, 229, 255, 0.06);
+    color: #a9f3ff;
+    padding: 2px 10px;
+    font-size: 11px; letter-spacing: 0.06em;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  }
+  .cyber-chip.pink { border-color: rgba(255,0,200,0.45); background: rgba(255,0,200,0.08); color: #ffb8ea; }
 
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -1px 0 #d900d9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
+  .hud-corner { position: absolute; width: 18px; height: 18px; border: 1px solid #00e5ff; }
+  .hud-tl { top:-1px; left:-1px; border-right: none; border-bottom: none; }
+  .hud-tr { top:-1px; right:-1px; border-left: none; border-bottom: none; }
+  .hud-bl { bottom:-1px; left:-1px; border-right: none; border-top: none; }
+  .hud-br { bottom:-1px; right:-1px; border-left: none; border-top: none; }
 
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -1px 0 #00c3d9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
-        }
+  /* ------- Profile avatar ------- */
+  .avatar-ring {
+    position: relative; width: 128px; height: 128px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 20%, rgba(0,229,255,0.45), transparent 65%),
+                radial-gradient(circle at 70% 80%, rgba(255,0,200,0.35), transparent 65%),
+                #040410;
+    box-shadow: 0 0 30px rgba(0,229,255,0.25), inset 0 0 18px rgba(255,0,200,0.15);
+  }
+  @media (min-width: 768px) { .avatar-ring { width: 168px; height: 168px; } }
+  .avatar-ring img { position: absolute; inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); border-radius: 50%; object-fit: cover; }
 
-        @keyframes glitch-anim {
-            0% {
-                clip: rect(13px, 9999px, 81px, 0);
-            }
+  @keyframes audio-pulse {
+    0%{box-shadow:0 0 0 0 rgba(255,0,200,0.55),0 0 30px rgba(0,229,255,0.25)}
+    70%{box-shadow:0 0 0 16px rgba(255,0,200,0),0 0 30px rgba(0,229,255,0.25)}
+    100%{box-shadow:0 0 0 0 rgba(255,0,200,0),0 0 30px rgba(0,229,255,0.25)}
+  }
+  .avatar-playing { animation: audio-pulse 1.6s infinite; }
 
-            5% {
-                clip: rect(88px, 9999px, 19px, 0);
-            }
+  /* Orbiting particles */
+  @keyframes orbit1 {
+    from { transform: rotate(0deg)   translateX(80px) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+  }
+  @keyframes orbit2 {
+    from { transform: rotate(180deg) translateX(100px) rotate(0deg); }
+    to   { transform: rotate(540deg) translateX(100px) rotate(-360deg); }
+  }
+  @keyframes orbit3 {
+    from { transform: rotate(90deg)  translateX(120px) rotate(0deg); }
+    to   { transform: rotate(450deg) translateX(120px) rotate(-360deg); }
+  }
+  .orbit-wrap { position: absolute; inset: 0; pointer-events: none; }
+  .orbit-dot {
+    position: absolute; left: 50%; top: 50%; width: 6px; height: 6px;
+    border-radius: 50%; background: #00e5ff; box-shadow: 0 0 10px #00e5ff;
+    margin-left:-3px; margin-top:-3px; transform-origin: center;
+  }
+  .orbit-dot.d1 { animation: orbit1 9s linear infinite; }
+  .orbit-dot.d2 { animation: orbit2 13s linear infinite; background:#ff00c8; box-shadow: 0 0 10px #ff00c8; }
+  .orbit-dot.d3 { animation: orbit3 17s linear infinite; background:#f5e663; box-shadow: 0 0 10px #f5e663; }
 
-            10% {
-                clip: rect(3px, 9999px, 8px, 0);
-            }
+  /* ------- Rails (active centered, inactive stacked to the right) ------- */
+  .rails-area {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .rail-group {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 480px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transform: translate(-50%, -50%);
+    transform-origin: left center;
+    transition: transform .55s cubic-bezier(.4,0,.2,1),
+                opacity .5s ease,
+                filter .55s ease;
+    will-change: transform, opacity, filter;
+  }
+  .rail-group.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    filter: none;
+    z-index: 20;
+    pointer-events: auto;
+  }
+  /* Inactive rings peek out to the right, stacked behind */
+  .rail-group.slot-next {
+    transform: translate(calc(-50% + 140px), calc(-50% - 30px)) scale(0.78);
+    opacity: 0.4;
+    filter: blur(0.5px) saturate(.7);
+    z-index: 15;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .rail-group.slot-prev {
+    transform: translate(calc(-50% + 260px), calc(-50% + 8px)) scale(0.62);
+    opacity: 0.25;
+    filter: blur(1.4px) saturate(.55);
+    z-index: 10;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .rail-group.slot-next:hover,
+  .rail-group.slot-prev:hover {
+    opacity: 0.85;
+    filter: none;
+  }
 
-            15% {
-                clip: rect(30px, 9999px, 3px, 0);
-            }
+  .rail-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .rail-arrow {
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(0,229,255,0.5);
+    color: #00e5ff;
+    background: rgba(0,229,255,0.04);
+    font-size: 14px; cursor: pointer;
+    clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+    transition: all .25s;
+    text-shadow: 0 0 6px rgba(0,229,255,0.5);
+  }
+  .rail-arrow:hover {
+    background: rgba(255,0,200,0.14);
+    color: #fff;
+    border-color: #ff00c8;
+    box-shadow: 0 0 16px rgba(255,0,200,0.45);
+    text-shadow: 0 0 8px #ff00c8;
+  }
 
-            20% {
-                clip: rect(67px, 9999px, 2px, 0);
-            }
+  /* Folder-style rail panel: the top-left has a raised "tab" for the title.
+     Tab geometry: x = 12..190, y = 0..30. Main body starts at y = 30. */
+  .rail-panel {
+    position: relative;
+    flex: 1;
+    padding: 44px 22px 22px 28px;
+    background:
+      linear-gradient(140deg, rgba(0,229,255,0.06), transparent 45%),
+      rgba(10, 12, 22, 0.85);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.55);
+    clip-path: polygon(
+      12px 0,
+      190px 0,
+      202px 30px,
+      calc(100% - 14px) 30px,
+      100% 44px,
+      100% calc(100% - 12px),
+      calc(100% - 12px) 100%,
+      10px 100%,
+      0 calc(100% - 12px),
+      0 44px,
+      0 30px,
+      12px 30px
+    );
+  }
+  .rail-panel::before {
+    /* Thin cyan line along the inside-left edge of the main body */
+    content: ""; position: absolute;
+    left: 0; top: 44px; bottom: 12px; width: 2px;
+    background: linear-gradient(180deg, transparent, rgba(0,229,255,0.5), transparent);
+    box-shadow: 0 0 8px rgba(0,229,255,0.6);
+  }
+  .rail-panel::after {
+    /* Faint neon border that follows the folder shape */
+    content: ""; position: absolute; inset: 0;
+    border: 1px solid rgba(0, 229, 255, 0.28);
+    clip-path: inherit;
+    pointer-events: none;
+  }
+  .rail-tag {
+    position: absolute;
+    top: 0; left: 12px;
+    width: 190px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; letter-spacing: .35em;
+    color: #00e5ff;
+    text-shadow: 0 0 8px rgba(0,229,255,0.65);
+    background: linear-gradient(180deg, rgba(0,229,255,0.14), rgba(0,229,255,0.04));
+    border-bottom: 1px solid rgba(0,229,255,0.35);
+    z-index: 2;
+  }
+  .rail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2px 0 6px;
+  }
+  .rail-items {
+    height: 430px;
+    overflow: hidden;
+    padding: 32px 2px 32px 2px;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+  }
 
-            100% {
-                clip: rect(58px, 9999px, 95px, 0);
-            }
-        }
+  .rail-panel.rail-breath::after {
+    animation: rail-breath-glow 2.8s ease-in-out infinite;
+  }
+  @keyframes rail-breath-glow {
+    0%,100% { border-color: rgba(0,229,255,0.32); box-shadow: inset 0 0 22px rgba(0,229,255,0.1); }
+    50%     { border-color: rgba(255,0,200,0.55); box-shadow: inset 0 0 30px rgba(255,0,200,0.15); }
+  }
 
-        @keyframes glitch-anim2 {
-            0% {
-                clip: rect(62px, 9999px, 21px, 0);
-            }
+  /* ------- Ring tabs (quick switcher above rails) ------- */
+  .ring-tabs {
+    display: flex; gap: 10px; align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+  }
+  .ring-tab {
+    flex: 0 0 170px;
+    width: 170px; height: 54px;
+    padding: 0 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-sizing: border-box;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; letter-spacing: .3em;
+    color: rgba(230, 251, 255, 0.55);
+    border: 1px solid rgba(0, 229, 255, 0.25);
+    background: linear-gradient(140deg, rgba(0,229,255,0.03), rgba(10,12,22,0.65));
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all .3s;
+    text-align: center; cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+  }
+  .ring-tab:hover { color: #a9f3ff; border-color: rgba(0,229,255,0.55); }
+  .ring-tab.active {
+    color: #fff;
+    border-color: #00e5ff;
+    background: linear-gradient(140deg, rgba(0,229,255,0.22), rgba(255,0,200,0.08));
+    box-shadow: 0 0 22px rgba(0,229,255,.4), inset 0 0 16px rgba(0,229,255,.18);
+    text-shadow: 0 0 10px #00e5ff;
+  }
+  .ring-tab.active.k-blogs {
+    border-color: #ff00c8;
+    background: linear-gradient(140deg, rgba(255,0,200,0.22), rgba(0,229,255,0.08));
+    box-shadow: 0 0 22px rgba(255,0,200,.4), inset 0 0 16px rgba(255,0,200,.18);
+    text-shadow: 0 0 10px #ff00c8;
+  }
+  .ring-tab.active.k-resources {
+    border-color: #f5e663;
+    background: linear-gradient(140deg, rgba(245,230,99,0.22), rgba(0,229,255,0.08));
+    box-shadow: 0 0 22px rgba(245,230,99,.35), inset 0 0 16px rgba(245,230,99,.18);
+    text-shadow: 0 0 10px #f5e663;
+  }
+  .ring-tab .tab-count {
+    display: inline-block; margin-left: 8px;
+    font-size: 10px; opacity: .65; letter-spacing: .15em;
+  }
+  .ring-tab-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    margin-right: 10px; vertical-align: middle;
+    background: currentColor; box-shadow: 0 0 8px currentColor;
+  }
 
-            5% {
-                clip: rect(40px, 9999px, 35px, 0);
-            }
+  /* ------- Inline expand profile panel (desktop) ------- */
+  .expand-slot {
+    position: relative;
+    width: 0;
+    transition: width .55s cubic-bezier(.4,0,.2,1);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .expand-slot.open { width: 460px; }
+  .expand-panel {
+    width: 440px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    padding: 26px 28px;
+    opacity: 0;
+    transform: translateX(-30px) scale(.96);
+    transition: opacity .45s .1s, transform .5s .1s;
+  }
+  .expand-slot.open .expand-panel { opacity: 1; transform: none; }
+  @keyframes expand-glitch {
+    0%   { clip-path: inset(40% 0 40% 0); filter: hue-rotate(90deg); }
+    30%  { clip-path: inset(0 40% 60% 0); }
+    60%  { clip-path: inset(60% 0 0 40%); filter: none; }
+    100% { clip-path: inset(0); }
+  }
+  .expand-slot.open .expand-panel { animation: expand-glitch .45s steps(5) both; animation-delay: .05s; }
 
-            10% {
-                clip: rect(93px, 9999px, 7px, 0);
-            }
+  /* ------- Neon glow utilities ------- */
+  .neon-glow-blue   { text-shadow: 0 0 10px rgba(0,229,255,.75), 0 0 22px rgba(0,229,255,.35); }
+  .neon-glow-pink   { text-shadow: 0 0 10px rgba(255,0,200,.75), 0 0 22px rgba(255,0,200,.35); }
+  .neon-glow-yellow { text-shadow: 0 0 9px  rgba(245,230,99,.75), 0 0 20px rgba(245,230,99,.3); }
+  .neon-box-blue { box-shadow: 0 0 18px rgba(0,229,255,.25), inset 0 0 12px rgba(0,229,255,.1); }
 
-            15% {
-                clip: rect(10px, 9999px, 60px, 0);
-            }
+  /* ------- Contact icon buttons (identity block) ------- */
+  .contact-icon {
+    width: 42px; height: 42px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(0,229,255,0.5);
+    color: #00e5ff;
+    background: linear-gradient(140deg, rgba(0,229,255,0.05), rgba(10,12,22,0.5));
+    clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+    transition: all .25s;
+  }
+  .contact-icon svg { width: 20px; height: 20px; }
+  .contact-icon:hover {
+    color: #fff;
+    background: rgba(255,0,200,0.18);
+    border-color: #ff00c8;
+    box-shadow: 0 0 16px rgba(255,0,200,0.5);
+    transform: translateY(-2px);
+  }
 
-            20% {
-                clip: rect(2px, 9999px, 4px, 0);
-            }
+  /* ------- Detail close button ------- */
+  .detail-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    color: #ff00c8; font-size: 18px;
+    border: 1px solid rgba(255,0,200,0.55);
+    background: rgba(12,6,18,0.75);
+    clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+    transition: all .2s;
+    z-index: 10;
+  }
+  .detail-close:hover {
+    color: #fff;
+    background: rgba(255,0,200,0.25);
+    box-shadow: 0 0 16px rgba(255,0,200,0.55);
+  }
 
-            100% {
-                clip: rect(35px, 9999px, 86px, 0);
-            }
-        }
+  .item-card {
+    position: relative;
+    border: 1px solid rgba(0,229,255,0.2);
+    background: linear-gradient(140deg, rgba(0,229,255,0.05), rgba(255,0,200,0.03));
+    padding: 12px 14px;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    transition: transform .35s, opacity .35s, border-color .3s, background .3s;
+    cursor: pointer;
+  }
+  .item-card:hover { border-color: rgba(255,0,200,0.55); }
+  .item-card.focus {
+    border-color: #00e5ff;
+    background: linear-gradient(140deg, rgba(0,229,255,0.14), rgba(255,0,200,0.09));
+    box-shadow: 0 0 28px rgba(0,229,255,.35), 0 0 0 1px rgba(0,229,255,0.4) inset;
+    transform: scale(1.04);
+    padding: 14px 16px;
+  }
+  .item-card.dim { opacity: .45; transform: scale(.94); }
+  .item-card.dim-2 { opacity: .22; transform: scale(.88); }
+  .item-card.disabled { opacity: .35; border-style: dashed; cursor: not-allowed; }
 
-        /* 鼠标悬停时的微弱噪点 */
-        @keyframes glitch-noise {
-            0% {
-                transform: translate(0);
-                filter: none;
-            }
+  /* Stagger fade-in on rail change */
+  @keyframes item-stagger { from{opacity:0; transform: translateY(8px);} to{opacity:1; transform:none;} }
+  .item-stagger { animation: item-stagger .4s ease-out both; }
 
-            20% {
-                transform: translate(-3px, 1px);
-                filter: hue-rotate(90deg) contrast(1.5);
-            }
+  /* ------- Data bus SVG ------- */
+  @keyframes dash-flow { to { stroke-dashoffset: -200; } }
+  .bus-path {
+    stroke-dasharray: 6 6;
+    animation: dash-flow 6s linear infinite;
+  }
+  .bus-path.ticking { animation-duration: 0.7s; }
 
-            40% {
-                transform: translate(3px, -2px);
-                filter: hue-rotate(-45deg) contrast(1.2) brightness(1.2);
-            }
+  /* ------- Detail view ------- */
+  .detail-wrap {
+    position: fixed; inset: 0;
+    z-index: 70;
+    display: flex; align-items: center; justify-content: center;
+    padding: 80px 24px 24px 24px;
+    pointer-events: none;
+  }
+  .detail-card {
+    pointer-events: auto;
+    width: min(960px, 92vw);
+    max-height: calc(100vh - 120px);
+    overflow: auto;
+  }
 
-            60% {
-                transform: translate(-2px, 3px);
-                filter: invert(0.2);
-            }
+  /* ------- Dossier ------- */
+  .dossier {
+    position: fixed; top: 0; right: 0; height: 100vh;
+    width: min(520px, 92vw);
+    z-index: 65;
+    transform: translateX(110%);
+    transition: transform .5s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+    background: linear-gradient(180deg, rgba(8,10,20,0.95), rgba(6,6,16,0.95));
+    border-left: 1px solid rgba(0,229,255,0.3);
+    box-shadow: -20px 0 40px rgba(0,0,0,0.6);
+  }
+  .dossier.open { transform: translateX(0); }
 
-            80% {
-                transform: translate(1px, -1px);
-                filter: hue-rotate(45deg) saturate(1.5);
-            }
+  /* ------- Mini profile tag (when detail open) ------- */
+  .profile-mini {
+    position: fixed; top: 20px; left: 20px; z-index: 68;
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 12px;
+    background: rgba(6,6,16,0.85);
+    border: 1px solid rgba(0,229,255,0.3);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    animation: fade-up .4s ease-out both;
+  }
 
-            100% {
-                transform: translate(0);
-                filter: none;
-            }
-        }
+  /* ------- Link underline ------- */
+  .link-cyber { position: relative; }
+  .link-cyber::after {
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px;
+    background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+    transform: scaleX(0); transform-origin: left; transition: transform .3s;
+  }
+  .link-cyber:hover::after { transform: scaleX(1); }
 
-        .group:hover .glitch-effect {
-            animation: glitch-noise 0.25s infinite linear;
-        }
+  /* ------- Mobile utility ------- */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 音乐播放时的律动动画 */
-        @keyframes audio-pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(217, 0, 217, 0.7);
-            }
+  /* ------- Reduced motion ------- */
+  @media (prefers-reduced-motion: reduce) {
+    .glitch-text::before, .glitch-text::after,
+    .orbit-dot.d1, .orbit-dot.d2, .orbit-dot.d3,
+    .bus-path, .rail-breath::after, .scanlines, .avatar-playing,
+    .glitch-appear, .item-stagger, .fade-up, .blink {
+      animation: none !important;
+    }
+    .scanlines { display: none; }
+  }
 
-            70% {
-                box-shadow: 0 0 0 15px rgba(217, 0, 217, 0);
-            }
+  /* Volume slider */
+  input[type="range"].cyber-slider {
+    -webkit-appearance: none; appearance: none; height: 4px; width: 100%;
+    background: linear-gradient(90deg, #00e5ff var(--val, 50%), rgba(0,229,255,0.15) var(--val, 50%));
+    border-radius: 2px; outline: none;
+  }
+  input[type="range"].cyber-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%;
+    background: #ff00c8; box-shadow: 0 0 10px #ff00c8; cursor: pointer;
+  }
+  input[type="range"].cyber-slider::-moz-range-thumb {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #ff00c8; box-shadow: 0 0 10px #ff00c8; cursor: pointer; border: none;
+  }
 
-            100% {
-                box-shadow: 0 0 0 0 rgba(217, 0, 217, 0);
-            }
-        }
+  /* Focus ring accessibility */
+  :focus-visible { outline: 2px solid #00e5ff; outline-offset: 2px; }
 
-        .animate-audio-pulse {
-            animation: audio-pulse 1.5s infinite;
-            border-color: #d900d9 !important;
-            /* 播放时边框变粉 */
-        }
-
-        /* 强烈的图片出场坏闪动画 */
-        @keyframes glitch-appear {
-            0% {
-                opacity: 0;
-                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-                filter: hue-rotate(90deg) contrast(2) blur(5px);
-                transform: scale(1.1);
-            }
-
-            10% {
-                opacity: 1;
-                clip-path: polygon(0 0, 100% 0, 100% 10%, 0 20%);
-            }
-
-            20% {
-                filter: invert(1);
-                transform: translate(-5px, 2px);
-            }
-
-            40% {
-                filter: hue-rotate(180deg);
-                transform: translate(5px, -2px);
-                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-            }
-
-            60% {
-                filter: contrast(1.5) brightness(1.5);
-            }
-
-            80% {
-                transform: translate(-2px, 2px);
-            }
-
-            100% {
-                filter: none;
-                transform: none;
-                opacity: 1;
-                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-            }
-        }
-
-        .animate-glitch-appear {
-            animation: glitch-appear 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-        }
-
-        /* 打字机光标 */
-        .cursor-blink {
-            display: inline-block;
-            width: 10px;
-            height: 1em;
-            background-color: #00c3d9;
-            animation: blink 1s step-end infinite;
-            vertical-align: text-bottom;
-            margin-left: 2px;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        /* 滑块样式重写 */
-        input[type="range"] {
-            -webkit-appearance: none;
-            background: transparent;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 12px;
-            width: 12px;
-            background: #d900d9;
-            cursor: pointer;
-            margin-top: -4px;
-            box-shadow: 0 0 5px #d900d9;
-        }
-
-        input[type="range"]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
-            background: #333;
-            border: 1px solid #555;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0a0a0f;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #00c3d9;
-        }
-    </style>
+  /* SoundCloud iframe is loaded but not shown — display:none still loads src and
+     allows the Widget API to control playback. Using real dimensions so the
+     widget initialises reliably across browsers. */
+  #sc-iframe { display: none; }
+</style>
 </head>
 
 <body>
-    <div id="root"></div>
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+  <canvas id="bg-canvas" class="fixed inset-0 w-full h-full" style="z-index:0;"></canvas>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+  <!-- SoundCloud widget (hidden via CSS, but loaded) -->
+  <iframe id="sc-iframe"
+    width="100%" height="166"
+    scrolling="no" frameBorder="no"
+    allow="autoplay"
+    src="https://w.soundcloud.com/player/?url=https://soundcloud.com/derekecycle/the-rebel-path&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
 
-        // --- 修复版：稳健的打字机组件 (避免乱码/拼写错误) ---
-        const Typewriter = ({ text, speed = 20, delay = 0, className = "", onComplete }) => {
-            const [displayLength, setDisplayLength] = useState(0); // 改用长度控制
-            const [isTyping, setIsTyping] = useState(false);
+  <div id="root" class="relative" style="z-index:1;"></div>
 
-            useEffect(() => {
-                // 重置状态
-                setDisplayLength(0);
-                setIsTyping(false);
+  <script type="text/babel" data-presets="react">
 
-                let i = 0;
-                let timer;
+  const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
-                const startTyping = () => {
-                    setIsTyping(true);
-                    timer = setInterval(() => {
-                        if (i < text.length) {
-                            i++;
-                            setDisplayLength(i); // 直接设置当前应该显示的长度
-                        } else {
-                            clearInterval(timer);
-                            setIsTyping(false);
-                            if (onComplete) onComplete();
-                        }
-                    }, speed);
-                };
+  /* ============================================================
+     INLINE DATA FALLBACK — minimal copy so page renders without fetch
+     (full content lives in /data/rings.json)
+     ============================================================ */
+  const FALLBACK_DATA = {
+    profile: {
+      name: 'Haochen "Harry" Li',
+      callsign: 'HARRY',
+      title: 'AI Engineer — Agentic Systems & Applied LLMs',
+      location: 'San Jose, CA',
+      tagline: 'Building agentic systems that ship.',
+      avatar: './images/profile.png',
+      educationShort: [
+        'Duke · M.Eng. AI · 2024–2025',
+        'HKU · B.Sc. CS & Actuarial · 2019–2024',
+      ],
+      educationFull: [],
+      experience: [],
+      skills: {},
+      contact: {
+        email: 'harryli12321@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/haochen-harry-li',
+        github: 'https://github.com/Harrisous',
+        location: 'San Jose, CA, USA',
+      },
+    },
+    projects: [
+      { id: 'PROJ_NEW_01', title: 'Gosvea Agentic RAG Chatbot', category: 'Production Agentic AI', description: 'Production AI support channel.', stack: ['LangChain','Pinecone','Groq'], link: null, image: './images/project_new_01.png' },
+    ],
+    blogs: [
+      { id: 'BLOG_01', title: 'How AI Sees Cats — Grad-CAM Visualization', category: 'Computer Vision · XAI', description: 'Grad-CAM on cats.', stack: ['PyTorch'], link: './blog/blog1/blog1.html', image: null },
+    ],
+    resources: [
+      { id: 'RES_01', title: 'CH_01 · Introduction to Machine Learning', category: 'Field Manual', description: 'Core concepts.', stack: ['Fundamentals'], link: './blog/blog2/1_introduction.html', image: null, active: true },
+    ],
+  };
 
-                const delayTimer = setTimeout(startTyping, delay);
-
-                return () => {
-                    clearTimeout(delayTimer);
-                    clearInterval(timer);
-                };
-            }, [text, speed, delay]);
-
-            return (
-                <span className={className}>
-                    {text.substring(0, displayLength)}
-                    {isTyping && <span className="cursor-blink"></span>}
-                </span>
-            );
+  /* ============================================================
+     Typewriter
+     ============================================================ */
+  const Typewriter = ({ text, speed = 18, startDelay = 0, onDone, className = '' }) => {
+    const [shown, setShown] = useState(0);
+    useEffect(() => {
+      setShown(0);
+      let cancelled = false;
+      const start = setTimeout(function tick() {
+        let i = 0;
+        const step = () => {
+          if (cancelled) return;
+          i++; setShown(i);
+          if (i < text.length) setTimeout(step, speed);
+          else onDone && onDone();
         };
+        step();
+      }, startDelay);
+      return () => { cancelled = true; clearTimeout(start); };
+    }, [text]);
+    return (
+      <span className={className}>
+        {text.slice(0, shown)}
+        <span className="blink text-cyber-neonBlue">▍</span>
+      </span>
+    );
+  };
 
-        // --- 0. 图标 ---
-        const Icons = {
-            Github: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" /><path d="M9 18c-4.51 2-5-2-7-2" /></svg>,
-            Linkedin: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg>,
-            Mail: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>,
-            Terminal: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5" /><line x1="12" x2="20" y1="19" y2="19" /></svg>,
-            Cpu: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><path d="M15 2v2" /><path d="M15 20v2" /><path d="M2 15h2" /><path d="M2 9h2" /><path d="M20 15h2" /><path d="M20 9h2" /><path d="M9 2v2" /><path d="M9 20v2" /></svg>,
-            Network: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="16" y="16" width="6" height="6" rx="1" /><rect x="2" y="16" width="6" height="6" rx="1" /><rect x="9" y="2" width="6" height="6" rx="1" /><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" /><path d="M12 12V8" /></svg>,
-            ChevronRight: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>,
-            ExternalLink: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" x2="21" y1="14" y2="3" /></svg>,
-            Code: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>,
-            Folder: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 2H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" /></svg>,
-            FileCode: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="m10 13-2 2 2 2" /><path d="m14 17 2-2-2-2" /></svg>,
-            ArrowRight: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>,
-            Layers: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" /><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" /><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" /></svg>,
-            Monitor: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2" /><line x1="8" x2="16" y1="21" y2="21" /><line x1="12" x2="12" y1="17" y2="21" /></svg>,
-            Zap: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>,
-            Heart: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>,
-            Music: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>,
-            Volume2: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></svg>,
-            Refresh: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" /></svg>,
-            GraduationCap: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>,
-            Target: ({ size, className }) => <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
-        };
+  /* ============================================================
+     Cyberpunk canvas background — layered neural net + matrix rain
+     + signal pulses + occasional glitch bars
+     ============================================================ */
+  const useCyberBackground = () => {
+    useEffect(() => {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let raf = 0, frame = 0;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        const projects = [
-            {
-                id: 'PROJ_001',
-                title: 'Blue-Devil-ChatBot',
-                category: 'Agentic AI',
-                description:
-                    'An agentic AI chatbot for Duke knowledge retrieval, built on the LangGraph framework with a multi-tool toolbox: existing API calls, targeted web scraping, and Tavily-powered open web search. Core tech stack: Web Scraping (bs4), LangGraph, agentic search, and production-grade API orchestration.',
-                stack: [
-                    'Python',
-                    'LangGraph',
-                    'LangChain',
-                    'Streamlit',
-                    'BeautifulSoup',
-                    'Tavily',
-                    'RESTful API',
-                    'AWS',
-                    'OpenAI API',
-                ],
-                link: 'https://github.com/Harrisous/AIPI590LLM-project-2-DukeChatbot',
-            },
-            {
-                id: 'PROJ_002',
-                title: 'Text-to-SQL',
-                category: 'LLM Fine-tuning',
-                description:
-                    "Fine-tuned a local LLM on the BIRD benchmark to boost text-to-SQL reasoning. Achieved ~50% accuracy gains on simple text-to-SQL tasks, intentionally trading off some performance on the most complex queries to optimize for real-world, everyday analytics use cases.",
-                stack: ['Python', 'Unsloth', 'PEFT (LoRA)', 'Local LLM', 'BIRD Database', 'Hugging Face'],
-                link: 'https://github.com/Duke-AIPI-LLM-Course/project-1-maiga',
-            },
-            {
-                id: 'PROJ_003',
-                title: 'Pido-AI-Pet',
-                category: 'Edge AI',
-                description:
-                    "An edge-native AI pet robot that lives entirely on a Raspberry Pi 4B, designed for comfort and companionship. Pido can track and follow its owner, interpret voice commands (“barks”), express emotions on an LCD, and actuate a tail and chassis using a battery-powered motor and servo stack.",
-                stack: [
-                    'Python',
-                    'Raspberry Pi 4B',
-                    'Edge AI',
-                    'OpenCV',
-                    'aruco',
-                    'Google Web Speech API',
-                    'SpeechRecognition',
-                    'Ultrasonic distance sensor',
-                    'DC motorized chassis',
-                    'Servo motors',
-                    'LCD screen display',
-                    'Camera',
-                    'Microphone',
-                    'Physical button',
-                ],
-                link: 'https://github.com/Harrisous/AIPI590AIPhysicialWorld-AIPet',
-            },
-            {
-                id: 'PROJ_004',
-                title: 'Stock-Market-Transformer',
-                category: 'Financial AI',
-                description:
-                    'A deep learning pipeline for stock prediction that fuses autoencoder-based market state embeddings with a Transformer enhanced by Mixture-of-Experts and multi-head attention. Deployed a working Streamlit app that delivers promising short-horizon opening price forecasts, with a roadmap for broader targets and tighter loss.',
-                stack: [
-                    'Python',
-                    'PyTorch',
-                    'Transformer architecture (DeepSeek V3–inspired)',
-                    'Mixture-of-Experts (MoE)',
-                    'Multi-head attention',
-                    'Autoencoder',
-                    'Financial time series modeling',
-                    'Streamlit',
-                ],
-                link: 'https://github.com/Harrisous/StockMarketTransformer',
-            },
-            {
-                id: 'PROJ_005',
-                title: 'Dual-Stream-Emotion-XAI',
-                category: 'Explainable AI',
-                description:
-                    'A dual-stream emotion analysis and XAI dashboard: Wav2Vec2 for acoustic emotion, RoBERTa + Whisper ASR for semantic sentiment, and PCA-based latent-space visualizations to contrast “how you sound” vs. “what you say” in side-by-side 3D embedding spaces. Surfaces clusters, nearest neighbors, and cross-modal conflicts (e.g., sarcasm) for human-centered explainability.',
-                stack: [
-                    'Python',
-                    'Streamlit',
-                    'Hugging Face',
-                    'Wav2Vec2',
-                    'RoBERTa',
-                    'Whisper ASR',
-                    'Plotly',
-                    'Librosa',
-                    'PCA',
-                    'joblib',
-                ],
-                link: 'https://github.com/Harrisous/XAI-Final-Project',
-            },
-            {
-                id: 'PROJ_006',
-                title: 'Sentinel-AI',
-                category: 'AML AI',
-                description:
-                    'An AI-native Anti-Money Laundering (AML) engine for blockchain wallets that scores risk in real time over 1B+ on-chain transactions, with a focus on USDT/USDC flows (~$2.9T monthly volume). Combines BigQuery-scale feature extraction with gradient-boosted models to flag high-risk entities from transaction graphs, smart-contract relationships, and KYC activity; awarded the Academic Award at the 2025 FINOS DTCC Hackathon.',
-                stack: [
-                    'Python',
-                    'Google BigQuery',
-                    'SQL',
-                    'XGBoost',
-                    'CatBoost',
-                    'LightGBM',
-                    'Random Forest',
-                    'Model evaluation',
-                    'Financial machine learning',
-                ],
-                link: 'https://github.com/finos-labs/dtcch-2025-OpenAML',
-            },
-            {
-                id: 'PROJ_007',
-                title: 'FlashBack',
-                category: 'Companion AI',
-                description:
-                    'An end-to-end, memory-augmented personal AI built on a Raspberry Pi with camera and mic, continuously capturing first-person lifelog video. A Flask + GCP backend syncs audio–video to cloud storage and exposes a Gemini-powered API so users can query past in-person interactions—who you met, what you discussed, and when—via a web UI. Winner of 1st place in the Education track at the 2024 Duke AI Hackathon.',
-                stack: [
-                    'Raspberry Pi',
-                    'Camera',
-                    'Microphone',
-                    'Full-stack development',
-                    'Python',
-                    'Flask',
-                    'Docker',
-                    'CI/CD',
-                    'GCP',
-                    'Gemini API',
-                    'Multimodal AI',
-                    'Audio–video processing pipeline',
-                ],
-                link: 'https://github.com/finos-labs/dtcch-2025-OpenAML',
-            },
-        ];
+      let width = 0, height = 0;
+      const resize = () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      };
+      resize();
 
-        const CyberpunkBackground = () => {
-            const canvasRef = useRef(null);
+      const isMobile = () => width < 768;
 
-            useEffect(() => {
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                let width, height;
-                let animationFrameId;
-                let frameCount = 0;
-
-                // Reverting to fewer layers, spread wider
-                const layers = [4, 7, 7, 4];
-                const nodes = [];
-                const connections = [];
-                const signals = [];
-
-                const initNet = () => {
-                    nodes.length = 0;
-                    connections.length = 0;
-
-                    // Logic to spread nodes wider across the screen (10% padding on sides)
-                    const availableWidth = width * 0.9;
-                    const xStart = width * 0.05;
-                    const layerSpacing = availableWidth / (layers.length - 1);
-
-                    layers.forEach((count, lIdx) => {
-                        // Old: const x = (lIdx + 1) * layerWidth;
-                        // New: Start from 5% width, spread evenly to 95%
-                        const x = xStart + (lIdx * layerSpacing);
-
-                        const layerHeight = height / (count + 1);
-                        for (let i = 0; i < count; i++) {
-                            nodes.push({
-                                x: x,
-                                y: (i + 1) * layerHeight,
-                                layer: lIdx,
-                                id: `${lIdx}-${i}`,
-                                flash: 0
-                            });
-                        }
-                    });
-
-                    for (let i = 0; i < nodes.length; i++) {
-                        for (let j = 0; j < nodes.length; j++) {
-                            if (nodes[j].layer === nodes[i].layer + 1) {
-                                connections.push({
-                                    from: nodes[i],
-                                    to: nodes[j]
-                                });
-                            }
-                        }
-                    }
-                };
-
-                const fireSignal = (fromNode, toNode, type) => {
-                    signals.push({
-                        from: fromNode,
-                        to: toNode,
-                        progress: 0,
-                        type: type,
-                        speed: 0.005 + Math.random() * 0.003
-                    });
-                };
-
-                const updateAndDrawNet = () => {
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = 'rgba(0, 195, 217, 0.02)';
-                    ctx.beginPath();
-                    connections.forEach(conn => {
-                        ctx.moveTo(conn.from.x, conn.from.y);
-                        ctx.lineTo(conn.to.x, conn.to.y);
-                    });
-                    ctx.stroke();
-
-                    if (frameCount % 600 === 0) {
-                        const inputs = nodes.filter(n => n.layer === 0);
-                        inputs.forEach(startNode => {
-                            startNode.flash = 0.8;
-                            const nextConns = connections.filter(c => c.from === startNode);
-                            nextConns.forEach(c => {
-                                if (Math.random() > 0.4) fireSignal(c.from, c.to, 'forward');
-                            });
-                        });
-                    }
-
-                    for (let i = signals.length - 1; i >= 0; i--) {
-                        const s = signals[i];
-                        s.progress += s.speed;
-
-                        const currX = s.from.x + (s.to.x - s.from.x) * s.progress;
-                        const currY = s.from.y + (s.to.y - s.from.y) * s.progress;
-
-                        ctx.fillStyle = s.type === 'forward' ? 'rgba(0, 195, 217, 0.4)' : 'rgba(217, 0, 217, 0.4)';
-                        ctx.shadowBlur = 3;
-                        ctx.shadowColor = ctx.fillStyle;
-                        ctx.beginPath();
-                        ctx.arc(currX, currY, 1.5, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-
-                        if (s.progress >= 1) {
-                            s.to.flash = 0.8;
-
-                            if (s.type === 'forward') {
-                                if (s.to.layer < layers.length - 1) {
-                                    const nextConns = connections.filter(c => c.from === s.to);
-                                    if (nextConns.length > 0) {
-                                        const target = nextConns[Math.floor(Math.random() * nextConns.length)];
-                                        fireSignal(s.to, target.to, 'forward');
-
-                                        if (Math.random() > 0.7 && nextConns.length > 1) {
-                                            const target2 = nextConns[Math.floor(Math.random() * nextConns.length)];
-                                            fireSignal(s.to, target2.to, 'forward');
-                                        }
-                                    }
-                                } else {
-                                    const prevConns = connections.filter(c => c.to === s.to);
-                                    prevConns.forEach(c => {
-                                        if (Math.random() > 0.3) fireSignal(c.to, c.from, 'backward');
-                                    });
-                                }
-                            } else if (s.type === 'backward') {
-                                if (s.to.layer > 0) {
-                                    const prevConns = connections.filter(c => c.to === s.to);
-                                    if (prevConns.length > 0) {
-                                        const target = prevConns[Math.floor(Math.random() * prevConns.length)];
-                                        fireSignal(s.to, target.from, 'backward');
-                                    }
-                                }
-                            }
-                            signals.splice(i, 1);
-                        }
-                    }
-
-                    nodes.forEach(n => {
-                        if (n.flash > 0) n.flash -= 0.01;
-
-                        ctx.beginPath();
-                        ctx.arc(n.x, n.y, 3 + n.flash * 2, 0, Math.PI * 2);
-
-                        if (n.flash > 0.5) {
-                            ctx.fillStyle = 'rgba(230, 230, 230, 0.6)';
-                        } else {
-                            ctx.fillStyle = n.layer === 0 || n.layer === layers.length - 1
-                                ? 'rgba(0, 195, 217, 0.15)'
-                                : 'rgba(30, 30, 30, 0.3)';
-                        }
-
-                        if (n.flash > 0.1) {
-                            ctx.shadowBlur = 6;
-                            ctx.shadowColor = n.layer === layers.length - 1 ? '#d900d9' : '#00c3d9';
-                        }
-
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-                    });
-                };
-
-                const drops = [];
-                const fontSize = 14;
-
-                const initRain = () => {
-                    if (width) {
-                        const columns = Math.floor(width / fontSize);
-                        for (let i = 0; i < columns; i++) {
-                            drops[i] = Math.random() * -100;
-                        }
-                    }
-                }
-
-                const drawRain = () => {
-                    ctx.fillStyle = 'rgba(0, 195, 217, 0.2)';
-                    ctx.font = fontSize + 'px monospace';
-
-                    for (let i = 0; i < drops.length; i++) {
-                        if (Math.random() > 0.98) continue;
-
-                        let text;
-                        const rand = Math.random();
-                        if (rand > 0.8) {
-                            text = String.fromCharCode(0x30A0 + Math.random() * 96);
-                        } else {
-                            text = Math.random() > 0.5 ? '1' : '0';
-                        }
-
-                        if (text === '1' || text === '0') {
-                            if (Math.random() > 0.995) ctx.fillStyle = '#d900d9';
-                            else if (Math.random() > 0.995) ctx.fillStyle = '#d9cc00';
-                            else ctx.fillStyle = 'rgba(0, 195, 217, 0.2)';
-                        } else {
-                            ctx.fillStyle = 'rgba(0, 195, 217, 0.2)';
-                        }
-
-                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                        if (drops[i] * fontSize > height && Math.random() > 0.98) {
-                            drops[i] = 0;
-                        }
-                        drops[i] += 0.3;
-                    }
-                }
-
-                const drawGlitch = () => {
-                    if (Math.random() > 0.98) {
-                        const x = Math.random() * width;
-                        const y = Math.random() * height;
-                        const w = Math.random() * 100 + 50;
-                        const h = Math.random() * 2 + 1;
-
-                        ctx.fillStyle = Math.random() > 0.5 ? '#d900d9' : '#d9cc00';
-                        ctx.globalAlpha = 0.15;
-                        ctx.fillRect(x, y, w, h);
-                        ctx.globalAlpha = 1.0;
-                    }
-                }
-
-                const init = () => {
-                    width = canvas.width = window.innerWidth;
-                    height = canvas.height = window.innerHeight;
-                    initRain();
-                    initNet();
-                };
-
-                const animate = () => {
-                    ctx.fillStyle = 'rgba(2, 2, 2, 0.08)';
-                    ctx.fillRect(0, 0, width, height);
-
-                    updateAndDrawNet();
-                    drawRain();
-                    drawGlitch();
-
-                    frameCount++;
-                    animationFrameId = requestAnimationFrame(animate);
-                };
-
-                const handleResize = () => { init(); };
-                window.addEventListener('resize', handleResize);
-
-                init();
-                animate();
-
-                return () => {
-                    window.removeEventListener('resize', handleResize);
-                    cancelAnimationFrame(animationFrameId);
-                };
-            }, []);
-
-            return <canvas ref={canvasRef} className="fixed inset-0 z-0 bg-cyber-black" />;
-        };
-
-        const ProjectViewer = () => {
-            const [activeId, setActiveId] = useState(projects[0].id);
-            const activeProject = projects.find(p => p.id === activeId);
-
-            return (
-                <div className="w-full mt-12 animate-fade-in-down" style={{ animationDelay: '0.2s' }}>
-                    <h2 className="text-2xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2 px-1 tracking-widest border-b border-cyber-neonBlue/30 pb-2">
-                        <Icons.Monitor className="text-cyber-neonPink" size={24} />
-                        <Typewriter text="// PROJECT_ARCHIVES" speed={30} delay={1000} />
-                    </h2>
-
-                    <div className="cyber-card flex flex-col md:flex-row gap-0 bg-cyber-dark/0 backdrop-blur-md border-t border-r border-b border-cyber-dim min-h-[500px]">
-
-                        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-cyber-neonBlue/20 bg-black/20 overflow-y-auto">
-                            <div className="p-4 border-b border-cyber-neonBlue/20 bg-cyber-neonBlue/5 flex items-center justify-between">
-                                <h3 className="text-xs font-mono text-cyber-neonBlue uppercase tracking-wider">
-                                    <Typewriter text="[ DIRECTORY ]" speed={20} delay={1200} />
-                                </h3>
-                                <div className="flex gap-1">
-                                    <span className="w-2 h-2 bg-cyber-neonPink animate-pulse"></span>
-                                    <span className="w-2 h-2 bg-cyber-neonBlue animate-pulse" style={{ animationDelay: '0.2s' }}></span>
-                                    <span className="w-2 h-2 bg-cyber-neonYellow animate-pulse" style={{ animationDelay: '0.4s' }}></span>
-                                </div>
-                            </div>
-                            <div className="p-2 space-y-1">
-                                {projects.map((project) => (
-                                    <button
-                                        key={project.id}
-                                        onClick={() => setActiveId(project.id)}
-                                        className={`w-full text-left p-3 text-sm font-mono transition-all flex items-center gap-3 group relative overflow-hidden clip-path-polygon ${activeId === project.id
-                                            ? 'bg-cyber-neonBlue/20 text-cyber-neonBlue border-l-4 border-cyber-neonBlue'
-                                            : 'text-gray-500 hover:bg-white/5 hover:text-cyber-neonPink border-l-4 border-transparent hover:border-cyber-neonPink'
-                                            }`}
-                                    >
-                                        <Icons.Folder size={16} className={`${activeId === project.id ? 'text-cyber-neonBlue' : 'text-gray-600 group-hover:text-cyber-neonPink'}`} />
-                                        <span className="truncate font-bold tracking-tight">
-                                            {project.title.toUpperCase()}
-                                        </span>
-                                        {activeId === project.id && <span className="absolute right-2 text-[10px] animate-pulse">&lt;ACTIVE&gt;</span>}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="flex-1 p-6 md:p-8 relative flex flex-col bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]">
-                            <div className="absolute inset-0 bg-cyber-neonBlue/5 pointer-events-none"
-                                style={{ backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 2px, 3px 100%' }}></div>
-
-                            <div className="relative z-10 h-full flex flex-col">
-                                <div className="flex justify-between items-start mb-6 border-b border-dashed border-gray-700 pb-4">
-                                    <div className="space-y-2">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[10px] font-mono text-cyber-black px-1.5 py-0.5 bg-cyber-neonYellow font-bold uppercase">
-                                                <Typewriter key={activeProject.id + 'cat'} text={activeProject.category} speed={20} />
-                                            </span>
-                                            <span className="text-[10px] text-cyber-neonBlue font-mono">
-                                                <Typewriter key={activeProject.id + 'id'} text={`ID :: ${activeProject.id}`} speed={10} />
-                                            </span>
-                                        </div>
-                                        <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tighter glitch-text" data-text={activeProject.title}>
-                                            <Typewriter key={activeProject.id + 'title'} text={activeProject.title} speed={30} />
-                                        </h3>
-                                    </div>
-                                    <div className="hidden sm:flex p-2 border border-cyber-neonBlue/50 text-cyber-neonBlue shadow-[0_0_10px_rgba(0,243,255,0.3)]">
-                                        <Icons.FileCode size={24} />
-                                    </div>
-                                </div>
-
-                                <div className="mb-6 relative group overflow-hidden border-2 border-cyber-neonBlue/30 bg-black/50">
-                                    <div className="absolute top-0 left-0 bg-cyber-neonBlue text-black text-xs font-bold px-2 py-1 z-10">
-                                        VISUAL_RECORD: {activeProject.id}
-                                    </div>
-                                    <img
-                                        key={activeProject.id + 'img'}
-                                        src={`./images/project_${activeProject.id.split('_')[1]}.png`}
-                                        alt={activeProject.title}
-                                        className="w-full h-48 md:h-64 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 animate-glitch-appear"
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = `https://placehold.co/600x400/0a0a0f/00f3ff?text=NO_SIGNAL:${activeProject.id}`;
-                                        }}
-                                    />
-                                    <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] pointer-events-none"></div>
-                                </div>
-
-                                <div className="prose prose-invert max-w-none mb-8 flex-grow">
-                                    <p className="text-gray-300 leading-relaxed font-mono text-sm md:text-base border-l-2 border-cyber-neonPink pl-4">
-                                        <Typewriter key={activeProject.id + 'desc'} text={activeProject.description} speed={15} />
-                                    </p>
-                                </div>
-
-                                <div className="mt-auto pt-6 border-t border-cyber-neonBlue/20">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
-                                        <div>
-                                            <h4 className="text-[10px] font-mono text-cyber-neonBlue mb-3 uppercase tracking-wider flex items-center gap-1">
-                                                <Icons.Layers size={10} />
-                                                <Typewriter text="SYSTEM_DEPENDENCIES" speed={30} delay={500} />
-                                            </h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {activeProject.stack.map((tech, idx) => (
-                                                    <span key={activeProject.id + tech} className="text-xs px-2.5 py-1 bg-gray-900 text-gray-300 border border-gray-700 hover:border-cyber-neonBlue hover:text-cyber-neonBlue hover:shadow-[0_0_8px_rgba(0,243,255,0.5)] transition-all cursor-default clip-path-polygon">
-                                                        <Typewriter text={tech} speed={20} delay={idx * 100} />
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="sm:text-right">
-                                            <a href={activeProject.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-cyber-neonBlue text-black font-bold text-sm hover:bg-white hover:text-cyber-neonPink transition-all shadow-[4px_4px_0px_#ff00ff] hover:shadow-[2px_2px_0px_#ff00ff] hover:translate-x-1 hover:translate-y-1">
-                                                <span><Typewriter text="INITIATE_PROTOCOL" speed={30} /></span>
-                                                <Icons.ArrowRight size={16} />
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const SocialLink = ({ href, Icon, label, value, color }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-between p-3 border border-gray-800 bg-gray-900/50 hover:bg-gray-800/80 transition-all duration-200 group relative overflow-hidden`}>
-                <div className={`absolute top-0 left-0 w-1 h-full bg-transparent group-hover:bg-cyber-neonPink transition-colors`}></div>
-                <div className="flex items-center gap-3 text-gray-300 group-hover:text-cyber-neonBlue pl-2">
-                    {Icon}
-                    <span className="font-bold tracking-wider">
-                        <Typewriter text={label} speed={50} delay={500} />
-                    </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono group-hover:text-cyber-neonYellow">
-                    <span className="hidden sm:inline opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        {value}
-                    </span>
-                    <Icons.ChevronRight size={14} />
-                </div>
-            </a>
-        );
-
-        // --- 新增：互动点赞组件 ---
-        const LikeButton = () => {
-            const [likes, setLikes] = useState(() => {
-                return parseInt(localStorage.getItem('cyber_likes_v2') || '0');
+      /* ---------- Layered neural network (like a perceptron) ---------- */
+      let layerNodes = [];
+      let connections = [];
+      let signals = [];
+      const buildNet = () => {
+        layerNodes = []; connections = []; signals = [];
+        const layers = isMobile() ? [3, 5, 5, 3] : [4, 7, 7, 4];
+        const pad = width * 0.06;
+        const span = width - pad * 2;
+        const xStep = span / (layers.length - 1);
+        layers.forEach((count, li) => {
+          const x = pad + li * xStep;
+          const yStep = height / (count + 1);
+          for (let k = 0; k < count; k++) {
+            layerNodes.push({
+              x, y: (k + 1) * yStep,
+              layer: li, flash: 0,
+              baseX: x, baseY: (k + 1) * yStep,
+              jitter: Math.random() * Math.PI * 2,
             });
-            const [isLiked, setIsLiked] = useState(false);
+          }
+        });
+        for (let i = 0; i < layerNodes.length; i++) {
+          for (let j = 0; j < layerNodes.length; j++) {
+            if (layerNodes[j].layer === layerNodes[i].layer + 1) {
+              connections.push({ from: layerNodes[i], to: layerNodes[j] });
+            }
+          }
+        }
+      };
+      const fireSignal = (from, to, type) => {
+        signals.push({
+          from, to,
+          progress: 0, type,
+          speed: 0.004 + Math.random() * 0.004,
+        });
+      };
 
-            const handleLike = () => {
-                const newLikes = likes + 1;
-                setLikes(newLikes);
-                setIsLiked(true);
-                localStorage.setItem('cyber_likes_v2', newLikes.toString());
-            };
+      /* ---------- Drifting particles (organic layer on top of net) ---------- */
+      let nodes = [];
+      const mkNodes = () => {
+        const n = isMobile() ? 18 : 38;
+        nodes = Array.from({ length: n }).map(() => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          r: 1 + Math.random() * 1.6,
+          phase: Math.random() * Math.PI * 2,
+          c: Math.random() > 0.92 ? 'pink' : (Math.random() > 0.95 ? 'yellow' : 'blue'),
+        }));
+      };
 
-            return (
-                <button
-                    onClick={handleLike}
-                    className={`group relative flex items-center gap-3 px-6 py-3 border bg-black/50 hover:bg-cyber-neonPink/10 transition-all clip-path-polygon mt-6 ${isLiked ? 'text-cyber-neonPink border-cyber-neonPink shadow-[0_0_10px_rgba(255,0,255,0.3)]' : 'text-gray-400 border-gray-700 hover:text-cyber-neonPink hover:border-cyber-neonPink'}`}
-                >
-                    <Icons.Heart size={20} className={`transition-all duration-300 ${isLiked ? 'fill-cyber-neonPink scale-110' : 'group-hover:scale-110'}`} />
-                    <span className="font-mono font-bold tracking-widest text-lg">
-                        <Typewriter text={likes.toLocaleString()} speed={100} delay={800} />
-                        <span className="text-xs text-gray-600 ml-1">KUDOS</span>
-                    </span>
+      /* ---------- Matrix rain ---------- */
+      const chars = 'アイウエオカキクケコｻｼｽｾｿﾀﾁﾂﾃﾄ01{}[]<>#$%*+=<>/\\';
+      let cols = 0;
+      let drops = [];
+      const buildRain = () => {
+        const size = 18;
+        cols = Math.floor(width / size);
+        drops = Array.from({ length: cols }).map(() => Math.random() * -height);
+      };
 
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-neonPink opacity-75 ${isLiked ? '' : 'hidden'}`}></span>
-                        <span className={`relative inline-flex rounded-full h-3 w-3 bg-cyber-neonPink ${isLiked ? '' : 'hidden'}`}></span>
-                    </span>
-                </button>
-            );
+      const rebuildAll = () => { buildNet(); mkNodes(); buildRain(); };
+      rebuildAll();
+
+      const onResize = () => { resize(); rebuildAll(); };
+      window.addEventListener('resize', onResize);
+
+      const draw = () => {
+        frame++;
+        // Trail: slightly darker so things are more visible
+        ctx.fillStyle = 'rgba(2,2,6,0.18)';
+        ctx.fillRect(0, 0, width, height);
+
+        /* ----- Matrix rain ----- */
+        ctx.font = (isMobile() ? '13px' : '15px') + ' "JetBrains Mono", monospace';
+        for (let i = 0; i < drops.length; i++) {
+          if ((i + frame) % 2 !== 0) continue;
+          const y = drops[i];
+          const ch = chars[Math.floor(Math.random() * chars.length)];
+          const roll = Math.random();
+          if (roll > 0.988) {
+            ctx.shadowColor = '#00e5ff'; ctx.shadowBlur = 10;
+            ctx.fillStyle = 'rgba(220, 252, 255, 0.95)';
+          } else if (roll > 0.994) {
+            ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(255, 0, 200, 0.7)';
+          } else if (roll > 0.994) {
+            ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(245, 230, 99, 0.7)';
+          } else {
+            ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(0, 229, 255, 0.32)';
+          }
+          ctx.fillText(ch, i * 18, y);
+          ctx.shadowBlur = 0;
+          drops[i] += 16;
+          if (drops[i] > height && Math.random() > 0.97) drops[i] = -Math.random() * 200;
         }
 
-        // --- Theme Switcher Button ---
-        const ThemeSwitcher = () => {
-            return (
-                <a href="index_apple.html" className="fixed top-6 left-6 z-50 cyber-card px-4 py-2 flex items-center gap-2 hover:bg-white/5 transition-colors group cursor-pointer text-cyber-neonBlue border-l-2 border-cyber-neonBlue">
-                    <span className="text-xs font-bold tracking-widest group-hover:text-white transition-colors">
-                        <Typewriter text="SWITCH_MODE" speed={50} delay={0} />
-                    </span>
-                    <Icons.Zap size={16} className="group-hover:text-cyber-neonYellow transition-colors" />
-                </a>
-            );
-        };
+        /* ----- Neural network (layered, behind particles) ----- */
+        // Connections — very faint base
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.055)';
+        ctx.beginPath();
+        for (const c of connections) {
+          ctx.moveTo(c.from.x, c.from.y);
+          ctx.lineTo(c.to.x, c.to.y);
+        }
+        ctx.stroke();
 
-        const Portfolio = () => {
-            const [text, setText] = useState('');
-            const fullText = "Agentic_Systems | Gen_AI | RAG_Systems | Edge_AI | AI_Deployment";
-            const iframeRef = useRef(null);
-            const widgetRef = useRef(null);
-            const [musicPlaying, setMusicPlaying] = useState(false);
-            const [volume, setVolume] = useState(10);
+        // Periodically fire signals from input layer
+        if (frame % (isMobile() ? 240 : 180) === 0) {
+          const inputs = layerNodes.filter(n => n.layer === 0);
+          inputs.forEach(startNode => {
+            if (Math.random() > 0.4) {
+              startNode.flash = 0.9;
+              const next = connections.filter(c => c.from === startNode);
+              next.forEach(c => { if (Math.random() > 0.35) fireSignal(c.from, c.to, 'fwd'); });
+            }
+          });
+        }
 
-            useEffect(() => {
-                let index = 0;
-                const interval = setInterval(() => {
-                    setText(fullText.slice(0, index));
-                    index++;
-                    if (index > fullText.length) clearInterval(interval);
-                }, 40);
-
-                if (iframeRef.current && window.SC) {
-                    const widget = window.SC.Widget(iframeRef.current);
-                    widgetRef.current = widget;
-
-                    widget.bind(window.SC.Widget.Events.PLAY, () => setMusicPlaying(true));
-                    widget.bind(window.SC.Widget.Events.PAUSE, () => setMusicPlaying(false));
-                    widget.bind(window.SC.Widget.Events.FINISH, () => setMusicPlaying(false));
-
-                    widget.bind(window.SC.Widget.Events.READY, () => {
-                        widget.setVolume(10);
-                    });
+        // Update & draw signals
+        for (let s = signals.length - 1; s >= 0; s--) {
+          const sig = signals[s];
+          sig.progress += sig.speed;
+          const cx = sig.from.x + (sig.to.x - sig.from.x) * sig.progress;
+          const cy = sig.from.y + (sig.to.y - sig.from.y) * sig.progress;
+          const col = sig.type === 'fwd' ? 'rgba(0, 229, 255, 0.85)' : 'rgba(255, 0, 200, 0.85)';
+          ctx.fillStyle = col;
+          ctx.shadowColor = col; ctx.shadowBlur = 8;
+          ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI * 2); ctx.fill();
+          ctx.shadowBlur = 0;
+          if (sig.progress >= 1) {
+            sig.to.flash = 0.9;
+            const lastLayer = layerNodes.reduce((m, n) => Math.max(m, n.layer), 0);
+            if (sig.type === 'fwd') {
+              if (sig.to.layer < lastLayer) {
+                const nexts = connections.filter(c => c.from === sig.to);
+                if (nexts.length > 0) {
+                  const pick = nexts[Math.floor(Math.random() * nexts.length)];
+                  fireSignal(sig.to, pick.to, 'fwd');
+                  if (Math.random() > 0.78) {
+                    const p2 = nexts[Math.floor(Math.random() * nexts.length)];
+                    fireSignal(sig.to, p2.to, 'fwd');
+                  }
                 }
+              } else {
+                // backward propagation on reaching output
+                const prevs = connections.filter(c => c.to === sig.to);
+                prevs.forEach(c => { if (Math.random() > 0.6) fireSignal(c.to, c.from, 'bwd'); });
+              }
+            } else if (sig.type === 'bwd' && sig.to.layer > 0) {
+              const prevs = connections.filter(c => c.to === sig.to);
+              if (prevs.length > 0) {
+                const pick = prevs[Math.floor(Math.random() * prevs.length)];
+                fireSignal(sig.to, pick.from, 'bwd');
+              }
+            }
+            signals.splice(s, 1);
+          }
+        }
 
-                return () => clearInterval(interval);
-            }, []);
+        // Draw layer nodes with flash
+        for (const n of layerNodes) {
+          if (n.flash > 0) n.flash -= 0.012;
+          n.jitter += 0.02;
+          const r = 2.5 + n.flash * 2.5;
+          if (n.flash > 0.05) {
+            ctx.shadowColor = n.layer === 0 ? '#00e5ff' : (n.layer === 3 ? '#ff00c8' : '#a7ff4c');
+            ctx.shadowBlur = 14;
+          } else {
+            ctx.shadowBlur = 0;
+          }
+          ctx.fillStyle = n.flash > 0.5
+            ? 'rgba(240, 252, 255, 0.95)'
+            : `rgba(0, 229, 255, ${0.22 + n.flash * 0.6})`;
+          ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI * 2); ctx.fill();
+          ctx.shadowBlur = 0;
+        }
 
-            const handleAvatarClick = () => {
-                if (widgetRef.current) {
-                    widgetRef.current.toggle();
-                }
-            };
+        /* ----- Drifting organic particles ----- */
+        for (const n of nodes) {
+          n.x += n.vx; n.y += n.vy; n.phase += 0.012;
+          if (n.x < 0 || n.x > width) n.vx *= -1;
+          if (n.y < 0 || n.y > height) n.vy *= -1;
+        }
+        ctx.lineWidth = 1;
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const a = nodes[i], b = nodes[j];
+            const dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+            const maxD = isMobile() ? 130 : 190;
+            if (d < maxD) {
+              const alpha = (1 - d / maxD) * 0.55;
+              ctx.strokeStyle = `rgba(0, 229, 255, ${alpha})`;
+              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+            }
+          }
+        }
+        for (const n of nodes) {
+          const pulse = 0.7 + Math.sin(n.phase) * 0.3;
+          const col = n.c === 'pink'
+            ? `rgba(255, 0, 200, ${0.7 * pulse})`
+            : n.c === 'yellow'
+              ? `rgba(245, 230, 99, ${0.7 * pulse})`
+              : `rgba(0, 229, 255, ${0.75 * pulse})`;
+          ctx.fillStyle = col;
+          ctx.shadowColor = col; ctx.shadowBlur = 6;
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+          ctx.shadowBlur = 0;
+        }
 
-            const handleVolumeChange = (e) => {
-                const newVolume = e.target.value;
-                setVolume(newVolume);
-                if (widgetRef.current) {
-                    widgetRef.current.setVolume(newVolume);
-                }
-            };
+        /* ----- Occasional horizontal glitch bars ----- */
+        if (Math.random() > 0.985) {
+          const gy = Math.random() * height;
+          const gh = 1 + Math.random() * 3;
+          const gw = 120 + Math.random() * 240;
+          const gx = Math.random() * (width - gw);
+          ctx.fillStyle = Math.random() > 0.5
+            ? 'rgba(255, 0, 200, 0.18)'
+            : 'rgba(245, 230, 99, 0.14)';
+          ctx.fillRect(gx, gy, gw, gh);
+        }
 
-            return (
-                <div className="min-h-screen font-mono selection:bg-cyber-neonPink selection:text-white relative">
-                    <div className="scanlines"></div>
+        /* ----- Occasional radial pulse on a random particle ----- */
+        if (frame % 220 === 0 && nodes.length > 2) {
+          const a = nodes[Math.floor(Math.random() * nodes.length)];
+          ctx.strokeStyle = 'rgba(255, 0, 200, 0.55)';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.arc(a.x, a.y, 18, 0, Math.PI * 2); ctx.stroke();
+        }
 
-                    <CyberpunkBackground />
+        if (!reduced) raf = requestAnimationFrame(draw);
+      };
+      draw();
 
-                    <ThemeSwitcher />
+      return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize); };
+    }, []);
+  };
 
-                    <main className="relative z-10 max-w-5xl mx-auto px-6 py-20 flex flex-col items-center">
+  /* ============================================================
+     SVG placeholder for projects missing images
+     ============================================================ */
+  const ImagePlaceholder = ({ id, label = 'NO_SIGNAL' }) => (
+    <div className="relative w-full h-full min-h-[160px] flex items-center justify-center overflow-hidden"
+         style={{
+           background: 'repeating-linear-gradient(135deg, rgba(0,229,255,0.04) 0 8px, transparent 8px 16px)',
+           border: '1px dashed rgba(0,229,255,0.35)'
+         }}>
+      <svg viewBox="0 0 400 200" className="w-full h-full opacity-80">
+        <defs>
+          <linearGradient id={`grad-${id}`} x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stopColor="#00e5ff" stopOpacity=".4" />
+            <stop offset="1" stopColor="#ff00c8" stopOpacity=".4" />
+          </linearGradient>
+        </defs>
+        <rect x="10" y="10" width="380" height="180" fill="none" stroke={`url(#grad-${id})`} strokeDasharray="4 6" />
+        <text x="200" y="95" textAnchor="middle" fill="#00e5ff" fontFamily="Share Tech Mono" fontSize="18" letterSpacing="4">{label}</text>
+        <text x="200" y="120" textAnchor="middle" fill="#ff00c8" fontFamily="JetBrains Mono" fontSize="12" letterSpacing="2">:: {id}</text>
+        <line x1="20" y1="150" x2="380" y2="150" stroke="#00e5ff" strokeOpacity=".4" />
+        <line x1="20" y1="160" x2="300" y2="160" stroke="#ff00c8" strokeOpacity=".3" />
+      </svg>
+    </div>
+  );
 
-                        <header className="flex flex-col items-center text-center space-y-8 mb-20 w-full max-w-4xl">
-                            {/* Profile Card Wrapper */}
-                            <div className="cyber-card w-full p-10 bg-cyber-dark/0 backdrop-blur-md flex flex-col items-center border-r border-b border-t border-white/5 relative overflow-hidden">
+  const SmartImage = ({ src, alt, id, className }) => {
+    const [err, setErr] = useState(!src);
+    useEffect(() => setErr(!src), [src]);
+    if (err) return <ImagePlaceholder id={id} />;
+    return <img src={src} alt={alt} className={className} onError={() => setErr(true)} />;
+  };
 
-                                {/* Avatar & Logic */}
-                                <div className="relative group cursor-pointer mb-6" onClick={handleAvatarClick}>
-                                    <iframe
-                                        ref={iframeRef}
-                                        id="sc-widget"
-                                        src="https://w.soundcloud.com/player/?url=https://soundcloud.com/derekecycle/the-rebel-path&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
-                                        width="100%"
-                                        height="166"
-                                        scrolling="no"
-                                        frameBorder="no"
-                                        allow="autoplay"
-                                        style={{ display: 'none' }}
-                                    ></iframe>
+  /* ============================================================
+     BGM via SoundCloud iframe
+     ============================================================ */
+  const useBgm = () => {
+    const [playing, setPlaying] = useState(false);
+    const [vol, setVol] = useState(50);
+    const widgetRef = useRef(null);
+    const readyRef = useRef(false);
 
-                                    <div className={`absolute -inset-2 border-2 border-dashed border-cyber-neonBlue rounded-full animate-[spin_10s_linear_infinite] opacity-40 ${musicPlaying ? 'animate-audio-pulse border-cyber-neonPink' : ''}`}></div>
-                                    <div className={`absolute -inset-1 bg-cyber-neonPink rounded-full opacity-20 blur-md group-hover:opacity-50 transition duration-300 ${musicPlaying ? 'opacity-60' : ''}`}></div>
-                                    <div className={`relative w-32 h-32 rounded-full overflow-hidden border-2 ${musicPlaying ? 'border-cyber-neonPink' : 'border-cyber-neonYellow'} bg-black transition duration-500`}>
-                                        <img
-                                            src="images/profile.png"
-                                            alt="Haochen LI"
-                                            className="w-full h-full object-cover group-hover:glitch-effect"
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = "https://ui-avatars.com/api/?name=Haochen+Li&background=0D8ABC&color=fff";
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-cyber-neonBlue whitespace-nowrap font-mono">
-                                        [ CLICK_TO_INIT_AUDIO ]
-                                    </div>
-                                </div>
+    const tryInit = () => {
+      if (widgetRef.current || !window.SC) return;
+      const iframe = document.getElementById('sc-iframe');
+      if (!iframe) return;
+      widgetRef.current = window.SC.Widget(iframe);
+      widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
+        readyRef.current = true;
+        widgetRef.current.setVolume(vol);
+      });
+      widgetRef.current.bind(window.SC.Widget.Events.PLAY,  () => setPlaying(true));
+      widgetRef.current.bind(window.SC.Widget.Events.PAUSE, () => setPlaying(false));
+      widgetRef.current.bind(window.SC.Widget.Events.FINISH,() => setPlaying(false));
+    };
 
-                                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${musicPlaying ? 'max-h-20 opacity-100 mb-6' : 'max-h-0 opacity-0 mb-0'}`}>
-                                    <div className="flex items-center gap-3 bg-black/60 px-4 py-2 border border-cyber-neonPink/30 rounded-full">
-                                        <Icons.Volume2 size={16} className="text-cyber-neonPink" />
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max="100"
-                                            value={volume}
-                                            onChange={handleVolumeChange}
-                                            className="w-32 h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyber-neonPink"
-                                            style={{
-                                                background: `linear-gradient(to right, #d900d9 0%, #d900d9 ${volume}%, #333 ${volume}%, #333 100%)`
-                                            }}
-                                        />
-                                        <span className="text-xs font-mono text-cyber-neonPink w-6 text-right">{volume}</span>
-                                    </div>
-                                </div>
+    useEffect(() => {
+      tryInit();
+      if (widgetRef.current) return;
+      // Poll briefly in case the SC script is still loading
+      let tries = 0;
+      const t = setInterval(() => {
+        tries++;
+        tryInit();
+        if (widgetRef.current || tries > 40) clearInterval(t);
+      }, 150);
+      return () => clearInterval(t);
+    }, []);
 
-                                {/* Name & Title */}
-                                <div className="space-y-4 flex flex-col items-center z-10 w-full">
-                                    <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter glitch-text" data-text="Haochen LI">
-                                        <Typewriter text="Haochen LI" speed={100} />
-                                    </h1>
-                                    <span className="text-xl text-cyber-neonPink font-bold block tracking-[0.2em]">
-                                        <Typewriter text="[ HARRY ]" speed={80} delay={1000} />
-                                    </span>
+    const toggle = () => {
+      tryInit();
+      if (widgetRef.current) widgetRef.current.toggle();
+    };
+    const setVolume = (v) => {
+      setVol(v);
+      if (widgetRef.current) widgetRef.current.setVolume(v);
+    };
+    return { playing, vol, toggle, setVolume };
+  };
 
-                                    <div className="flex items-center justify-center gap-2 text-cyber-neonBlue font-mono text-sm md:text-base h-6 bg-black/50 px-4 py-1 border border-cyber-neonBlue/30 mb-2 mt-4">
-                                        <Icons.Terminal size={14} className="animate-pulse" />
-                                        <span>{text}</span>
-                                        <span className="w-2 h-4 bg-cyber-neonBlue animate-pulse"></span>
-                                    </div>
-                                </div>
+  /* ============================================================
+     Profile Node (desktop)
+     ============================================================ */
+  const ContactIcons = ({ contact }) => (
+    <div className="flex items-center justify-center gap-3">
+      <a href={`mailto:${contact.email}`} aria-label="Email" title={contact.email} className="contact-icon">
+        {/* Envelope */}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" />
+          <path d="M3 6l9 7 9-7" />
+          <path d="M3 19l6-6 M21 19l-6-6" opacity="0.5" />
+        </svg>
+      </a>
+      <a href={contact.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn" className="contact-icon">
+        {/* LinkedIn "in" */}
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M4 4h3.6v3.6H4V4zm.3 5.1h3V20h-3V9.1zM9.8 9.1h2.87v1.5h.04c.4-.76 1.38-1.56 2.84-1.56 3.04 0 3.6 2 3.6 4.6V20h-3v-5.4c0-1.28-.02-2.94-1.8-2.94-1.8 0-2.08 1.4-2.08 2.85V20h-3V9.1z" />
+        </svg>
+      </a>
+      <a href={contact.github} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub" className="contact-icon">
+        {/* GitHub octocat */}
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 1.8c-5.63 0-10.2 4.57-10.2 10.2 0 4.5 2.92 8.32 6.97 9.67.51.1.7-.22.7-.49 0-.24-.01-.88-.01-1.72-2.84.62-3.44-1.37-3.44-1.37-.46-1.18-1.13-1.49-1.13-1.49-.93-.64.07-.62.07-.62 1.03.07 1.57 1.06 1.57 1.06.91 1.57 2.4 1.12 2.98.86.09-.67.36-1.12.65-1.38-2.27-.26-4.66-1.14-4.66-5.07 0-1.12.4-2.04 1.06-2.75-.11-.26-.46-1.3.1-2.72 0 0 .86-.28 2.83 1.05a9.8 9.8 0 0 1 5.15 0c1.97-1.33 2.83-1.05 2.83-1.05.56 1.42.21 2.46.1 2.72.66.71 1.06 1.63 1.06 2.75 0 3.94-2.4 4.81-4.68 5.06.37.32.7.94.7 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.19.6.71.49 4.04-1.35 6.96-5.17 6.96-9.67C22.2 6.37 17.63 1.8 12 1.8z" />
+        </svg>
+      </a>
+    </div>
+  );
 
-                                <div className="absolute top-4 right-4 opacity-20 pointer-events-none">
-                                    <Icons.Cpu size={64} className="text-cyber-neonBlue" />
-                                </div>
-                                <div className="absolute bottom-4 left-4 opacity-20 pointer-events-none">
-                                    <Icons.Code size={48} className="text-cyber-neonPink" />
-                                </div>
-                            </div>
-                        </header>
+  const ProfileNode = ({ profile, minimized, onToggleExpand, expanded, bgm, expandBtnRef }) => {
+    if (minimized) {
+      return (
+        <div className="profile-mini">
+          <img src={profile.avatar} alt="" className="w-10 h-10 rounded-full object-cover border border-cyber-neonBlue/50" />
+          <div className="leading-tight">
+            <div className="text-cyber-neonBlue text-sm font-bold tracking-widest neon-glow-blue">{profile.callsign}</div>
+            <div className="text-white/60 text-[11px]">{profile.title.split('—')[0].trim()}</div>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="relative">
+        <div className="orbit-wrap">
+          <span className="orbit-dot d1" />
+          <span className="orbit-dot d2" />
+          <span className="orbit-dot d3" />
+        </div>
+        <div className="flex flex-col items-center gap-5">
+          <button
+            aria-label="Toggle background music"
+            onClick={(e) => { e.stopPropagation(); bgm.toggle(); }}
+            className={`avatar-ring ${bgm.playing ? 'avatar-playing' : ''} outline-none`}
+          >
+            <img src={profile.avatar} alt={profile.name} />
+          </button>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mb-8">
-                            {/* Profile Card Refactored for better readability */}
-                            <div className="cyber-card md:col-span-2 bg-cyber-dark/0 backdrop-blur-md p-8 hover:bg-black/80 transition-colors group relative overflow-hidden">
-                                {/* Decor */}
-                                <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-cyber-neonBlue/5 rounded-full blur-3xl group-hover:bg-cyber-neonBlue/10 transition-all"></div>
+          {/* Volume slider */}
+          <div className="w-44">
+            <input
+              type="range" min="0" max="100" value={bgm.vol}
+              onChange={(e) => bgm.setVolume(parseInt(e.target.value, 10))}
+              className="cyber-slider"
+              style={{'--val': `${bgm.vol}%`}}
+              aria-label="Volume"
+            />
+            <div className="flex justify-between text-[11px] text-cyber-neonBlue/70 mt-1 font-mono tracking-wider">
+              <span>VOL {bgm.vol}</span><span>{bgm.playing ? '▶ PLAYING' : '◼ IDLE'}</span>
+            </div>
+          </div>
 
-                                <div className="absolute top-2 right-2 text-cyber-neonBlue opacity-50 group-hover:opacity-100 group-hover:rotate-180 transition-all duration-500">
-                                    <Icons.Cpu size={48} />
-                                </div>
+          <div className="cyber-panel relative px-7 py-6 text-center neon-box-blue">
+            <span className="hud-corner hud-tl" />
+            <span className="hud-corner hud-tr" />
+            <span className="hud-corner hud-bl" />
+            <span className="hud-corner hud-br" />
+            <div className="font-display text-cyber-neonBlue text-xs tracking-[0.35em] mb-3 neon-glow-blue">// IDENTITY</div>
+            <h1 className="glitch-text text-4xl md:text-6xl font-black tracking-tight text-white neon-glow-blue" data-text={profile.callsign}>
+              {profile.callsign}
+            </h1>
+            <div className="text-cyber-neonYellow mt-2 text-base md:text-lg font-bold neon-glow-yellow tracking-wide">{profile.name}</div>
+            <div className="text-white/85 mt-4 text-sm md:text-base leading-relaxed max-w-xs font-medium">
+              {profile.title}
+            </div>
+            <div className="mt-5 pt-4 border-t border-cyber-neonBlue/25 space-y-1.5">
+              {profile.educationShort.map((e, i) => (
+                <div key={i} className="text-xs md:text-sm text-cyber-neonCyan tracking-wide">{e}</div>
+              ))}
+            </div>
+            <div className="mt-5">
+              <ContactIcons contact={profile.contact} />
+            </div>
+            <button
+              ref={expandBtnRef}
+              onClick={onToggleExpand}
+              className="mt-5 w-full text-[11px] md:text-xs text-cyber-neonPink border border-cyber-neonPink/45 py-2.5 tracking-[0.3em] font-display hover:bg-cyber-neonPink/15 hover:neon-glow-pink transition-all"
+              aria-label={expanded ? 'Collapse profile' : 'Expand profile'}
+            >
+              {expanded ? '[◀] COLLAPSE_PROFILE' : '[▶] EXPAND_PROFILE'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-                                <h2 className="text-2xl font-bold text-cyber-neonYellow mb-6 flex items-center gap-2 uppercase tracking-widest border-b border-gray-800 pb-2">
-                                    <Icons.Zap size={20} />
-                                    <Typewriter text="// BACKGROUND" speed={50} delay={500} />
-                                </h2>
+  /* ============================================================
+     Rail (single) — vertical cover-flow of items
+     ============================================================ */
+  const RailItem = ({ item, posOffset, onOpen, isFocused }) => {
+    const absOffset = Math.abs(posOffset);
+    const className = [
+      'item-card item-stagger',
+      isFocused ? 'focus' : '',
+      absOffset === 1 ? 'dim' : '',
+      absOffset >= 2 ? 'dim-2' : '',
+      item.active === false ? 'disabled' : '',
+    ].join(' ');
 
-                                <div className="space-y-6 font-mono relative z-10">
-                                    {/* Role Section */}
-                                    <div className="group/role">
-                                        <h3 className="text-xs text-cyber-neonPink mb-2 uppercase tracking-wider flex items-center gap-2">
-                                            <Icons.Terminal size={12} />
-                                            <span>Target_Roles</span>
-                                        </h3>
-                                        <div className="flex flex-wrap gap-2">
-                                            {["Gen AI Engineer", "Machine Learning Engineer", "AI Solution Engineer"].map((role, i) => (
-                                                <span key={i} className="px-3 py-1 bg-cyber-neonBlue/10 border border-cyber-neonBlue/30 text-cyber-neonBlue text-xs md:text-sm font-bold clip-path-polygon hover:bg-cyber-neonBlue/20 transition-all cursor-default">
-                                                    {role}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
+    const handleClick = () => {
+      if (item.active === false) return;
+      onOpen(item);
+    };
+    return (
+      <div
+        className={className}
+        onClick={handleClick}
+        style={{ animationDelay: `${absOffset * 40}ms` }}
+        role="button"
+        tabIndex={isFocused ? 0 : -1}
+        onKeyDown={(e) => { if (e.key === 'Enter') handleClick(); }}
+      >
+        <div className="flex items-center justify-between gap-2">
+          <div className={`tracking-[0.25em] text-cyber-neonBlue/80 font-display ${isFocused ? 'text-[11px]' : 'text-[10px]'}`}>{item.id}</div>
+          {isFocused && item.active !== false && (
+            <div className="text-[10px] tracking-[0.2em] text-cyber-neonPink font-display blink neon-glow-pink">[ENTER]</div>
+          )}
+        </div>
+        <div className={`mt-1 ${isFocused ? 'text-xl md:text-2xl neon-glow-blue' : 'text-base'} font-bold text-white leading-tight`}>
+          {item.title}
+        </div>
+        {isFocused && (
+          <>
+            <div className="text-xs text-cyber-neonYellow tracking-wider mt-1.5 neon-glow-yellow">{item.category}</div>
+            {item.stack && item.stack.length > 0 && (
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {item.stack.slice(0, 5).map((s, i) => (
+                  <span key={i} className="cyber-chip">{s}</span>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  };
 
-                                    {/* Education Section - Timeline Style */}
-                                    <div>
-                                        <h3 className="text-xs text-cyber-neonPink mb-3 uppercase tracking-wider flex items-center gap-2">
-                                            <Icons.GraduationCap size={14} />
-                                            <span>Academic_Data</span>
-                                        </h3>
-                                        <div className="space-y-4 pl-2">
-                                            {/* Item 1 */}
-                                            <div className="relative pl-6 border-l border-gray-800 group-hover:border-cyber-neonBlue/30 transition-colors">
-                                                <span className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-black border border-cyber-neonYellow rounded-full shadow-[0_0_5px_rgba(217,204,0,0.5)]"></span>
-                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-                                                    <div className="text-white font-bold text-sm md:text-base tracking-wide">Duke University</div>
-                                                    <div className="text-[10px] text-cyber-neonYellow font-mono bg-cyber-neonYellow/10 px-1.5 rounded">MASTER</div>
-                                                </div>
-                                                <div className="text-gray-400 text-xs md:text-sm mt-1">Master of Engineering in Artificial Intelligence</div>
-                                            </div>
-                                            {/* Item 2 */}
-                                            <div className="relative pl-6 border-l border-gray-800 group-hover:border-cyber-neonBlue/30 transition-colors">
-                                                <span className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-black border border-gray-600 group-hover:border-cyber-neonBlue transition-colors rounded-full"></span>
-                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-                                                    <div className="text-white font-bold text-sm md:text-base tracking-wide">The University of Hong Kong</div>
-                                                    <div className="text-[10px] text-gray-500 font-mono border border-gray-800 px-1.5 rounded">BACHELOR</div>
-                                                </div>
-                                                <div className="text-gray-400 text-xs md:text-sm mt-1">Computer Science & Actuarial Science</div>
-                                            </div>
-                                        </div>
-                                    </div>
+  const Rail = ({ label, slot, items, focusedItemIndex, onChangeIndex, onOpen, isActive, onActivate }) => {
+    const railRef = useRef(null);
 
-                                    {/* Focus Section - Command Line Style */}
-                                    <div className="bg-black/40 p-4 border border-gray-800 border-l-4 border-l-cyber-neonBlue mt-4 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-1 opacity-20">
-                                            <Icons.Target size={40} />
-                                        </div>
-                                        <h3 className="text-[10px] text-gray-500 mb-2 uppercase flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 bg-cyber-neonBlue rounded-full animate-pulse"></span>
-                                            Current_Objective
-                                        </h3>
-                                        <p className="text-gray-300 text-sm leading-relaxed relative z-10">
-                                            Constructing and deploying <span className="text-cyber-neonBlue font-bold">autonomous Gen AI Systems</span> and optimizing advanced AI models for <span className="text-cyber-neonPink font-bold">edge devices</span>.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+    // Wheel scrolling (only on active rail)
+    useEffect(() => {
+      if (!isActive) return;
+      const el = railRef.current;
+      if (!el) return;
+      let lastTick = 0;
+      const onWheel = (e) => {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastTick < 150) return;
+        lastTick = now;
+        if (e.deltaY > 0) onChangeIndex(+1);
+        else if (e.deltaY < 0) onChangeIndex(-1);
+      };
+      el.addEventListener('wheel', onWheel, { passive: false });
+      return () => el.removeEventListener('wheel', onWheel);
+    }, [isActive, onChangeIndex]);
 
-                            {/* Contact Card - Moved & Full Width */}
-                            <div className="cyber-card md:col-span-2 bg-cyber-dark/0 backdrop-blur-md p-8 relative">
-                                <h2 className="text-xl font-bold text-cyber-neonPink mb-6 flex items-center gap-2 uppercase tracking-widest">
-                                    <Icons.Network size={18} />
-                                    <Typewriter text="// Contact_Info" speed={50} delay={1200} />
-                                </h2>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <SocialLink href="mailto:harryli12321@gmail.com" Icon={<Icons.Mail size={18} />} label="E_MAIL" value="harryli12321@gmail.com" />
-                                    <SocialLink href="https://www.linkedin.com/in/haochen-harry-li" Icon={<Icons.Linkedin size={18} />} label="LinkedIn" value="haochen-harry-li" />
-                                    <SocialLink href="https://github.com/Harrisous" Icon={<Icons.Github size={18} />} label="GitHub_PROFILE" value="Harrisous" />
-                                </div>
-                            </div>
+    const visible = useMemo(() => {
+      if (!items || items.length === 0) return [];
+      // Show up to ±2 around focused (5 items visible, center = focused)
+      const out = [];
+      const span = Math.min(2, Math.floor(items.length / 2));
+      for (let d = -span; d <= span; d++) {
+        let idx = (focusedItemIndex + d + items.length) % items.length;
+        out.push({ item: items[idx], offset: d, key: `${items[idx].id}-${d}` });
+      }
+      return out;
+    }, [focusedItemIndex, items]);
 
-                            {/* Blog Cache Card - Spark Projects */}
-                            <div className="cyber-card bg-cyber-dark/0 backdrop-blur-md p-8 group hover:border-l-4 hover:border-cyber-neonPink transition-all">
-                                <h2 className="text-xl font-bold text-cyber-neonBlue mb-6 flex items-center gap-2 uppercase tracking-widest">
-                                    <Icons.Code size={18} />
-                                    <Typewriter text="// Blog_Cache" speed={50} delay={1000} />
-                                </h2>
-                                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-                                    <a href="./blog/blog1/blog1.html" className="block p-4 border border-gray-800 bg-black/40 hover:bg-cyber-neonBlue/10 hover:border-cyber-neonBlue transition-all group/item relative">
-                                        <div className="flex justify-between items-start">
-                                            <span className="text-[10px] font-bold text-cyber-neonPink mb-1 block">
-                                                <Typewriter text="LOG_ENTRY_001" speed={30} delay={1500} />
-                                            </span>
-                                            <Icons.ExternalLink size={14} className="text-gray-600 group-hover/item:text-cyber-neonBlue" />
-                                        </div>
-                                        <h3 className="text-gray-200 font-bold group-hover/item:text-white group-hover/item:tracking-wide transition-all">
-                                            <Typewriter text="How AI Sees Cats: Grad-CAM" speed={20} delay={2000} />
-                                        </h3>
-                                        <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-cyber-neonBlue group-hover/item:w-full transition-all duration-300"></div>
-                                    </a>
-                                </div>
-                            </div>
+    return (
+      <div
+        ref={railRef}
+        className={`rail-group ${slot}`}
+        onClick={!isActive && onActivate ? (e) => { e.stopPropagation(); onActivate(); } : undefined}
+        role="region"
+        aria-label={`${label} rail${isActive ? ' (focused)' : ''}`}
+      >
+        {/* Arrows on LEFT, vertically centered */}
+        <div className="rail-arrows">
+          <button
+            onClick={(e) => { e.stopPropagation(); onChangeIndex(-1); }}
+            className="rail-arrow"
+            aria-label="Previous item"
+            tabIndex={isActive ? 0 : -1}
+          >▲</button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onChangeIndex(+1); }}
+            className="rail-arrow"
+            aria-label="Next item"
+            tabIndex={isActive ? 0 : -1}
+          >▼</button>
+        </div>
 
-                            {/* Field Manual Card - Systematic Manuals */}
-                            <div className="cyber-card bg-cyber-dark/0 backdrop-blur-md p-8 group hover:border-l-4 hover:border-cyber-neonYellow transition-all">
-                                <h2 className="text-xl font-bold text-cyber-neonYellow mb-6 flex items-center gap-2 uppercase tracking-widest">
-                                    <Icons.Terminal size={18} />
-                                    <Typewriter text="// FIELD_MANUAL" speed={50} delay={1000} />
-                                </h2>
-                                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-                                    <a href="./blog/blog2/index.html" className="block p-4 border border-gray-800 bg-black/40 hover:bg-cyber-neonBlue/10 hover:border-cyber-neonYellow transition-all group/item relative">
-                                        <div className="flex justify-between items-start">
-                                            <span className="text-[10px] font-bold text-cyber-neonYellow mb-1 block">
-                                                <Typewriter text="FIELD_MANUAL_001" speed={30} delay={2500} />
-                                            </span>
-                                            <Icons.ExternalLink size={14} className="text-gray-600 group-hover/item:text-cyber-neonYellow" />
-                                        </div>
-                                        <h3 className="text-gray-200 font-bold group-hover/item:text-white group-hover/item:tracking-wide transition-all">
-                                            <Typewriter text="Traditional ML Field Manual" speed={20} delay={3000} />
-                                        </h3>
-                                        <p className="text-xs text-gray-500 mt-1 font-mono">
-                                            <Typewriter text="> Bright_Mode_Enabled" speed={50} delay={3500} />
-                                        </p>
-                                        <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-cyber-neonYellow group-hover/item:w-full transition-all duration-300"></div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+        <div className={`rail-panel ${isActive ? 'rail-breath' : ''}`}>
+          <div className="rail-tag">// {label}</div>
 
-                        <ProjectViewer />
+          <div className="rail-header">
+            <div className="text-[10px] text-cyber-neonBlue/70 font-display tracking-widest">
+              {String(focusedItemIndex + 1).padStart(2, '0')} / {String((items || []).length).padStart(2, '0')}
+            </div>
+            <div className="text-[10px] text-cyber-neonPink/70 font-display tracking-[0.25em] blink">
+              [ SCROLL / ↑↓ ]
+            </div>
+          </div>
 
-                        <footer className="mt-20 text-center text-gray-600 text-xs font-mono z-10 w-full border-t border-gray-900 pt-8 pb-8">
-                            <p className="mb-2 uppercase tracking-widest">
-                                <Typewriter text="System_Version: 2.0.77 //" speed={20} delay={4000} />
-                                <span className="text-cyber-neonBlue">ONLINE</span>
-                            </p>
-                            <p>© 2025 Haochen Li. All rights reserved.</p>
-                            <p className="mt-2 text-[10px] text-gray-700">
-                                BGM: "The Rebel Path" by P.T. Adamczyk (Cyberpunk 2077 OST) via SoundCloud
-                            </p>
-                        </footer>
-                    </main>
+          <div className="rail-items">
+            {visible.map(({ item, offset, key }) => (
+              <RailItem
+                key={key}
+                item={item}
+                posOffset={offset}
+                isFocused={offset === 0}
+                onOpen={onOpen}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  /* ============================================================
+     Data bus — SVG line between profile and focused rail
+     ============================================================ */
+  const DataBus = ({ ticking }) => (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{zIndex: 5}}
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="busGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#00e5ff" stopOpacity=".0"/>
+          <stop offset=".5" stopColor="#00e5ff" stopOpacity=".6"/>
+          <stop offset="1" stopColor="#ff00c8" stopOpacity=".6"/>
+        </linearGradient>
+      </defs>
+      <path d="M 28 50 C 45 40, 62 60, 85 50"
+            stroke="url(#busGrad)" fill="none" strokeWidth="0.3"
+            vectorEffect="non-scaling-stroke"
+            className={`bus-path ${ticking ? 'ticking' : ''}`} />
+    </svg>
+  );
+
+  /* ============================================================
+     Dossier panel (slide-in from right)
+     ============================================================ */
+  const Dossier = ({ profile, open, onClose }) => {
+    useEffect(() => {
+      if (!open) return;
+      const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+      window.addEventListener('keydown', onKey);
+      return () => window.removeEventListener('keydown', onKey);
+    }, [open, onClose]);
+
+    return (
+      <aside className={`dossier ${open ? 'open' : ''}`} aria-hidden={!open}>
+        <div className="p-6 md:p-8 space-y-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[11px] text-cyber-neonBlue/70 font-display tracking-[0.3em]">// DOSSIER</div>
+              <h2 className="text-2xl md:text-3xl font-black text-white">{profile.name}</h2>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-cyber-neonPink border border-cyber-neonPink/50 w-9 h-9 flex items-center justify-center hover:bg-cyber-neonPink/10"
+              aria-label="Close dossier"
+            >✕</button>
+          </div>
+
+          {/* Education */}
+          <section>
+            <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display">// EDUCATION</h3>
+            <div className="space-y-4">
+              {profile.educationFull && profile.educationFull.map((e, i) => (
+                <div key={i} className="cyber-panel relative p-4">
+                  <span className="hud-corner hud-tl" />
+                  <span className="hud-corner hud-br" />
+                  <div className="flex justify-between items-start gap-3 flex-wrap">
+                    <div className="text-white font-bold">{e.school}</div>
+                    <div className="text-[11px] text-cyber-neonYellow">{e.dates}</div>
+                  </div>
+                  <div className="text-cyber-neonCyan text-sm mt-1">{e.degree}</div>
+                  {e.gpa && <div className="text-[11px] text-cyber-neonPink mt-1">GPA {e.gpa}</div>}
+                  {e.courses && e.courses.length > 0 && (
+                    <>
+                      <div className="text-[10px] text-cyber-neonBlue/60 tracking-widest mt-3 mb-1">// KEY COURSES</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {e.courses.map((c, k) => <span key={k} className="cyber-chip">{c}</span>)}
+                      </div>
+                    </>
+                  )}
                 </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Experience */}
+          {profile.experience && profile.experience.length > 0 && (
+            <section>
+              <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display">// EXPERIENCE</h3>
+              <div className="space-y-4">
+                {profile.experience.map((x, i) => (
+                  <div key={i} className="cyber-panel relative p-4">
+                    <span className="hud-corner hud-tl" />
+                    <span className="hud-corner hud-br" />
+                    <div className="flex justify-between items-start gap-3 flex-wrap">
+                      <div className="text-white font-bold">{x.company}</div>
+                      <div className="text-[11px] text-cyber-neonYellow">{x.dates}</div>
+                    </div>
+                    <div className="text-cyber-neonCyan text-sm mt-1">{x.role}{x.location ? ` · ${x.location}` : ''}</div>
+                    {x.bullets && x.bullets.length > 0 && (
+                      <ul className="mt-2 space-y-1.5 text-[13px] text-white/80 leading-relaxed">
+                        {x.bullets.map((b, k) => (
+                          <li key={k} className="flex gap-2"><span className="text-cyber-neonPink">▸</span><span>{b}</span></li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Skills */}
+          {profile.skills && Object.keys(profile.skills).length > 0 && (
+            <section>
+              <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display">// SKILLS</h3>
+              <div className="space-y-3">
+                {Object.entries(profile.skills).map(([group, list]) => (
+                  <div key={group}>
+                    <div className="text-[11px] text-cyber-neonPink tracking-widest mb-2">{group}</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {list.map((s, i) => <span key={i} className="cyber-chip">{s}</span>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Contact */}
+          <section>
+            <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display">// CONTACT</h3>
+            <div className="space-y-2 text-sm">
+              <a href={`mailto:${profile.contact.email}`} className="link-cyber block text-white hover:text-cyber-neonPink">✉  {profile.contact.email}</a>
+              <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  {profile.contact.linkedin}</a>
+              <a href={profile.contact.github} target="_blank" rel="noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {profile.contact.github}</a>
+              <div className="text-white/70">📍  {profile.contact.location}</div>
+            </div>
+          </section>
+        </div>
+      </aside>
+    );
+  };
+
+  /* ============================================================
+     Inline expand-profile (desktop) — pops out to the right of profile,
+     pushes the rings. Has an X close button.
+     ============================================================ */
+  const ExpandProfile = ({ profile, onClose }) => (
+    <div className="expand-panel cyber-panel relative neon-box-blue">
+      <span className="hud-corner hud-tl" />
+      <span className="hud-corner hud-tr" />
+      <span className="hud-corner hud-bl" />
+      <span className="hud-corner hud-br" />
+
+      <button
+        onClick={onClose}
+        aria-label="Collapse profile"
+        className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center text-cyber-neonPink border border-cyber-neonPink/50 hover:bg-cyber-neonPink/15 hover:neon-glow-pink transition-colors z-10"
+        style={{clipPath:'polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)'}}
+      >✕</button>
+
+      <div className="mb-6">
+        <div className="text-[11px] text-cyber-neonBlue tracking-[0.35em] font-display neon-glow-blue">// DOSSIER</div>
+        <h2 className="text-3xl font-black text-white mt-1 neon-glow-blue">{profile.name}</h2>
+        <div className="text-cyber-neonYellow text-sm mt-1 neon-glow-yellow">{profile.title}</div>
+      </div>
+
+      {profile.educationFull && profile.educationFull.length > 0 && (
+        <section className="mb-6">
+          <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display neon-glow-blue">// EDUCATION</h3>
+          <div className="space-y-3">
+            {profile.educationFull.map((e, i) => (
+              <div key={i} className="cyber-panel relative p-4">
+                <span className="hud-corner hud-tl" />
+                <span className="hud-corner hud-br" />
+                <div className="flex justify-between items-start gap-3 flex-wrap">
+                  <div className="text-white font-bold text-base">{e.school}</div>
+                  <div className="text-[11px] text-cyber-neonYellow">{e.dates}</div>
+                </div>
+                <div className="text-cyber-neonCyan text-sm mt-1">{e.degree}</div>
+                {e.gpa && <div className="text-[11px] text-cyber-neonPink mt-1 neon-glow-pink">GPA {e.gpa}</div>}
+                {e.courses && e.courses.length > 0 && (
+                  <>
+                    <div className="text-[10px] text-cyber-neonBlue/70 tracking-widest mt-3 mb-1.5">// KEY COURSES</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {e.courses.map((c, k) => <span key={k} className="cyber-chip">{c}</span>)}
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {profile.experience && profile.experience.length > 0 && (
+        <section className="mb-6">
+          <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display neon-glow-blue">// EXPERIENCE</h3>
+          <div className="space-y-3">
+            {profile.experience.map((x, i) => (
+              <div key={i} className="cyber-panel relative p-4">
+                <span className="hud-corner hud-tl" />
+                <span className="hud-corner hud-br" />
+                <div className="flex justify-between items-start gap-3 flex-wrap">
+                  <div className="text-white font-bold text-base">{x.company}</div>
+                  <div className="text-[11px] text-cyber-neonYellow">{x.dates}</div>
+                </div>
+                <div className="text-cyber-neonCyan text-sm mt-1">{x.role}{x.location ? ` · ${x.location}` : ''}</div>
+                {x.bullets && x.bullets.length > 0 && (
+                  <ul className="mt-2 space-y-1.5 text-[13px] text-white/85 leading-relaxed">
+                    {x.bullets.map((b, k) => (
+                      <li key={k} className="flex gap-2"><span className="text-cyber-neonPink">▸</span><span>{b}</span></li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {profile.skills && Object.keys(profile.skills).length > 0 && (
+        <section className="mb-6">
+          <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display neon-glow-blue">// SKILLS</h3>
+          <div className="space-y-3">
+            {Object.entries(profile.skills).map(([group, list]) => (
+              <div key={group}>
+                <div className="text-[11px] text-cyber-neonPink tracking-widest mb-2 neon-glow-pink">{group}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {list.map((s, i) => <span key={i} className="cyber-chip">{s}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section>
+        <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display neon-glow-blue">// CONTACT</h3>
+        <div className="space-y-2 text-sm">
+          <a href={`mailto:${profile.contact.email}`} className="link-cyber block text-white hover:text-cyber-neonPink">✉  {profile.contact.email}</a>
+          <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  LinkedIn</a>
+          <a href={profile.contact.github} target="_blank" rel="noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {profile.contact.github}</a>
+          <div className="text-white/70">📍  {profile.contact.location}</div>
+        </div>
+      </section>
+    </div>
+  );
+
+  /* ============================================================
+     Ring tabs — quick switch above rails
+     ============================================================ */
+  const RING_META = {
+    projects:  { label: 'PROJECTS',  color: '#00e5ff', kls: '' },
+    blogs:     { label: 'BLOGS',     color: '#ff00c8', kls: 'k-blogs' },
+    resources: { label: 'RESOURCES', color: '#f5e663', kls: 'k-resources' },
+  };
+  const RingTabs = ({ rings, focused, counts, onSelect }) => (
+    <div className="ring-tabs">
+      {rings.map((r) => {
+        const meta = RING_META[r] || { label: r.toUpperCase(), color: '#00e5ff', kls: '' };
+        const active = focused === r;
+        return (
+          <button
+            key={r}
+            onClick={() => onSelect(r)}
+            className={`ring-tab ${active ? 'active' : ''} ${active ? meta.kls : ''}`}
+            style={active ? { color: '#fff' } : undefined}
+          >
+            <span className="ring-tab-dot" style={{ color: meta.color }} />
+            {meta.label}
+            <span className="tab-count">[{counts[r] || 0}]</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  /* ============================================================
+     Detail view (center card)
+     ============================================================ */
+  const DetailView = ({ item, ring, onClose }) => {
+    useEffect(() => {
+      const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+      window.addEventListener('keydown', onKey);
+      return () => window.removeEventListener('keydown', onKey);
+    }, [onClose]);
+
+    return (
+      <div className="detail-wrap" onClick={onClose}>
+        <div className="detail-card glitch-appear cyber-panel relative p-6 md:p-8" onClick={(e) => e.stopPropagation()}>
+          <span className="hud-corner hud-tl" />
+          <span className="hud-corner hud-tr" />
+          <span className="hud-corner hud-bl" />
+          <span className="hud-corner hud-br" />
+
+          {/* Close button at the panel's absolute top-right */}
+          <button
+            onClick={onClose}
+            className="detail-close"
+            aria-label="Close detail"
+            title="Close (ESC)"
+          >✕</button>
+
+          <div className="mb-4 pr-12">
+            <div className="flex items-center gap-3 text-[11px] font-display tracking-[0.3em] flex-wrap">
+              <span className="text-cyber-neonBlue neon-glow-blue">// {ring.toUpperCase()}</span>
+              <span className="text-cyber-neonPink neon-glow-pink">:: {item.id}</span>
+              {item.category && <span className="text-cyber-neonYellow neon-glow-yellow">[{item.category}]</span>}
+            </div>
+            <h2 className="glitch-text text-3xl md:text-5xl font-black text-white mt-2 leading-tight" data-text={item.title}>
+              {item.title}
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-5 gap-6 mb-6">
+            <div className="md:col-span-2">
+              <div className="h-48 md:h-64 relative overflow-hidden"
+                   style={{clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'}}>
+                <SmartImage
+                  src={item.image}
+                  alt={item.title}
+                  id={item.id}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {item.stack && item.stack.length > 0 && (
+                <div className="mt-4">
+                  <div className="text-[11px] text-cyber-neonBlue tracking-widest mb-2 font-display">// KEYWORDS</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {item.stack.map((s, i) => (
+                      <span key={i} className="cyber-chip fade-up" style={{animationDelay: `${i * 40}ms`}}>{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="md:col-span-3">
+              <div className="text-[11px] text-cyber-neonBlue tracking-widest mb-2 font-display">// INTRODUCTION</div>
+              <div className="text-white/85 text-[15px] md:text-base leading-relaxed whitespace-pre-wrap">
+                <Typewriter text={item.description || ''} speed={8} />
+              </div>
+              {item.link && (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 border border-cyber-neonPink text-cyber-neonPink hover:bg-cyber-neonPink hover:text-cyber-black transition-colors font-display tracking-[0.25em] text-sm"
+                  style={{clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'}}
+                >
+                  OPEN_EXTERNAL  →
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  /* ============================================================
+     Desktop Graph scene
+     ============================================================ */
+  const GraphScene = ({ data, bgm }) => {
+    const ringOrder = ['projects', 'blogs', 'resources']; // loop
+    const [focusedRing, setFocusedRing] = useState('projects');
+    const [itemIdx, setItemIdx] = useState({ projects: 0, blogs: 0, resources: 0 });
+    const [openItem, setOpenItem] = useState(null); // { item, ring }
+    const [expanded, setExpanded] = useState(false);
+    const [busTick, setBusTick] = useState(false);
+
+    const expandSlotRef = useRef(null);
+    const expandBtnRef = useRef(null);
+
+    // Slot assignment for horizontal carousel: active / slot-prev / slot-next
+    // Uses modular distance so no ring teleports across on cycle.
+    const slotFor = useCallback((ring) => {
+      if (ring === focusedRing) return 'active';
+      const f = ringOrder.indexOf(focusedRing);
+      const r = ringOrder.indexOf(ring);
+      const diff = (r - f + 3) % 3; // 1 = next, 2 = prev
+      return diff === 1 ? 'slot-next' : 'slot-prev';
+    }, [focusedRing]);
+
+    const pulseBus = () => {
+      setBusTick(true);
+      setTimeout(() => setBusTick(false), 400);
+    };
+
+    const cycleRing = useCallback((dir) => {
+      const cur = ringOrder.indexOf(focusedRing);
+      const next = (cur + dir + 3) % 3;
+      setFocusedRing(ringOrder[next]);
+      pulseBus();
+    }, [focusedRing]);
+
+    const setRingByClick = useCallback((ring) => {
+      setFocusedRing(ring);
+      pulseBus();
+    }, []);
+
+    const changeItem = useCallback((dir) => {
+      setItemIdx((prev) => {
+        const items = data[focusedRing] || [];
+        if (items.length === 0) return prev;
+        const cur = prev[focusedRing];
+        const next = (cur + dir + items.length) % items.length;
+        return { ...prev, [focusedRing]: next };
+      });
+      pulseBus();
+    }, [data, focusedRing]);
+
+    // Keyboard
+    useEffect(() => {
+      const handler = (e) => {
+        if (openItem) return;
+        if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); cycleRing(-1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); cycleRing(+1); }
+        else if (e.key === 'ArrowUp')    { e.preventDefault(); changeItem(-1); }
+        else if (e.key === 'ArrowDown')  { e.preventDefault(); changeItem(+1); }
+        else if (e.key === 'Enter') {
+          const items = data[focusedRing];
+          const item = items && items[itemIdx[focusedRing]];
+          if (item && item.active !== false) setOpenItem({ item, ring: focusedRing });
+        } else if (e.key === 'Escape' && expanded) {
+          setExpanded(false);
+        }
+      };
+      window.addEventListener('keydown', handler);
+      return () => window.removeEventListener('keydown', handler);
+    }, [cycleRing, changeItem, focusedRing, itemIdx, openItem, expanded, data]);
+
+    // Click-outside to collapse expand panel
+    useEffect(() => {
+      if (!expanded) return;
+      const onDown = (e) => {
+        const slot = expandSlotRef.current;
+        const btn  = expandBtnRef.current;
+        if (slot && slot.contains(e.target)) return;
+        if (btn && btn.contains(e.target)) return;
+        setExpanded(false);
+      };
+      document.addEventListener('mousedown', onDown);
+      return () => document.removeEventListener('mousedown', onDown);
+    }, [expanded]);
+
+    const counts = {
+      projects:  (data.projects  || []).length,
+      blogs:     (data.blogs     || []).length,
+      resources: (data.resources || []).length,
+    };
+
+    return (
+      <div className="relative" style={{minHeight: '100vh'}}>
+        <DataBus ticking={busTick} />
+
+        {/* Top HUD */}
+        <div className="absolute top-5 left-6 right-6 flex items-start justify-between text-[11px] font-display tracking-[0.25em] z-40">
+          <a href="./index_apple.html" className="text-cyber-neonBlue hover:text-cyber-neonPink link-cyber neon-glow-blue">[ SWITCH_MODE ]</a>
+          <div className="text-right leading-tight">
+            <div className="text-cyber-neonBlue neon-glow-blue">SYS :: <span className="text-cyber-neonYellow neon-glow-yellow">GRAPH_OS_v2.0</span></div>
+            <div className="text-white/55">KEYS :: ←→ ring  ↑↓ item  ENTER open  ESC back</div>
+          </div>
+        </div>
+
+        {/* Main layout — centered horizontally */}
+        <div className="absolute inset-0 pt-20 pb-12 flex items-stretch justify-center">
+          {/* Profile column (fixed width, centered content) */}
+          <div className="flex-shrink-0 w-[440px] flex items-center justify-center z-20">
+            <ProfileNode
+              profile={data.profile}
+              minimized={!!openItem}
+              onToggleExpand={() => setExpanded((v) => !v)}
+              expanded={expanded}
+              bgm={bgm}
+              expandBtnRef={expandBtnRef}
+            />
+          </div>
+
+          {/* Inline expand-profile slot (width animates 0 → 460) */}
+          <div
+            ref={expandSlotRef}
+            className={`expand-slot z-20 ${expanded ? 'open' : ''}`}
+          >
+            <div className="h-full flex items-center px-3">
+              <ExpandProfile profile={data.profile} onClose={() => setExpanded(false)} />
+            </div>
+          </div>
+
+          {/* Rings column — fixed equal width to profile so expand centers */}
+          <div className={`flex-shrink-0 w-[560px] relative flex flex-col ${openItem ? 'opacity-25 scale-95' : ''}`}
+               style={{transition: 'opacity .4s, transform .4s'}}>
+            <div className="flex-shrink-0 pt-1 pb-3">
+              <RingTabs rings={ringOrder} focused={focusedRing} counts={counts} onSelect={setRingByClick} />
+            </div>
+            <div className="rails-area flex-1">
+              {ringOrder.map((ring) => {
+                const slot = slotFor(ring);
+                const isActive = slot === 'active';
+                return (
+                  <Rail
+                    key={ring}
+                    label={ring.toUpperCase()}
+                    slot={slot}
+                    items={data[ring]}
+                    focusedItemIndex={itemIdx[ring]}
+                    onChangeIndex={(dir) => { if (isActive) changeItem(dir); }}
+                    onOpen={(item) => item.active !== false && setOpenItem({ item, ring })}
+                    isActive={isActive}
+                    onActivate={() => setRingByClick(ring)}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Detail */}
+        {openItem && <DetailView item={openItem.item} ring={openItem.ring} onClose={() => setOpenItem(null)} />}
+
+        {/* Footer HUD */}
+        <div className="absolute bottom-4 left-6 right-6 flex justify-between items-end text-[10px] font-display tracking-[0.25em] z-40 pointer-events-none">
+          <div className="text-cyber-neonBlue/70 neon-glow-blue">
+            &copy; 2026 HAOCHEN LI &middot; HARRISOUS.GITHUB.IO
+          </div>
+          <div className="text-white/40">
+            BGM :: THE_REBEL_PATH — P.T.ADAMCZYK
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  /* ============================================================
+     Mobile scene
+     ============================================================ */
+  const MobileProfile = ({ profile, onToggleDossier }) => (
+    <div className="cyber-panel relative p-5 mt-14">
+      <span className="hud-corner hud-tl" />
+      <span className="hud-corner hud-tr" />
+      <span className="hud-corner hud-bl" />
+      <span className="hud-corner hud-br" />
+      <div className="flex items-center gap-4">
+        <img src={profile.avatar} alt={profile.name} className="w-16 h-16 rounded-full object-cover border border-cyber-neonBlue/50" />
+        <div className="flex-1">
+          <div className="text-[10px] text-cyber-neonBlue tracking-[0.3em] font-display">// IDENTITY</div>
+          <h1 className="text-2xl font-black text-white leading-tight glitch-text" data-text={profile.callsign}>{profile.callsign}</h1>
+          <div className="text-cyber-neonYellow/90 text-sm">{profile.name}</div>
+        </div>
+      </div>
+      <div className="text-white/75 text-sm leading-relaxed mt-3">{profile.title}</div>
+      <div className="mt-3 pt-3 border-t border-cyber-neonBlue/20 space-y-1">
+        {profile.educationShort.map((e, i) => (
+          <div key={i} className="text-xs text-cyber-neonCyan/80 tracking-wide">{e}</div>
+        ))}
+      </div>
+      <button
+        onClick={onToggleDossier}
+        className="mt-4 w-full text-[11px] text-cyber-neonPink border border-cyber-neonPink/40 py-2 tracking-[0.25em] font-display hover:bg-cyber-neonPink/10"
+      >[▶] EXPAND_PROFILE</button>
+    </div>
+  );
+
+  const MobileContact = ({ contact }) => (
+    <div className="mt-6">
+      <div className="text-[10px] text-cyber-neonBlue tracking-[0.3em] font-display mb-2">// CONTACT</div>
+      <div className="grid grid-cols-1 gap-2">
+        <a href={`mailto:${contact.email}`} className="cyber-panel relative px-4 py-3 text-sm text-white hover:text-cyber-neonPink">
+          <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
+          <span className="text-cyber-neonBlue mr-2">✉</span> {contact.email}
+        </a>
+        <a href={contact.linkedin} target="_blank" rel="noreferrer" className="cyber-panel relative px-4 py-3 text-sm text-white hover:text-cyber-neonPink">
+          <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
+          <span className="text-cyber-neonBlue mr-2">in</span> LinkedIn
+        </a>
+        <a href={contact.github} target="_blank" rel="noreferrer" className="cyber-panel relative px-4 py-3 text-sm text-white hover:text-cyber-neonPink">
+          <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
+          <span className="text-cyber-neonBlue mr-2">gh</span> GitHub
+        </a>
+      </div>
+    </div>
+  );
+
+  const MobileBackground = ({ profile }) => (
+    <div className="mt-6">
+      <div className="text-[10px] text-cyber-neonBlue tracking-[0.3em] font-display mb-2">// BACKGROUND</div>
+      <div className="cyber-panel relative p-4">
+        <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
+        <p className="text-sm text-white/80 leading-relaxed">{profile.tagline}</p>
+        <div className="mt-3 text-[11px] text-cyber-neonYellow">📍 {profile.location}</div>
+      </div>
+    </div>
+  );
+
+  const MobileSkillsTicker = ({ skills }) => {
+    const flat = Object.values(skills || {}).flat().slice(0, 18);
+    if (flat.length === 0) return null;
+    return (
+      <div className="mt-6">
+        <div className="text-[10px] text-cyber-neonBlue tracking-[0.3em] font-display mb-2">// SKILLS</div>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5">
+          {flat.map((s, i) => <span key={i} className="cyber-chip whitespace-nowrap flex-shrink-0">{s}</span>)}
+        </div>
+      </div>
+    );
+  };
+
+  const MobileTabs = ({ data, onOpen }) => {
+    const [tab, setTab] = useState('projects');
+    const tabs = [
+      { key: 'projects',  label: 'PROJECTS',  color: 'neonBlue'  },
+      { key: 'blogs',     label: 'BLOGS',     color: 'neonPink'  },
+      { key: 'resources', label: 'RESOURCES', color: 'neonYellow'},
+    ];
+    const items = data[tab] || [];
+    return (
+      <div className="mt-6">
+        <div className="flex gap-1">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`flex-1 py-2 text-[11px] font-display tracking-[0.2em] border ${
+                tab === t.key
+                  ? 'bg-cyber-neonBlue/15 border-cyber-neonBlue text-cyber-neonBlue'
+                  : 'border-cyber-neonBlue/20 text-white/50 hover:text-cyber-neonBlue'
+              }`}
+            >{t.label}</button>
+          ))}
+        </div>
+        <div className="mt-4 space-y-3">
+          {items.map((it) => {
+            const disabled = it.active === false;
+            return (
+              <button
+                key={it.id}
+                onClick={() => !disabled && onOpen({ item: it, ring: tab })}
+                disabled={disabled}
+                className={`cyber-panel relative w-full text-left p-4 ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-cyber-neonPink/60'} transition-colors`}
+              >
+                <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
+                <div className="flex justify-between items-center gap-2">
+                  <div className="text-[10px] text-cyber-neonBlue tracking-[0.25em] font-display">{it.id}</div>
+                  <div className="text-[10px] text-cyber-neonYellow/80">{it.category}</div>
+                </div>
+                <div className="mt-1 text-lg font-bold text-white leading-tight">{it.title}</div>
+                <div className="text-sm text-white/70 mt-1 line-clamp-2">{it.description}</div>
+                {it.stack && it.stack.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {it.stack.slice(0, 4).map((s, i) => <span key={i} className="cyber-chip">{s}</span>)}
+                  </div>
+                )}
+              </button>
             );
-        };
+          })}
+        </div>
+      </div>
+    );
+  };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<Portfolio />);
-    </script>
+  const MobileScene = ({ data, bgm }) => {
+    const [openItem, setOpenItem] = useState(null);
+    const [dossierOpen, setDossierOpen] = useState(false);
+    return (
+      <div className="px-5 pb-14">
+        <div className="flex items-center justify-between pt-4">
+          <a href="./index_apple.html" className="text-[11px] text-cyber-neonBlue tracking-[0.2em] font-display link-cyber">[ SWITCH_MODE ]</a>
+          <button
+            aria-label="Toggle BGM"
+            onClick={bgm.toggle}
+            className={`text-[11px] text-cyber-neonPink tracking-[0.2em] font-display ${bgm.playing ? 'blink' : ''}`}
+          >{bgm.playing ? '◼ BGM_ON' : '▶ BGM'}</button>
+        </div>
+        <MobileProfile profile={data.profile} onToggleDossier={() => setDossierOpen(true)} />
+        <MobileContact contact={data.profile.contact} />
+        <MobileBackground profile={data.profile} />
+        <MobileSkillsTicker skills={data.profile.skills} />
+        <MobileTabs data={data} onOpen={setOpenItem} />
+
+        <Dossier profile={data.profile} open={dossierOpen} onClose={() => setDossierOpen(false)} />
+        {openItem && <DetailView item={openItem.item} ring={openItem.ring} onClose={() => setOpenItem(null)} />}
+
+        <div className="mt-10 text-center text-[10px] text-cyber-neonBlue/60 font-display tracking-[0.25em]">
+          &copy; 2026 HAOCHEN LI &middot; HARRISOUS.GITHUB.IO
+          <div className="mt-1 text-white/40">BGM :: THE_REBEL_PATH — P.T.ADAMCZYK</div>
+        </div>
+      </div>
+    );
+  };
+
+  /* ============================================================
+     App root
+     ============================================================ */
+  const App = () => {
+    const [data, setData] = useState(null);
+    const [isDesktop, setIsDesktop] = useState(() =>
+      typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true
+    );
+    const bgm = useBgm();
+    useCyberBackground();
+
+    useEffect(() => {
+      const mq = window.matchMedia('(min-width: 768px)');
+      const onChange = () => setIsDesktop(mq.matches);
+      mq.addEventListener('change', onChange);
+      return () => mq.removeEventListener('change', onChange);
+    }, []);
+
+    useEffect(() => {
+      let cancelled = false;
+      fetch('./data/rings.json', { cache: 'no-cache' })
+        .then((r) => {
+          if (!r.ok) throw new Error('no rings.json');
+          return r.json();
+        })
+        .then((json) => { if (!cancelled) setData(json); })
+        .catch(() => { if (!cancelled) setData(FALLBACK_DATA); });
+      return () => { cancelled = true; };
+    }, []);
+
+    if (!data) {
+      return (
+        <div className="min-h-screen flex items-center justify-center text-cyber-neonBlue font-display tracking-[0.3em] text-sm">
+          LOADING :: <span className="blink ml-2">▍</span>
+        </div>
+      );
+    }
+
+    return isDesktop
+      ? <GraphScene data={data} bgm={bgm} />
+      : <MobileScene data={data} bgm={bgm} />;
+  };
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
-
 </html>
