@@ -46,10 +46,11 @@
 <!-- React -->
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 
 <!-- SoundCloud Widget API (preloaded so window.SC is ready on first avatar click) -->
 <script src="https://w.soundcloud.com/player/api.js"></script>
+<link rel="stylesheet" href="./mascot/cyber-cat.css" />
 
 <style>
   html, body {
@@ -2061,5 +2062,6 @@
 
   ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
+  <script src="./mascot/cyber-cat.js" defer></script>
 </body>
 </html>
