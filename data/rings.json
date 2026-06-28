@@ -5,7 +5,7 @@
     "title": "AI Engineer — Agentic Systems & Applied LLMs",
     "location": "San Jose, CA",
     "tagline": "Building agentic systems that ship.",
-    "avatar": "./images/profile.png",
+    "avatar": "./images/optimized/profile.webp",
     "educationShort": [
       "Duke · M.Eng. AI · 2024–2025",
       "HKU · B.Sc. CS & Actuarial · 2019–2024"
@@ -98,7 +98,7 @@
       "description": "An agentic AI chatbot for Duke knowledge retrieval, built on the LangGraph framework with a multi-tool toolbox: existing API calls, targeted web scraping, and Tavily-powered open web search. Focus is on production-grade API orchestration and agentic search reasoning.",
       "stack": ["Python", "LangGraph", "LangChain", "Streamlit", "BeautifulSoup", "Tavily", "RESTful API", "AWS", "OpenAI API"],
       "link": "https://github.com/Harrisous/AIPI590LLM-project-2-DukeChatbot",
-      "image": "./images/project_001.png"
+      "image": "./images/optimized/project_001.webp"
     },
     {
       "id": "PROJ_002",
@@ -110,7 +110,7 @@
         "8-bit Quantization", "Bfloat16 Mixed-precision", "Hugging Face"
       ],
       "link": "https://github.com/Duke-AIPI-LLM-Course/project-1-maiga",
-      "image": "./images/project_002.png"
+      "image": "./images/optimized/project_002.webp"
     },
     {
       "id": "PROJ_003",
@@ -123,7 +123,7 @@
         "LCD display", "Camera", "Microphone"
       ],
       "link": "https://github.com/Harrisous/AIPI590AIPhysicialWorld-AIPet",
-      "image": "./images/project_003.png"
+      "image": "./images/optimized/project_003.webp"
     },
     {
       "id": "PROJ_004",
@@ -135,7 +135,7 @@
         "Multi-head Attention", "Autoencoder", "Time-series", "Streamlit"
       ],
       "link": "https://github.com/Harrisous/StockMarketTransformer",
-      "image": "./images/project_004.png"
+      "image": "./images/optimized/project_004.webp"
     },
     {
       "id": "PROJ_005",
@@ -147,7 +147,7 @@
         "Plotly", "Librosa", "PCA", "joblib"
       ],
       "link": "https://github.com/Harrisous/XAI-Final-Project",
-      "image": "./images/project_005.png"
+      "image": "./images/optimized/project_005.webp"
     },
     {
       "id": "PROJ_006",
@@ -159,7 +159,7 @@
         "Random Forest", "Model evaluation", "Financial ML"
       ],
       "link": "https://github.com/finos-labs/dtcch-2025-OpenAML",
-      "image": "./images/project_006.png"
+      "image": "./images/optimized/project_006.webp"
     },
     {
       "id": "PROJ_007",
@@ -171,7 +171,7 @@
         "Docker", "CI/CD", "GCP", "Gemini API", "Multimodal AI"
       ],
       "link": "https://github.com/Harrisous/FlashBack",
-      "image": "./images/project_007.png"
+      "image": "./images/optimized/project_007.webp"
     },
     {
       "id": "PROJ_008",
@@ -183,7 +183,7 @@
         "Pinecone", "OpenAI text-embedding-003", "Agentic RAG", "Agentic Tools"
       ],
       "link": null,
-      "image": "./images/project_008.png"
+      "image": "./images/optimized/project_008.webp"
     },
     {
       "id": "PROJ_009",
@@ -194,7 +194,7 @@
         "Spring Boot", "Java", "React", "MySQL", "AWS EC2", "REST API", "Drag-and-drop Calendar"
       ],
       "link": null,
-      "image": "./images/project_009.png"
+      "image": "./images/optimized/project_009.webp"
     },
     {
       "id": "PROJ_010",
@@ -206,7 +206,7 @@
         "Reranking", "HTML Constructor Agent", "Reviewer-Assembler Loop", "Conditional Routing"
       ],
       "link": null,
-      "image": "./images/project_010.png"
+      "image": "./images/optimized/project_010.webp"
     },
     {
       "id": "PROJ_011",
@@ -218,7 +218,7 @@
         "Contextual Chunking", "Hybrid Retrieval", "LLM-as-judge", "Multi-stage Reranking"
       ],
       "link": null,
-      "image": "./images/project_011.png"
+      "image": "./images/optimized/project_011.webp"
     }
   ],
 
