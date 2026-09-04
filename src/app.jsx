@@ -1027,6 +1027,20 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       return () => window.removeEventListener('keydown', onKey);
     }, [onClose]);
 
+    // Items without an image (blogs / resources / publications) skip the
+    // NO_SIGNAL placeholder and use a single full-width text layout instead.
+    const hasImage = !!item.image;
+    const keywordsBlock = item.stack && item.stack.length > 0 && (
+      <div className="mt-4">
+        <div className="text-[11px] text-cyber-neonBlue tracking-widest mb-2 font-display">// KEYWORDS</div>
+        <div className="flex flex-wrap gap-1.5">
+          {item.stack.map((s, i) => (
+            <span key={i} className="cyber-chip fade-up" style={{animationDelay: `${i * 40}ms`}}>{s}</span>
+          ))}
+        </div>
+      </div>
+    );
+
     return (
       <div className="detail-wrap" onClick={onClose}>
         <div className="detail-card glitch-appear cyber-panel relative p-6 md:p-8" onClick={(e) => e.stopPropagation()}>
@@ -1054,33 +1068,27 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-5 gap-6 mb-6">
-            <div className="md:col-span-2">
-              <div className="h-48 md:h-64 relative overflow-hidden"
-                   style={{clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'}}>
-                <SmartImage
-                  src={item.image}
-                  alt={item.title}
-                  id={item.id}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              {item.stack && item.stack.length > 0 && (
-                <div className="mt-4">
-                  <div className="text-[11px] text-cyber-neonBlue tracking-widest mb-2 font-display">// KEYWORDS</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {item.stack.map((s, i) => (
-                      <span key={i} className="cyber-chip fade-up" style={{animationDelay: `${i * 40}ms`}}>{s}</span>
-                    ))}
-                  </div>
+          <div className={`${hasImage ? 'grid md:grid-cols-5 gap-6' : ''} mb-6`}>
+            {hasImage && (
+              <div className="md:col-span-2">
+                <div className="h-48 md:h-64 relative overflow-hidden"
+                     style={{clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'}}>
+                  <SmartImage
+                    src={item.image}
+                    alt={item.title}
+                    id={item.id}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              )}
-            </div>
-            <div className="md:col-span-3">
+                {keywordsBlock}
+              </div>
+            )}
+            <div className={hasImage ? 'md:col-span-3' : ''}>
               <div className="text-[11px] text-cyber-neonBlue tracking-widest mb-2 font-display">// INTRODUCTION</div>
-              <div className="text-white/85 text-[15px] md:text-base leading-relaxed whitespace-pre-wrap">
+              <div className={`text-white/85 text-[15px] md:text-base leading-relaxed whitespace-pre-wrap ${hasImage ? '' : 'max-w-[70ch]'}`}>
                 <Typewriter text={item.description || ''} speed={8} />
               </div>
+              {!hasImage && keywordsBlock}
               {item.link && (
                 <a
                   href={item.link}
