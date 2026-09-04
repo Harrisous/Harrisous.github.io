@@ -537,6 +537,20 @@ html, body {
   }
   .link-cyber:hover::after { transform: scaleX(1); }
 
+  /* ------- Current-position "live" indicator ------- */
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #a7ff4c;
+    box-shadow: 0 0 8px #a7ff4c;
+    animation: live-pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: .35; }
+  }
+
   /* ------- Mobile utility ------- */
   .mobile-shell {
     padding-bottom: max(8rem, calc(env(safe-area-inset-bottom) + 7rem));
@@ -706,7 +720,7 @@ html, body {
     .glitch-text::before, .glitch-text::after,
     .orbit-dot.d1, .orbit-dot.d2, .orbit-dot.d3,
     .bus-path, .rail-breath::after, .scanlines, .avatar-playing,
-    .glitch-appear, .item-stagger, .fade-up, .blink {
+    .glitch-appear, .item-stagger, .fade-up, .blink, .live-dot {
       animation: none !important;
     }
     .scanlines { display: none; }
