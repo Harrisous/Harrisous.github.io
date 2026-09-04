@@ -50,7 +50,7 @@ def referenced_images(data: dict) -> list[str]:
     profile = data.get("profile", {})
     if profile.get("avatar"):
         refs.append(profile["avatar"])
-    for section in ("projects", "blogs", "resources"):
+    for section in ("projects", "blogs", "resources", "publications"):
         for item in data.get(section, []):
             image = item.get("image")
             if image:

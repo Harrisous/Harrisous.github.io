@@ -201,6 +201,14 @@ html, body {
     pointer-events: auto;
     cursor: pointer;
   }
+  .rail-group.slot-mid {
+    transform: translate(calc(-50% + 200px), calc(-50% - 11px)) scale(0.70);
+    opacity: 0.3;
+    filter: blur(1px) saturate(.6);
+    z-index: 12;
+    pointer-events: auto;
+    cursor: pointer;
+  }
   .rail-group.slot-prev {
     transform: translate(calc(-50% + 260px), calc(-50% + 8px)) scale(0.62);
     opacity: 0.25;
@@ -210,6 +218,7 @@ html, body {
     cursor: pointer;
   }
   .rail-group.slot-next:hover,
+  .rail-group.slot-mid:hover,
   .rail-group.slot-prev:hover {
     opacity: 0.85;
     filter: none;
@@ -330,11 +339,11 @@ html, body {
     min-width: 0;
     max-width: 170px;
     height: 54px;
-    padding: 0 10px;
+    padding: 0 6px;
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
     font-family: 'Share Tech Mono', monospace;
-    font-size: clamp(10px, 1vw, 12px); letter-spacing: .18em;
+    font-size: clamp(10px, 1vw, 12px); letter-spacing: .13em;
     color: rgba(230, 251, 255, 0.55);
     border: 1px solid rgba(0, 229, 255, 0.25);
     background: linear-gradient(140deg, rgba(0,229,255,0.03), rgba(10,12,22,0.65));
@@ -364,13 +373,15 @@ html, body {
     box-shadow: 0 0 22px rgba(245,230,99,.35), inset 0 0 16px rgba(245,230,99,.18);
     text-shadow: 0 0 10px #f5e663;
   }
-  .ring-tab .tab-count {
-    display: inline-block; margin-left: 8px;
-    font-size: 10px; opacity: .65; letter-spacing: .15em;
+  .ring-tab.active.k-publications {
+    border-color: #a7ff4c;
+    background: linear-gradient(140deg, rgba(167,255,76,0.20), rgba(0,229,255,0.08));
+    box-shadow: 0 0 22px rgba(167,255,76,.35), inset 0 0 16px rgba(167,255,76,.18);
+    text-shadow: 0 0 10px #a7ff4c;
   }
   .ring-tab-dot {
     display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-    margin-right: 10px; vertical-align: middle;
+    margin-right: 8px; vertical-align: middle;
     background: currentColor; box-shadow: 0 0 8px currentColor;
   }
 
@@ -573,6 +584,9 @@ html, body {
     .rail-group.slot-next {
       transform: translate(calc(-50% + 112px), calc(-50% - 28px)) scale(0.72);
     }
+    .rail-group.slot-mid {
+      transform: translate(calc(-50% + 158px), calc(-50% - 11px)) scale(0.65);
+    }
     .rail-group.slot-prev {
       transform: translate(calc(-50% + 205px), calc(-50% + 6px)) scale(0.58);
     }
@@ -601,7 +615,8 @@ html, body {
     }
     .ring-tab {
       height: 48px;
-      letter-spacing: .12em;
+      padding: 0 4px;
+      letter-spacing: .10em;
     }
     .rail-items {
       height: min(430px, calc(100vh - 250px));
@@ -632,6 +647,9 @@ html, body {
     }
     .rail-group.slot-next {
       transform: translate(calc(-50% + 108px), 12px) scale(0.72);
+    }
+    .rail-group.slot-mid {
+      transform: translate(calc(-50% + 152px), 27px) scale(0.65);
     }
     .rail-group.slot-prev {
       transform: translate(calc(-50% + 196px), 42px) scale(0.58);
