@@ -17,7 +17,9 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
         'HKU · B.Sc. CS & Actuarial · 2019–2024',
       ],
       educationFull: [],
-      experience: [],
+      experience: [
+        { company: 'Jemm Tec', role: 'Artificial Intelligence Engineer', location: 'Miami, FL', dates: 'Jul. 2026 – Present', bullets: [] },
+      ],
       skills: {},
       contact: {
         email: 'harryli12321@gmail.com',
@@ -529,7 +531,12 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
     </div>
   );
 
+  // Current position = first experience entry whose dates read "Present"
+  const currentJobOf = (profile) =>
+    (profile.experience || []).find((x) => /present/i.test(x.dates || ''));
+
   const ProfileNode = ({ profile, minimized, onToggleExpand, expanded, bgm, expandBtnRef }) => {
+    const currentJob = currentJobOf(profile);
     if (minimized) {
       return (
         <div className="profile-mini">
@@ -584,6 +591,12 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
             <div className="text-white/85 mt-4 text-sm md:text-base leading-relaxed max-w-xs font-medium">
               {profile.title}
             </div>
+            {currentJob && (
+              <div className="mt-3 flex items-center justify-center gap-2 text-xs md:text-sm text-cyber-neonLime tracking-wide max-w-xs mx-auto">
+                <span className="live-dot" aria-hidden="true" />
+                <span>{currentJob.role} <span className="whitespace-nowrap">@ {currentJob.company}</span></span>
+              </div>
+            )}
             <div className="mt-5 pt-4 border-t border-cyber-neonBlue/25 space-y-1.5">
               {profile.educationShort.map((e, i) => (
                 <div key={i} className="text-xs md:text-sm text-cyber-neonCyan tracking-wide">{e}</div>
@@ -1281,7 +1294,9 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
   /* ============================================================
      Mobile scene
      ============================================================ */
-  const MobileProfile = ({ profile, onToggleDossier }) => (
+  const MobileProfile = ({ profile, onToggleDossier }) => {
+    const currentJob = currentJobOf(profile);
+    return (
     <div className="mobile-profile-card cyber-panel relative p-5">
       <span className="hud-corner hud-tl" />
       <span className="hud-corner hud-tr" />
@@ -1296,6 +1311,12 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
         </div>
       </div>
       <div className="text-white/75 text-sm leading-relaxed mt-3 break-words">{profile.title}</div>
+      {currentJob && (
+        <div className="mt-2 flex items-center gap-2 text-xs text-cyber-neonLime tracking-wide break-words">
+          <span className="live-dot" aria-hidden="true" />
+          <span>{currentJob.role} <span className="whitespace-nowrap">@ {currentJob.company}</span></span>
+        </div>
+      )}
       <div className="mt-3 pt-3 border-t border-cyber-neonBlue/20 space-y-1">
         {profile.educationShort.map((e, i) => (
           <div key={i} className="text-xs text-cyber-neonCyan/80 tracking-wide break-words">{e}</div>
@@ -1306,7 +1327,8 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
         className="mt-4 w-full text-[11px] text-cyber-neonPink border border-cyber-neonPink/40 py-2 tracking-[0.25em] font-display hover:bg-cyber-neonPink/10"
       >[▶] EXPAND_PROFILE</button>
     </div>
-  );
+    );
+  };
 
   const MobileContact = ({ contact }) => (
     <div className="mt-6">
