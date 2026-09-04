@@ -1,5 +1,10 @@
 (function () {
-  const WEBP_SRC = "./mascot/hood-cat-open-eyes-v1.webp";
+  // Must be absolute: this URL is injected into --cyber-cat-image, and a relative
+  // url() there gets re-resolved against cyber-cat.css's base (mascot/mascot/... 404).
+  const SCRIPT_SRC = document.currentScript && document.currentScript.src;
+  const WEBP_SRC = SCRIPT_SRC
+    ? new URL("./hood-cat-open-eyes-v1.webp", SCRIPT_SRC).href
+    : "./mascot/hood-cat-open-eyes-v1.webp";
   const FALLBACK_SRC = WEBP_SRC;
   const STATUS_IDLE = "idle channel: masked";
   const STATUS_LINES = [
