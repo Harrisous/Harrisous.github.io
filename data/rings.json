@@ -41,10 +41,17 @@
     ],
     "experience": [
       {
-        "company": "Gosvea Inc.",
-        "role": "Artificial Intelligence Engineer Intern",
+        "company": "Jemm Tec",
+        "role": "Artificial Intelligence Engineer",
+        "location": "Miami, FL",
+        "dates": "Jul. 2026 – Present",
+        "bullets": []
+      },
+      {
+        "company": "GOSVEA Inc",
+        "role": "AI Agent Software Engineer",
         "location": "San Jose",
-        "dates": "Feb. 2026 – Present",
+        "dates": "Feb. 2026 – Jun. 2026",
         "bullets": [
           "Built the company's first AI customer support channel from scratch — production agentic RAG chatbot on Chatwoot + n8n + LangChain multi-LLM pipeline (Llama 3.1 70B + GPT-OSS-120B on Groq). ~80% autonomous resolution, −40% simple email inquiries, 280:1 revenue-to-token-cost.",
           "Cold-started a Pinecone vector store from internal manuals using OpenAI text-embedding-003, LLM-powered query augmentation, and a weekly curation workflow — 95%+ coverage, 100% factual accuracy on course queries.",
@@ -294,6 +301,18 @@
       "link": null,
       "image": null,
       "active": false
+    }
+  ],
+
+  "publications": [
+    {
+      "id": "PUB_001",
+      "title": "StableAML: Machine Learning for Behavioral Wallet Detection in Stablecoin Anti-Money Laundering on Ethereum",
+      "category": "Peer-Reviewed · Blockchain, Vol. 4 (2026)",
+      "description": "Open-access journal article with Luciano Juvinski and Alessio Brini (Duke Pratt School of Engineering), published in Blockchain, Vol. 4, Issue 2, Art. 0007 (2026).\n\nOver $3.1T of illicit money moves through the global financial system yearly — increasingly via stablecoins. Using on-chain USDT/USDC transaction data on Ethereum, the study benchmarks linear models, tree ensembles, deep networks, and graph neural networks for behavioral wallet detection. Tree ensembles come out on top, cleanly separating distinct illicit patterns such as cybercrime and sanctioned wallets — sharpening know-your-transaction (KYT) compliance precision under the EU's MiCA and the U.S. GENIUS Act.\n\nDOI: 10.55092/blockchain20260007",
+      "stack": ["Machine Learning", "Anti-Money Laundering", "Stablecoins", "Blockchain Analytics", "Ethereum", "Graph Neural Networks", "Tree Ensembles", "KYT"],
+      "link": "https://www.elspub.com/doi/10.55092/blockchain20260007",
+      "image": null
     }
   ]
 }

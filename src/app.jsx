@@ -35,6 +35,9 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
     resources: [
       { id: 'RES_01', title: 'CH_01 · Introduction to Machine Learning', category: 'Field Manual', description: 'Core concepts.', stack: ['Fundamentals'], link: './blog/blog2/1_introduction.html', image: null, active: true },
     ],
+    publications: [
+      { id: 'PUB_001', title: 'StableAML: Machine Learning for Behavioral Wallet Detection in Stablecoin Anti-Money Laundering on Ethereum', category: 'Peer-Reviewed · Blockchain (2026)', description: 'ML benchmark for behavioral wallet detection in stablecoin AML on Ethereum.', stack: ['Machine Learning', 'AML'], link: 'https://www.elspub.com/doi/10.55092/blockchain20260007', image: null },
+    ],
   };
 
   /* ============================================================
@@ -989,11 +992,12 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
      Ring tabs — quick switch above rails
      ============================================================ */
   const RING_META = {
-    projects:  { label: 'PROJECTS',  color: '#00e5ff', kls: '' },
-    blogs:     { label: 'BLOGS',     color: '#ff00c8', kls: 'k-blogs' },
-    resources: { label: 'RESOURCES', color: '#f5e663', kls: 'k-resources' },
+    projects:     { label: 'PROJECTS',     color: '#00e5ff', kls: '' },
+    blogs:        { label: 'BLOGS',        color: '#ff00c8', kls: 'k-blogs' },
+    resources:    { label: 'RESOURCES',    color: '#f5e663', kls: 'k-resources' },
+    publications: { label: 'PUBLICATIONS', color: '#a7ff4c', kls: 'k-publications' },
   };
-  const RingTabs = ({ rings, focused, counts, onSelect }) => (
+  const RingTabs = ({ rings, focused, onSelect }) => (
     <div className="ring-tabs">
       {rings.map((r) => {
         const meta = RING_META[r] || { label: r.toUpperCase(), color: '#00e5ff', kls: '' };
@@ -1007,7 +1011,6 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
           >
             <span className="ring-tab-dot" style={{ color: meta.color }} />
             {meta.label}
-            <span className="tab-count">[{counts[r] || 0}]</span>
           </button>
         );
       })}
@@ -1100,9 +1103,9 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
      Desktop Graph scene
      ============================================================ */
   const GraphScene = ({ data, bgm }) => {
-    const ringOrder = ['projects', 'blogs', 'resources']; // loop
+    const ringOrder = ['projects', 'blogs', 'resources', 'publications']; // loop
     const [focusedRing, setFocusedRing] = useState('projects');
-    const [itemIdx, setItemIdx] = useState({ projects: 0, blogs: 0, resources: 0 });
+    const [itemIdx, setItemIdx] = useState({ projects: 0, blogs: 0, resources: 0, publications: 0 });
     const [openItem, setOpenItem] = useState(null); // { item, ring }
     const [expanded, setExpanded] = useState(false);
     const [busTick, setBusTick] = useState(false);
@@ -1110,14 +1113,17 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
     const expandSlotRef = useRef(null);
     const expandBtnRef = useRef(null);
 
-    // Slot assignment for horizontal carousel: active / slot-prev / slot-next
+    // Slot assignment for horizontal carousel: active / slot-next / slot-mid / slot-prev
     // Uses modular distance so no ring teleports across on cycle.
     const slotFor = useCallback((ring) => {
       if (ring === focusedRing) return 'active';
+      const len = ringOrder.length;
       const f = ringOrder.indexOf(focusedRing);
       const r = ringOrder.indexOf(ring);
-      const diff = (r - f + 3) % 3; // 1 = next, 2 = prev
-      return diff === 1 ? 'slot-next' : 'slot-prev';
+      const diff = (r - f + len) % len; // 1 = next, len-1 = prev, rest stack in-between
+      if (diff === 1) return 'slot-next';
+      if (diff === len - 1) return 'slot-prev';
+      return 'slot-mid';
     }, [focusedRing]);
 
     const pulseBus = () => {
@@ -1127,7 +1133,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
     const cycleRing = useCallback((dir) => {
       const cur = ringOrder.indexOf(focusedRing);
-      const next = (cur + dir + 3) % 3;
+      const next = (cur + dir + ringOrder.length) % ringOrder.length;
       setFocusedRing(ringOrder[next]);
       pulseBus();
     }, [focusedRing]);
@@ -1183,12 +1189,6 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       return () => document.removeEventListener('mousedown', onDown);
     }, [expanded]);
 
-    const counts = {
-      projects:  (data.projects  || []).length,
-      blogs:     (data.blogs     || []).length,
-      resources: (data.resources || []).length,
-    };
-
     return (
       <div className="relative" style={{minHeight: '100vh'}}>
         <DataBus ticking={busTick} />
@@ -1230,7 +1230,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
           <div className={`rings-column flex-shrink-0 relative flex flex-col ${openItem ? 'opacity-25 scale-95' : ''}`}
                style={{transition: 'opacity .4s, transform .4s'}}>
             <div className="flex-shrink-0 pt-1 pb-3">
-              <RingTabs rings={ringOrder} focused={focusedRing} counts={counts} onSelect={setRingByClick} />
+              <RingTabs rings={ringOrder} focused={focusedRing} onSelect={setRingByClick} />
             </div>
             <div className="rails-area flex-1">
               {ringOrder.map((ring) => {
@@ -1347,9 +1347,10 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
   const MobileTabs = ({ data, onOpen }) => {
     const [tab, setTab] = useState('projects');
     const tabs = [
-      { key: 'projects',  label: 'PROJECTS',  color: 'neonBlue'  },
-      { key: 'blogs',     label: 'BLOGS',     color: 'neonPink'  },
-      { key: 'resources', label: 'RESOURCES', color: 'neonYellow'},
+      { key: 'projects',     label: 'PROJECTS',  color: 'neonBlue'  },
+      { key: 'blogs',        label: 'BLOGS',     color: 'neonPink'  },
+      { key: 'resources',    label: 'RESOURCES', color: 'neonYellow'},
+      { key: 'publications', label: 'PUBS',      color: 'neonLime'  },
     ];
     const items = data[tab] || [];
     return (
