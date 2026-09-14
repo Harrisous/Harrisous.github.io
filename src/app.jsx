@@ -508,14 +508,6 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
      ============================================================ */
   const ContactIcons = ({ contact }) => (
     <div className="flex items-center justify-center gap-3">
-      <a href={`mailto:${contact.email}`} aria-label="Email" title={contact.email} className="contact-icon">
-        {/* Envelope */}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="square" strokeLinejoin="miter" aria-hidden="true">
-          <rect x="3" y="5" width="18" height="14" />
-          <path d="M3 6l9 7 9-7" />
-          <path d="M3 19l6-6 M21 19l-6-6" opacity="0.5" />
-        </svg>
-      </a>
       <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn" className="contact-icon">
         {/* LinkedIn "in" */}
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -884,7 +876,6 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
           <section>
             <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display">// CONTACT</h3>
             <div className="space-y-2 text-sm">
-              <a href={`mailto:${profile.contact.email}`} className="link-cyber block text-white hover:text-cyber-neonPink">✉  {profile.contact.email}</a>
               <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  {profile.contact.linkedin}</a>
               <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {profile.contact.github}</a>
               <div className="text-white/70">📍  {profile.contact.location}</div>
@@ -992,7 +983,6 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       <section>
         <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display neon-glow-blue">// CONTACT</h3>
         <div className="space-y-2 text-sm">
-          <a href={`mailto:${profile.contact.email}`} className="link-cyber block text-white hover:text-cyber-neonPink">✉  {profile.contact.email}</a>
           <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  LinkedIn</a>
           <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {profile.contact.github}</a>
           <div className="text-white/70">📍  {profile.contact.location}</div>
