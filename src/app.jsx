@@ -9,7 +9,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       name: 'Haochen "Harry" Li',
       callsign: 'HARRY',
       title: 'AI Engineer — Agentic Systems & Applied LLMs',
-      location: 'San Jose, CA',
+      location: 'Miami, FL',
       tagline: 'Building agentic systems that ship.',
       avatar: './images/optimized/profile.webp',
       educationShort: [
@@ -24,7 +24,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       contact: {
         linkedin: 'https://www.linkedin.com/in/haochen-harry-li',
         github: 'https://github.com/Harrisous',
-        location: 'San Jose, CA, USA',
+        location: 'Miami, FL, USA',
       },
     },
     projects: [
