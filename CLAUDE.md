@@ -242,6 +242,12 @@ through `npx` on demand.
   (`slot-next` / `slot-mid` / `slot-prev`); mobile tab abbreviated `PUBS`.
 - Experience updated: Jemm Tec (AI Engineer, Jul 2026–present, Miami) added on top;
   GOSVEA entry retitled "AI Agent Software Engineer", closed out Feb–Jun 2026.
+- 2026-09-16: removed email/phone from every served page and **rewrote git history**
+  (`git filter-repo --replace-text`) to redact them from all past commits — every commit
+  hash before this date changed and `main` was force-pushed. Any clone or worktree made
+  before then holds the old history: re-clone it rather than pulling, and never merge or
+  push from a stale clone (it would reintroduce the redacted data).
+- Profile location updated to Miami, FL.
 
 ## File Organization Notes
 - Markdown blog files are currently stored in `blog/blog2/`—check this folder first for recent posts
