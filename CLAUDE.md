@@ -78,7 +78,7 @@ Shape:
 ```
 {
   "profile":      { name, callsign, title, educationShort[], educationFull[], experience[],
-                    skills{}, contact{ email, linkedin, github, location } },
+                    skills{}, contact{ linkedin, github, location } },
   "projects":     [ { id, title, category, description, stack[], link, image } ],
   "blogs":        [ { id, title, category, description, stack[], link, image, active? } ],
   "resources":    [ { id, title, category, description, stack[], link, image, active? } ],
@@ -93,6 +93,11 @@ publications accent color is neonLime `#a7ff4c` (`.k-publications` in `src/style
 Publication IDs are `PUB_001`, `PUB_002`, … ascending.
 
 Conventions:
+- **Privacy: no email address or phone number anywhere on the site** (removed Sept 2026 —
+  `contact` holds only linkedin / github / location). This applies to `data/rings.json`,
+  `FALLBACK_DATA` in `src/app.jsx`, `index_apple.html`, `index_backup.html` and every page
+  under `hidden/` — they are all publicly served by GitHub Pages even when unlinked.
+  Contact CTA is LinkedIn. Do not re-add `mailto:` links or a phone field.
 - Project IDs are `PROJ_001`, `PROJ_002`, … appended ascending (no `PROJ_NEW_*` prefix).
 - A new project at position N expects `./images/project_<NNN>.png` (3-digit, zero-padded).
   Missing images render as an in-page `NO_SIGNAL` SVG placeholder — no external request.

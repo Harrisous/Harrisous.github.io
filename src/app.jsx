@@ -22,7 +22,6 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       ],
       skills: {},
       contact: {
-        email: '[email-removed]',
         linkedin: 'https://www.linkedin.com/in/haochen-harry-li',
         github: 'https://github.com/Harrisous',
         location: 'San Jose, CA, USA',
@@ -506,6 +505,9 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
   /* ============================================================
      Profile Node (desktop)
      ============================================================ */
+  // Display form of a profile URL ("linkedin.com/in/…") for the contact lists
+  const handleOf = (url) => (url || '').replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+
   const ContactIcons = ({ contact }) => (
     <div className="flex items-center justify-center gap-3">
       <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn" className="contact-icon">
@@ -876,8 +878,8 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
           <section>
             <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display">// CONTACT</h3>
             <div className="space-y-2 text-sm">
-              <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  {profile.contact.linkedin}</a>
-              <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {profile.contact.github}</a>
+              <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  {handleOf(profile.contact.linkedin)}</a>
+              <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {handleOf(profile.contact.github)}</a>
               <div className="text-white/70">📍  {profile.contact.location}</div>
             </div>
           </section>
@@ -983,8 +985,8 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       <section>
         <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display neon-glow-blue">// CONTACT</h3>
         <div className="space-y-2 text-sm">
-          <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  LinkedIn</a>
-          <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {profile.contact.github}</a>
+          <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  {handleOf(profile.contact.linkedin)}</a>
+          <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {handleOf(profile.contact.github)}</a>
           <div className="text-white/70">📍  {profile.contact.location}</div>
         </div>
       </section>
@@ -1323,11 +1325,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
   const MobileContact = ({ contact }) => (
     <div className="mt-6">
       <div className="text-[10px] text-cyber-neonBlue tracking-[0.3em] font-display mb-2">// CONTACT</div>
-      <div className="grid grid-cols-1 gap-2">
-        <a href={`mailto:${contact.email}`} className="cyber-panel relative px-4 py-3 text-sm text-white hover:text-cyber-neonPink break-all">
-          <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
-          <span className="text-cyber-neonBlue mr-2">✉</span> {contact.email}
-        </a>
+      <div className="grid grid-cols-2 gap-2">
         <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="cyber-panel relative px-4 py-3 text-sm text-white hover:text-cyber-neonPink">
           <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
           <span className="text-cyber-neonBlue mr-2">in</span> LinkedIn
