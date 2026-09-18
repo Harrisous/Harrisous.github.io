@@ -995,6 +995,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       <section>
         <h3 className="text-sm text-cyber-neonBlue tracking-[0.3em] mb-3 font-display neon-glow-blue">// CONTACT</h3>
         <div className="space-y-2 text-sm">
+          <a href={`mailto:${profile.contact.email}`} className="link-cyber block text-white hover:text-cyber-neonPink">✉  {profile.contact.email}</a>
           <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">in  {handleOf(profile.contact.linkedin)}</a>
           <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" className="link-cyber block text-white hover:text-cyber-neonPink">gh  {handleOf(profile.contact.github)}</a>
           <div className="text-white/70">📍  {profile.contact.location}</div>
@@ -1336,6 +1337,10 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
     <div className="mt-6">
       <div className="text-[10px] text-cyber-neonBlue tracking-[0.3em] font-display mb-2">// CONTACT</div>
       <div className="grid grid-cols-2 gap-2">
+        <a href={`mailto:${contact.email}`} className="cyber-panel relative col-span-2 px-4 py-3 text-sm text-white hover:text-cyber-neonPink break-all">
+          <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
+          <span className="text-cyber-neonBlue mr-2">✉</span> {contact.email}
+        </a>
         <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="cyber-panel relative px-4 py-3 text-sm text-white hover:text-cyber-neonPink">
           <span className="hud-corner hud-tl" /><span className="hud-corner hud-br" />
           <span className="text-cyber-neonBlue mr-2">in</span> LinkedIn
