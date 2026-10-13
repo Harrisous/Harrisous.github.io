@@ -31,6 +31,7 @@ module.exports = {
     "k-blogs",
     "k-resources",
     "k-publications",
+    "k-notes",
     "slot-next",
     "slot-mid",
     "slot-prev",

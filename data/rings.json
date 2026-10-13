@@ -313,5 +313,37 @@
       "link": "https://www.elspub.com/doi/10.55092/blockchain20260007",
       "image": null
     }
+  ],
+  "notes": [
+    {
+      "id": "NOTE_01",
+      "title": "DeepSeek Tech Tree — from GPT to DeepSeek-V4.1",
+      "category": "Study Notes · Course (中文)",
+      "description": "A 21-lesson course that starts from one forward pass of a standard GPT and follows every DeepSeek technical report to DeepSeek-V4.1-Flash: MLA, DeepSeekMoE, GRPO, FP8 training, R1, sparse attention, mHC and the million-token V4 line. Each innovation is derived step by step, priced in bytes and FLOPs, and traced to its paper. Comes with an 11-lesson math refresher.",
+      "stack": [
+        "Transformer",
+        "KV Cache",
+        "MLA",
+        "MoE",
+        "GRPO",
+        "FP8"
+      ],
+      "link": "https://claude.ai/artifact/Dsrd1uuGzLMQ9Cbja9rmwr",
+      "image": null
+    },
+    {
+      "id": "NOTE_02",
+      "title": "Lesson 1 · Transformer Anatomy (Feynman edition)",
+      "category": "Study Notes · Interactive lesson (中文)",
+      "description": "Lesson 1 of the DeepSeek course, rebuilt around the Feynman technique: write what you think before the lesson, teach each page back in plain words under constraints, check against a list, and replay the whole lesson on a closing review page. A built-in button asks Claude to find the gaps in your own explanation.",
+      "stack": [
+        "GPT-2",
+        "Attention",
+        "Feynman Technique",
+        "Active Recall"
+      ],
+      "link": "https://claude.ai/artifact/JPjrAfp7YpgC6p6CYdEWDc",
+      "image": null
+    }
   ]
 }

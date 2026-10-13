@@ -248,6 +248,10 @@ through `npx` on demand.
   before then holds the old history: re-clone it rather than pulling, and never merge or
   push from a stale clone (it would reintroduce the redacted data).
 - Profile location updated to Miami, FL.
+- 2026-10-12: added a 5th ring, STUDY NOTES (`notes` in `data/rings.json`, orange `#ff8a3d`,
+  `.k-notes`; mobile tab `NOTES`; IDs `NOTE_01`, `NOTE_02`, …). It links the DeepSeek course and the
+  Feynman edition of its lesson 1, both claude.ai Artifacts from the Harrisous/Study-Notes repo.
+  Ring tabs' letter-spacing dropped to .06em so five labels fit.
 
 ## File Organization Notes
 - Markdown blog files are currently stored in `blog/blog2/`—check this folder first for recent posts

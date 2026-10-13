@@ -343,7 +343,7 @@ html, body {
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
     font-family: 'Share Tech Mono', monospace;
-    font-size: clamp(10px, 1vw, 12px); letter-spacing: .13em;
+    font-size: clamp(10px, 1vw, 12px); letter-spacing: .06em; /* five tabs since STUDY NOTES */
     color: rgba(230, 251, 255, 0.55);
     border: 1px solid rgba(0, 229, 255, 0.25);
     background: linear-gradient(140deg, rgba(0,229,255,0.03), rgba(10,12,22,0.65));
@@ -378,6 +378,12 @@ html, body {
     background: linear-gradient(140deg, rgba(167,255,76,0.20), rgba(0,229,255,0.08));
     box-shadow: 0 0 22px rgba(167,255,76,.35), inset 0 0 16px rgba(167,255,76,.18);
     text-shadow: 0 0 10px #a7ff4c;
+  }
+  .ring-tab.active.k-notes {
+    border-color: #ff8a3d;
+    background: linear-gradient(140deg, rgba(255,138,61,0.20), rgba(0,229,255,0.08));
+    box-shadow: 0 0 22px rgba(255,138,61,.35), inset 0 0 16px rgba(255,138,61,.18);
+    text-shadow: 0 0 10px #ff8a3d;
   }
   .ring-tab-dot {
     display: inline-block; width: 6px; height: 6px; border-radius: 50%;
