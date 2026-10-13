@@ -40,6 +40,9 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
     publications: [
       { id: 'PUB_001', title: 'StableAML: Machine Learning for Behavioral Wallet Detection in Stablecoin Anti-Money Laundering on Ethereum', category: 'Peer-Reviewed · Blockchain (2026)', description: 'ML benchmark for behavioral wallet detection in stablecoin AML on Ethereum.', stack: ['Machine Learning', 'AML'], link: 'https://www.elspub.com/doi/10.55092/blockchain20260007', image: null },
     ],
+    notes: [
+      { id: 'NOTE_01', title: 'DeepSeek Tech Tree — from GPT to DeepSeek-V4.1', category: 'Study Notes · Course', description: 'A 21-lesson course.', stack: ['Transformer', 'MLA', 'MoE'], link: 'https://claude.ai/artifact/Dsrd1uuGzLMQ9Cbja9rmwr', image: null },
+    ],
   };
 
   /* ============================================================
@@ -1012,6 +1015,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
     blogs:        { label: 'BLOGS',        color: '#ff00c8', kls: 'k-blogs' },
     resources:    { label: 'RESOURCES',    color: '#f5e663', kls: 'k-resources' },
     publications: { label: 'PUBLICATIONS', color: '#a7ff4c', kls: 'k-publications' },
+    notes:        { label: 'STUDY NOTES',  color: '#ff8a3d', kls: 'k-notes' },
   };
   const RingTabs = ({ rings, focused, onSelect }) => (
     <div className="ring-tabs">
@@ -1127,9 +1131,9 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
      Desktop Graph scene
      ============================================================ */
   const GraphScene = ({ data, bgm }) => {
-    const ringOrder = ['projects', 'blogs', 'resources', 'publications']; // loop
+    const ringOrder = ['projects', 'blogs', 'resources', 'publications', 'notes']; // loop
     const [focusedRing, setFocusedRing] = useState('projects');
-    const [itemIdx, setItemIdx] = useState({ projects: 0, blogs: 0, resources: 0, publications: 0 });
+    const [itemIdx, setItemIdx] = useState({ projects: 0, blogs: 0, resources: 0, publications: 0, notes: 0 });
     const [openItem, setOpenItem] = useState(null); // { item, ring }
     const [expanded, setExpanded] = useState(false);
     const [busTick, setBusTick] = useState(false);
@@ -1384,6 +1388,7 @@ const { useState, useEffect, useRef, useCallback, useMemo } = React;
       { key: 'blogs',        label: 'BLOGS',     color: 'neonPink'  },
       { key: 'resources',    label: 'RESOURCES', color: 'neonYellow'},
       { key: 'publications', label: 'PUBS',      color: 'neonLime'  },
+      { key: 'notes',        label: 'NOTES',     color: 'neonOrange'},
     ];
     const items = data[tab] || [];
     return (
