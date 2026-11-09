@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-labelledby="title desc">
+<title id="title">Clinical Claim Verifier</title><desc id="desc">Concept illustration of a source document with highlighted evidence, citation links and a claim review workflow.</desc>
+<defs>
+ <radialGradient id="glow"><stop stop-color="#72e6b2" stop-opacity=".19"/><stop offset="1" stop-color="#72e6b2" stop-opacity="0"/></radialGradient>
+ <linearGradient id="panel" x1="0" x2="1" y2="1"><stop stop-color="#132739"/><stop offset="1" stop-color="#091423"/></linearGradient>
+ <linearGradient id="glass" x1="0" x2="1" y2="1"><stop stop-color="#234356"/><stop offset="1" stop-color="#0c1d2d"/></linearGradient>
+ <linearGradient id="cyan" x1="0" x2="1" y2="1"><stop stop-color="#9cf7ff"/><stop offset="1" stop-color="#00badb"/></linearGradient>
+ <linearGradient id="mint" x1="0" x2="1" y2="1"><stop stop-color="#d1ffba"/><stop offset="1" stop-color="#49dfaf"/></linearGradient>
+ <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#6f9bb6" stroke-opacity=".075"/></pattern>
+ <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000611" flood-opacity=".65"/></filter>
+ <filter id="neon" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<rect width="960" height="540" fill="#07111d"/><rect width="960" height="540" fill="url(#grid)"/>
+<ellipse cx="510" cy="250" rx="480" ry="300" fill="url(#glow)"/>
+<path d="M32 84V32H84M876 508h52v-52" fill="none" stroke="#72e6b2" stroke-opacity=".35"/>
+
+<g font-family="Arial,sans-serif" font-size="13" letter-spacing="3" fill="#9ebcb4"><text x="52" y="63">CLINICAL CLAIMS / TRACE THE EVIDENCE</text></g>
+<g fill="none" stroke="#71ceaa" stroke-opacity=".12"><circle cx="488" cy="295" r="208"/><circle cx="488" cy="295" r="171" stroke-dasharray="2 12"/></g>
+<g transform="translate(131 106) rotate(-8 151 169)" filter="url(#shadow)">
+ <path d="M20 13h249l34 34v307H20Z" fill="#112d35" stroke="#316367"/>
+ <path d="M0 0h249l34 34v307H0Z" fill="#d9ebe4"/>
+ <path d="M249 0v34h34" fill="#a6c8bd"/>
+ <text x="24" y="42" font-family="Arial,sans-serif" font-size="13" letter-spacing="2" fill="#4b7370">SOURCE DOCUMENT</text>
+ <path d="M25 68h179M25 83h139" stroke="#294e51" stroke-width="9" stroke-linecap="round"/>
+ <path d="M25 112h232M25 127h216M25 142h225" stroke="#8ca9a2" stroke-width="5" stroke-linecap="round"/>
+ <rect x="18" y="159" width="246" height="47" rx="3" fill="#73ddbc"/>
+ <path d="M29 174h220M29 190h179" stroke="#285e52" stroke-width="5" stroke-linecap="round"/>
+ <path d="M25 228h232M25 243h194M25 258h224M25 273h155" stroke="#8ca9a2" stroke-width="5" stroke-linecap="round"/>
+ <path d="M25 305h98" stroke="#678e83" stroke-width="4" stroke-linecap="round"/><circle cx="249" cy="306" r="10" fill="#a7c8ba"/><text x="249" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#315950">1</text>
+</g>
+<path d="M426 263h74q27 0 27-27v-60h56M425 287h105q30 0 30 30v38h50" fill="none" stroke="#71e9c5" stroke-width="2"/>
+<g fill="#bbffe1"><circle cx="469" cy="263" r="5"/><circle cx="559" cy="337" r="5"/></g>
+<g transform="translate(584 123)" filter="url(#shadow)">
+ <rect width="247" height="127" rx="9" fill="url(#panel)" stroke="#76caaa"/>
+ <circle cx="29" cy="29" r="10" fill="#75ddb1"/><path d="m24 29 3 3 7-8" fill="none" stroke="#0f3930" stroke-width="2"/>
+ <text x="50" y="35" fill="#ccebdc" font-family="Arial,sans-serif" font-size="16" letter-spacing="1">CLAIM → SOURCE</text>
+ <path d="M24 61h197M24 77h177M24 93h125" stroke="#729a96" stroke-width="5" stroke-linecap="round"/>
+ <rect x="184" y="95" width="42" height="18" rx="3" fill="#1d4b3e"/><text x="205" y="108" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#9ae5bd">[1]</text>
+</g>
+<g transform="translate(614 310)" filter="url(#shadow)">
+ <rect width="237" height="131" rx="9" fill="url(#panel)" stroke="#6798ad"/>
+ <text x="23" y="32" fill="#b4d7e5" font-family="Arial,sans-serif" font-size="14" letter-spacing="1">EVIDENCE REVIEW</text>
+ <rect x="22" y="48" width="193" height="24" rx="4" fill="#4edbb7" fill-opacity=".1"/><path d="M33 60h147" stroke="#7ad7bb" stroke-width="4" stroke-linecap="round"/>
+ <path d="M24 88h177M24 103h128" stroke="#638a96" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g transform="translate(469 338)">
+ <circle r="58" fill="#0a2630" stroke="#8ad5ce" stroke-width="2"/><circle r="44" fill="#8af2cf" opacity=".08"/><circle cx="-3" cy="-4" r="24" fill="none" stroke="#c3f9e4" stroke-width="3"/>
+ <path d="m15 14 23 23" stroke="#c3f9e4" stroke-width="7" stroke-linecap="round"/><path d="m-16-4 8 8 18-19" fill="none" stroke="#83eac2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="513" y="489" text-anchor="middle" fill="#85b9a8" font-family="Arial,sans-serif" font-size="12" letter-spacing="3">RETRIEVE · RERANK · VERIFY</text>
+
+</svg>

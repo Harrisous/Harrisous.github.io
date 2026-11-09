@@ -4,19 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>HARRY // GRAPH_OS — Haochen Li</title>
+<meta name="description" content="Haochen Harry Li — AI engineer building agentic systems. Explore projects, research, field notes, and the ideas behind the work." />
 <link rel="icon" type="image/png" href="./images/profile.png" />
 
-<link rel="stylesheet" href="./assets/site.css?v=notes-20261012" />
+<link rel="stylesheet" href="./assets/site.css?v=neon-studio-20261109" />
 <!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <!-- React -->
 <script src="./assets/vendor/react-18.3.1.production.min.js"></script>
 <script src="./assets/vendor/react-dom-18.3.1.production.min.js"></script>
 
-<link rel="stylesheet" href="./mascot/cyber-cat.css" />
 
 
 </head>
@@ -24,7 +21,7 @@
 <body>
   <div class="vignette"></div>
   <div class="scanlines"></div>
-  <canvas id="bg-canvas" class="fixed inset-0 w-full h-full" style="z-index:0;"></canvas>
+  <canvas aria-hidden="true" id="bg-canvas" class="fixed inset-0 w-full h-full" style="z-index:0;"></canvas>
 
   <!-- SoundCloud widget (hidden via CSS, but loaded) -->
   <iframe id="sc-iframe"
@@ -32,12 +29,12 @@
     width="100%" height="166"
     scrolling="no" frameBorder="no"
     allow="autoplay"
-    loading="lazy"
+    loading="eager"
+    tabindex="-1" aria-hidden="true"
     data-src="https://w.soundcloud.com/player/?url=https://soundcloud.com/derekecycle/the-rebel-path&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
 
   <div id="root" class="relative" style="z-index:1;"></div>
 
-  <script src="./assets/app.js?v=notes-20261012" defer></script>
-  <script src="./mascot/cyber-cat.js" defer></script>
+  <script src="./assets/app.js?v=neon-studio-20261109" defer></script>
 </body>
 </html>

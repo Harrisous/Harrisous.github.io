@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-labelledby="title desc">
+<title id="title">Multi-Agent Slide Architect</title><desc id="desc">Concept illustration of retrieval, construction and review agents collaborating on a layered presentation deck with a feedback loop.</desc>
+<defs>
+ <radialGradient id="glow"><stop stop-color="#64e4e5" stop-opacity=".19"/><stop offset="1" stop-color="#64e4e5" stop-opacity="0"/></radialGradient>
+ <linearGradient id="panel" x1="0" x2="1" y2="1"><stop stop-color="#132739"/><stop offset="1" stop-color="#091423"/></linearGradient>
+ <linearGradient id="glass" x1="0" x2="1" y2="1"><stop stop-color="#234356"/><stop offset="1" stop-color="#0c1d2d"/></linearGradient>
+ <linearGradient id="cyan" x1="0" x2="1" y2="1"><stop stop-color="#9cf7ff"/><stop offset="1" stop-color="#00badb"/></linearGradient>
+ <linearGradient id="mint" x1="0" x2="1" y2="1"><stop stop-color="#d1ffba"/><stop offset="1" stop-color="#49dfaf"/></linearGradient>
+ <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#6f9bb6" stroke-opacity=".075"/></pattern>
+ <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000611" flood-opacity=".65"/></filter>
+ <filter id="neon" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<rect width="960" height="540" fill="#07111d"/><rect width="960" height="540" fill="url(#grid)"/>
+<ellipse cx="510" cy="250" rx="480" ry="300" fill="url(#glow)"/>
+<path d="M32 84V32H84M876 508h52v-52" fill="none" stroke="#64e4e5" stroke-opacity=".35"/>
+
+<g font-family="Arial,sans-serif" font-size="13" letter-spacing="3" fill="#a8bccb"><text x="52" y="63">SLIDE ARCHITECT / MANY AGENTS, ONE DECK</text></g>
+<path d="M226 150h85q40 0 40 44v67h93M226 282h218M226 413h85q40 0 40-44v-65h93" fill="none" stroke="#5ee2e9" stroke-width="2"/>
+<path d="M744 394v53q0 21-23 21H357q-28 0-28-28v-25h-91" fill="none" stroke="#c5ef7f" stroke-width="2" stroke-dasharray="6 7"/>
+<text x="437" y="493" fill="#a1bd8e" font-family="Arial,sans-serif" font-size="12" letter-spacing="3">REVIEW → REFINE</text>
+<g transform="translate(143 107)">
+ <circle cx="43" cy="43" r="48" fill="#0d2735" stroke="#63dce8"/><circle cx="40" cy="39" r="15" fill="none" stroke="#93f2f4" stroke-width="3"/><path d="m51 50 13 13" stroke="#93f2f4" stroke-width="3" stroke-linecap="round"/>
+ <rect x="-37" y="95" width="160" height="24" rx="12" fill="#112836"/><text x="43" y="112" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="2" fill="#a3e9ec">RETRIEVER</text>
+</g>
+<g transform="translate(143 239)">
+ <circle cx="43" cy="43" r="48" fill="#252238" stroke="#cf84d2"/><rect x="22" y="24" width="42" height="37" rx="3" fill="none" stroke="#e6a4e4" stroke-width="2"/><path d="M30 33h25M30 41h16M30 49h23" stroke="#e6a4e4" stroke-width="2"/>
+ <rect x="-37" y="95" width="160" height="24" rx="12" fill="#211f33"/><text x="43" y="112" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="2" fill="#e5b9e4">CONSTRUCTOR</text>
+</g>
+<g transform="translate(143 370)">
+ <circle cx="43" cy="43" r="48" fill="#25322b" stroke="#bce87d"/><path d="m24 42 13 13 26-28" fill="none" stroke="#d2f89d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+ <rect x="-37" y="95" width="160" height="24" rx="12" fill="#202d27"/><text x="43" y="112" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="2" fill="#cce9a6">REVIEWER</text>
+</g>
+<g transform="translate(462 117) rotate(8 188 128)" filter="url(#shadow)"><rect width="372" height="252" rx="10" fill="#172639" stroke="#485f78"/><path d="M22 30h108M22 49h177" stroke="#53778b" stroke-width="7" stroke-linecap="round"/><rect x="23" y="78" width="325" height="146" rx="5" fill="#203d50"/></g>
+<g transform="translate(438 144) rotate(1 188 128)" filter="url(#shadow)"><rect width="372" height="252" rx="10" fill="#102231" stroke="#558aa0"/><path d="M22 30h108M22 49h177" stroke="#658f9f" stroke-width="7" stroke-linecap="round"/><rect x="23" y="78" width="325" height="146" rx="5" fill="#163343"/></g>
+<g transform="translate(417 171) rotate(-6 188 128)" filter="url(#shadow)">
+ <rect width="372" height="252" rx="10" fill="url(#panel)" stroke="#a2e8ef" stroke-width="1.5"/>
+ <rect x="0" y="0" width="372" height="9" rx="4" fill="url(#cyan)"/>
+ <text x="25" y="44" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#dbeff7">FROM EVIDENCE TO STORY</text>
+ <path d="M26 64h132" stroke="#6c95a8" stroke-width="5" stroke-linecap="round"/>
+ <rect x="25" y="87" width="151" height="136" rx="6" fill="#102d3c" stroke="#305465"/>
+ <path d="M44 190h111M44 108v82" stroke="#4c7b90"/>
+ <rect x="55" y="153" width="17" height="37" rx="2" fill="#227d91"/><rect x="82" y="135" width="17" height="55" rx="2" fill="#3dafc0"/><rect x="109" y="115" width="17" height="75" rx="2" fill="#8eedf1"/>
+ <path d="M199 102h135M199 119h119M199 136h130" stroke="#6e92a4" stroke-width="6" stroke-linecap="round"/>
+ <rect x="197" y="158" width="145" height="64" rx="5" fill="#b8e885" fill-opacity=".12"/><path d="m208 187 7 7 12-15" fill="none" stroke="#c5ed9c" stroke-width="2"/>
+ <path d="M239 181h82M239 195h60" stroke="#8eae82" stroke-width="5" stroke-linecap="round"/>
+ <circle cx="337" cy="235" r="3" fill="#bce77e"/>
+</g>
+<g fill="#c0faff"><circle cx="296" cy="150" r="4"/><circle cx="350" cy="240" r="4"/><circle cx="306" cy="413" r="4"/></g>
+<path d="M839 166v-32h-32M828 397h30v-30" fill="none" stroke="#4fdbe7" stroke-width="2"/>
+
+</svg>

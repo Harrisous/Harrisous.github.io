@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "index.html"
 RINGS = ROOT / "data" / "rings.json"
-SOURCE_FILES = [ROOT / "index.html", ROOT / "src" / "app.jsx", ROOT / "mascot" / "cyber-cat.js"]
+SOURCE_FILES = [ROOT / "index.html", *sorted(path for path in (ROOT / "src").iterdir() if path.suffix in {".js", ".jsx"}), ROOT / "mascot" / "cyber-cat.js"]
 
 MAX_HOME_IMAGE_BYTES = 450_000
 

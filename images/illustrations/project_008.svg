@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-labelledby="title desc">
+<title id="title">Gosvea Agentic RAG Chatbot</title><desc id="desc">Concept illustration of a conversation connected through a retrieval hub to a knowledge corpus and live course tools.</desc>
+<defs>
+ <radialGradient id="glow"><stop stop-color="#27dff2" stop-opacity=".19"/><stop offset="1" stop-color="#27dff2" stop-opacity="0"/></radialGradient>
+ <linearGradient id="panel" x1="0" x2="1" y2="1"><stop stop-color="#132739"/><stop offset="1" stop-color="#091423"/></linearGradient>
+ <linearGradient id="glass" x1="0" x2="1" y2="1"><stop stop-color="#234356"/><stop offset="1" stop-color="#0c1d2d"/></linearGradient>
+ <linearGradient id="cyan" x1="0" x2="1" y2="1"><stop stop-color="#9cf7ff"/><stop offset="1" stop-color="#00badb"/></linearGradient>
+ <linearGradient id="mint" x1="0" x2="1" y2="1"><stop stop-color="#d1ffba"/><stop offset="1" stop-color="#49dfaf"/></linearGradient>
+ <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#6f9bb6" stroke-opacity=".075"/></pattern>
+ <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000611" flood-opacity=".65"/></filter>
+ <filter id="neon" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<rect width="960" height="540" fill="#07111d"/><rect width="960" height="540" fill="url(#grid)"/>
+<ellipse cx="510" cy="250" rx="480" ry="300" fill="url(#glow)"/>
+<path d="M32 84V32H84M876 508h52v-52" fill="none" stroke="#27dff2" stroke-opacity=".35"/>
+
+<g fill="none" stroke="#49d7eb" stroke-opacity=".13"><ellipse cx="480" cy="303" rx="330" ry="158"/><ellipse cx="480" cy="303" rx="292" ry="120"/></g>
+<g font-family="Arial,sans-serif" font-size="13" letter-spacing="3" fill="#91abbc"><text x="52" y="63">GOSVEA / KNOWLEDGE IN MOTION</text></g>
+<path d="M274 257H346Q378 257 395 282L424 320M557 284l39-45q12-15 35-15h44M556 323h50q25 0 25 24v34h43" fill="none" stroke="#00ddf7" stroke-width="11" opacity=".15" filter="url(#neon)"/>
+<path d="M274 257H346Q378 257 395 282L424 320M557 284l39-45q12-15 35-15h44M556 323h50q25 0 25 24v34h43" fill="none" stroke="#45ddf5" stroke-width="2.5"/>
+<path d="M272 352h55q26 0 26-22v-30q0-26 24-26h30" fill="none" stroke="#ee72d7" stroke-width="2" stroke-dasharray="6 7"/>
+<g transform="translate(79 175) rotate(-7 115 105)" filter="url(#shadow)">
+ <path d="M15 15h218v162H96l-33 28v-28H15Z" fill="#091724" stroke="#367286"/>
+ <path d="M0 0h218v162H81l-33 28v-28H0Z" fill="url(#panel)" stroke="#77edfa" stroke-width="1.6"/>
+ <circle cx="29" cy="29" r="7" fill="#57e8f7"/><text x="47" y="34" font-family="Arial,sans-serif" font-size="13" fill="#c5e9f3">ASK A QUESTION</text>
+ <rect x="23" y="61" width="143" height="8" rx="4" fill="#bfdae4"/><rect x="23" y="81" width="166" height="8" rx="4" fill="#608a9e"/><rect x="23" y="101" width="112" height="8" rx="4" fill="#608a9e"/>
+ <circle cx="176" cy="131" r="13" fill="#123d4a"/><path d="m172 126 7 5-7 5" fill="none" stroke="#77edfa" stroke-width="2"/>
+</g>
+<g transform="translate(80 382)"><rect width="235" height="46" rx="7" fill="#151d32" stroke="#a04e91"/><circle cx="25" cy="23" r="6" fill="#f18add"/><text x="44" y="28" fill="#d5b6d9" font-family="Arial,sans-serif" font-size="14">COURSES &amp; CERTIFICATES</text></g>
+<g transform="translate(480 298)">
+ <circle r="102" fill="#2af0ff" opacity=".08"/><circle r="82" fill="#0a1b2a" stroke="#67e7f5" stroke-width="2"/><circle r="65" fill="none" stroke="#305e73" stroke-dasharray="3 8"/>
+ <path d="M-34-12-4-32 29-13 29 22-4 40-34 20Z" fill="#164258" stroke="#7af1fb" stroke-width="1.5"/>
+ <path d="m-34-12 30 19 33-20M-4 7v33" fill="none" stroke="#7af1fb" stroke-width="1.5"/>
+ <circle cx="-4" cy="-32" r="4" fill="#d4ffff"/><circle cx="29" cy="22" r="4" fill="#d4ffff"/><circle cx="-34" cy="20" r="4" fill="#d4ffff"/>
+ <text y="-112" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" letter-spacing="3" fill="#91d7e5">RETRIEVE + REASON</text>
+</g>
+<g transform="translate(674 114) rotate(6 100 120)" filter="url(#shadow)">
+ <rect x="20" y="-12" width="167" height="212" rx="8" fill="#172d3a" stroke="#325367"/><rect x="10" y="-5" width="167" height="212" rx="8" fill="#0e2434" stroke="#41677b"/><rect width="167" height="212" rx="8" fill="url(#glass)" stroke="#89d8e6"/>
+ <text x="19" y="34" fill="#d9f1f7" font-family="Arial,sans-serif" font-size="14" letter-spacing="1">KNOWLEDGE</text>
+ <rect x="18" y="55" width="130" height="50" rx="4" fill="#4dddf0" opacity=".12"/><path d="M29 71h105M29 87h78" stroke="#5ae2ed" stroke-width="5" stroke-linecap="round"/>
+ <path d="M21 127h124M21 143h103M21 159h115M21 175h81" stroke="#638596" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g transform="translate(675 365)"><rect width="181" height="66" rx="10" fill="url(#panel)" stroke="#e47bce"/><path d="m24 27-9 6 9 6m15-12 9 6-9 6m-6-14-5 28" fill="none" stroke="#ed92db" stroke-width="2"/><text x="65" y="39" fill="#ead2e7" font-family="Arial,sans-serif" font-size="16">LIVE TOOLS</text></g>
+<g fill="#b4faff"><circle cx="330" cy="257" r="5"/><circle cx="609" cy="224" r="5"/><circle cx="631" cy="356" r="4"/></g>
+<path d="M427 461h106" stroke="#66edfa" stroke-width="2"/><text x="480" y="485" text-anchor="middle" fill="#82a6ba" font-family="Arial,sans-serif" font-size="12" letter-spacing="3">CONNECTED ANSWERS</text>
+
+</svg>

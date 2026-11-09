@@ -2,7 +2,7 @@
   "profile": {
     "name": "Haochen \"Harry\" Li",
     "callsign": "HARRY",
-    "title": "AI Engineer — Agentic Systems & Applied LLMs",
+    "title": "AI Engineer",
     "location": "Miami, FL",
     "tagline": "Building agentic systems that ship.",
     "avatar": "./images/optimized/profile.webp",
@@ -73,19 +73,58 @@
     ],
     "skills": {
       "Programming & Tools": [
-        "Python", "SQL", "Java", "JavaScript", "C++", "Git", "Docker", "n8n", "Streamlit", "Raspberry Pi", "CI/CD"
+        "C++",
+        "CI/CD",
+        "Docker",
+        "Git",
+        "Java",
+        "JavaScript",
+        "n8n",
+        "Python",
+        "Raspberry Pi",
+        "SQL",
+        "Streamlit"
       ],
       "Generative AI & LLM": [
-        "Agentic RAG", "LLM Fine-Tuning (LoRA, QLoRA)", "AI Agents", "LangChain", "LangGraph", "NLP",
-        "Pinecone", "ChromaDB", "Transformers", "Hugging Face", "Unsloth", "OpenAI API",
-        "Llama", "DeepSeek", "Qwen", "Vision-Language Models"
+        "Agentic RAG",
+        "AI Agents",
+        "AutoModel",
+        "ChromaDB",
+        "Graphiti",
+        "Hugging Face",
+        "LangChain",
+        "LangGraph",
+        "LLM Fine-Tuning (LoRA, QLoRA)",
+        "Mem0",
+        "NLP",
+        "OpenAI API",
+        "Pinecone",
+        "Transformers",
+        "Unsloth",
+        "vLLM"
       ],
       "Machine Learning": [
-        "PyTorch", "Scikit-learn", "NumPy", "Pandas", "Computer Vision (YOLOv8)", "Time-Series Forecasting"
+        "Computer Vision (YOLOv8)",
+        "NumPy",
+        "Pandas",
+        "PyTorch",
+        "Scikit-learn",
+        "Time-Series Forecasting"
       ],
       "Development & Cloud": [
-        "AWS (EC2)", "GCP", "Amazon SageMaker", "Spring Boot", "React", "MySQL",
-        "Terraform", "Kubernetes", "Apache Spark", "Docker", "Flask"
+        "Amazon SageMaker",
+        "Apache Spark",
+        "AWS (EC2)",
+        "Docker",
+        "Falkor DB",
+        "Flask",
+        "GCP",
+        "Kubernetes",
+        "MySQL",
+        "React",
+        "Redis",
+        "Spring Boot",
+        "Terraform"
       ]
     },
     "contact": {
@@ -93,27 +132,68 @@
       "linkedin": "https://www.linkedin.com/in/haochen-harry-li",
       "github": "https://github.com/Harrisous",
       "location": "Miami, FL, USA"
-    }
+    },
+    "focusAreas": [
+      "AI Agent System Orchestration",
+      "LLM Post Training",
+      "Applied AI & DevOps"
+    ],
+    "llmModels": [
+      "DeepSeek",
+      "Llama",
+      "Nemotron",
+      "Qwen",
+      "Vision-Language Models"
+    ]
   },
-
   "projects": [
     {
       "id": "PROJ_001",
+      "date": "2025-04",
       "title": "Blue-Devil-ChatBot",
       "category": "Agentic AI",
-      "description": "An agentic AI chatbot for Duke knowledge retrieval, built on the LangGraph framework with a multi-tool toolbox: existing API calls, targeted web scraping, and Tavily-powered open web search. Focus is on production-grade API orchestration and agentic search reasoning.",
-      "stack": ["Python", "LangGraph", "LangChain", "Streamlit", "BeautifulSoup", "Tavily", "RESTful API", "AWS", "OpenAI API"],
+      "description": "A LangGraph assistant that retrieves Duke information through APIs, targeted scraping, and open-web search.",
+      "star": {
+        "situation": "Duke knowledge retrieval spans existing APIs, university webpages, and information on the wider web.",
+        "task": "Build a conversational assistant that selects and coordinates the appropriate retrieval tools for each request.",
+        "action": "Built a LangGraph workflow with LangChain, API calls, BeautifulSoup-based scraping, and Tavily search, presented through a Streamlit interface.",
+        "result": "Delivered a chatbot that combines targeted retrieval with open-web search in one agentic workflow, bringing tool orchestration and search reasoning into the same experience."
+      },
+      "stack": [
+        "Python",
+        "LangGraph",
+        "LangChain",
+        "Streamlit",
+        "BeautifulSoup",
+        "Tavily",
+        "RESTful API",
+        "AWS",
+        "OpenAI API"
+      ],
       "link": "https://github.com/Harrisous/AIPI590LLM-project-2-DukeChatbot",
       "image": "./images/optimized/project_001.webp"
     },
     {
       "id": "PROJ_002",
+      "date": "2025-05",
       "title": "Text-to-SQL · DeepSeek LoRA",
       "category": "LLM Fine-tuning",
-      "description": "Fine-tuned a distilled DeepSeek model on the BIRD dataset with LoRA — boosting execution accuracy by 50% on simple queries without degrading medium-difficulty performance. Resolved severe GPU-memory constraints via an Unsloth pipeline with 8-bit quantization and Bfloat16 mixed-precision to prevent OOM and ensure stable convergence. Trades headroom on the hardest queries for meaningful wins on the everyday-analytics use cases real users actually hit.",
+      "description": "A memory-efficient DeepSeek LoRA pipeline for text-to-SQL generation on the BIRD benchmark.",
+      "star": {
+        "situation": "Text-to-SQL adaptation was constrained by GPU memory, while everyday analytics required better execution accuracy on simple queries.",
+        "task": "Fine-tune a distilled DeepSeek model on BIRD without out-of-memory failures or a regression on medium-difficulty queries.",
+        "action": "Combined LoRA with an Unsloth training pipeline, 8-bit quantization, and Bfloat16 mixed precision to reduce memory pressure and stabilize convergence.",
+        "result": "Improved execution accuracy by 50% on simple queries while maintaining medium-difficulty performance. The approach prioritized these everyday queries, with a trade-off on the hardest cases."
+      },
       "stack": [
-        "Python", "Unsloth", "PEFT (LoRA)", "DeepSeek (distilled)", "BIRD Benchmark",
-        "8-bit Quantization", "Bfloat16 Mixed-precision", "Hugging Face"
+        "Python",
+        "Unsloth",
+        "PEFT (LoRA)",
+        "DeepSeek (distilled)",
+        "BIRD Benchmark",
+        "8-bit Quantization",
+        "Bfloat16 Mixed-precision",
+        "Hugging Face"
       ],
       "link": "https://github.com/Duke-AIPI-LLM-Course/project-1-maiga",
       "image": "./images/optimized/project_002.webp"
@@ -122,11 +202,27 @@
       "id": "PROJ_003",
       "title": "Pido-AI-Pet",
       "category": "Edge AI",
-      "description": "An edge-native AI pet robot living entirely on a Raspberry Pi 4B — tracking and following its owner, interpreting voice commands (“barks”), expressing emotions on an LCD, and actuating a tail + chassis via battery-powered motor and servo stack. Designed for comfort and companionship, fully offline.",
+      "description": "A Raspberry Pi companion robot combining owner tracking, voice commands, expressive motion, and an LCD face.",
+      "star": {
+        "situation": "A physical AI companion needs to connect perception, interaction, and expressive movement on a small computing platform.",
+        "task": "Create a Raspberry Pi 4B pet robot that follows its owner, responds to voice commands, and communicates emotion.",
+        "action": "Integrated OpenCV/ArUco tracking, ultrasonic sensing, speech recognition, and camera/microphone inputs with a battery-powered chassis, servo-driven tail, and LCD display.",
+        "result": "Delivered a working companion robot that follows its owner, reacts to spoken commands, and expresses emotions through its screen and movement."
+      },
       "stack": [
-        "Python", "Raspberry Pi 4B", "Edge AI", "OpenCV", "aruco", "Google Web Speech API",
-        "SpeechRecognition", "Ultrasonic sensor", "DC motorized chassis", "Servo motors",
-        "LCD display", "Camera", "Microphone"
+        "Python",
+        "Raspberry Pi 4B",
+        "Edge AI",
+        "OpenCV",
+        "aruco",
+        "Google Web Speech API",
+        "SpeechRecognition",
+        "Ultrasonic sensor",
+        "DC motorized chassis",
+        "Servo motors",
+        "LCD display",
+        "Camera",
+        "Microphone"
       ],
       "link": "https://github.com/Harrisous/AIPI590AIPhysicialWorld-AIPet",
       "image": "./images/optimized/project_003.webp"
@@ -135,10 +231,22 @@
       "id": "PROJ_004",
       "title": "Stock-Market-Transformer",
       "category": "Financial AI",
-      "description": "A deep-learning pipeline for stock prediction fusing autoencoder-based market-state embeddings with a Transformer enhanced by Mixture-of-Experts and multi-head attention. Deployed a working Streamlit app delivering short-horizon opening-price forecasts, with a roadmap for broader targets and tighter loss.",
+      "description": "A stock-forecasting pipeline combining market-state embeddings, a Mixture-of-Experts Transformer, and a Streamlit app.",
+      "star": {
+        "situation": "Short-horizon stock prediction requires a model that can represent market state alongside temporal price patterns.",
+        "task": "Connect market-state representation learning to a forecasting model and make its predictions accessible in an application.",
+        "action": "Built autoencoder-based market-state embeddings and a PyTorch Transformer with Mixture-of-Experts and multi-head attention, then connected the pipeline to Streamlit.",
+        "result": "Deployed a working application for short-horizon opening-price forecasts. Broader prediction targets and lower loss remained areas for further development."
+      },
       "stack": [
-        "Python", "PyTorch", "Transformer (DeepSeek V3–inspired)", "Mixture-of-Experts (MoE)",
-        "Multi-head Attention", "Autoencoder", "Time-series", "Streamlit"
+        "Python",
+        "PyTorch",
+        "Transformer (DeepSeek V3–inspired)",
+        "Mixture-of-Experts (MoE)",
+        "Multi-head Attention",
+        "Autoencoder",
+        "Time-series",
+        "Streamlit"
       ],
       "link": "https://github.com/Harrisous/StockMarketTransformer",
       "image": "./images/optimized/project_004.webp"
@@ -147,10 +255,24 @@
       "id": "PROJ_005",
       "title": "Dual-Stream-Emotion-XAI",
       "category": "Explainable AI",
-      "description": "A dual-stream emotion analysis + XAI dashboard: Wav2Vec2 for acoustic emotion, RoBERTa + Whisper ASR for semantic sentiment, and PCA-based latent-space visualizations contrasting “how you sound” vs. “what you say” in side-by-side 3D embeddings. Surfaces clusters, nearest neighbors, and cross-modal conflicts (e.g., sarcasm).",
+      "description": "An explainability dashboard comparing acoustic emotion and semantic sentiment in speech.",
+      "star": {
+        "situation": "How someone sounds and what they say can convey different emotions, including conflicting signals such as sarcasm.",
+        "task": "Make acoustic and semantic model outputs inspectable side by side, including the structure of their latent representations.",
+        "action": "Combined Wav2Vec2 acoustic emotion analysis with Whisper transcription and RoBERTa sentiment analysis. Used PCA and Plotly to present both streams as interactive 3D embeddings in Streamlit.",
+        "result": "Delivered a dashboard for exploring clusters, nearest neighbors, and cross-modal conflicts, helping users examine where tone and wording agree or diverge."
+      },
       "stack": [
-        "Python", "Streamlit", "Hugging Face", "Wav2Vec2", "RoBERTa", "Whisper ASR",
-        "Plotly", "Librosa", "PCA", "joblib"
+        "Python",
+        "Streamlit",
+        "Hugging Face",
+        "Wav2Vec2",
+        "RoBERTa",
+        "Whisper ASR",
+        "Plotly",
+        "Librosa",
+        "PCA",
+        "joblib"
       ],
       "link": "https://github.com/Harrisous/XAI-Final-Project",
       "image": "./images/optimized/project_005.webp"
@@ -159,10 +281,23 @@
       "id": "PROJ_006",
       "title": "Sentinel-AI",
       "category": "AML AI",
-      "description": "An AI-native Anti-Money-Laundering engine for blockchain wallets scoring risk in real time over 1B+ on-chain transactions — USDT/USDC flows (~$2.9T monthly volume). Combines BigQuery-scale feature extraction with gradient-boosted models to flag high-risk entities across transaction graphs, smart-contract relationships, and KYC activity. Academic Award, 2025 FINOS DTCC Hackathon.",
+      "description": "A blockchain wallet risk-scoring engine built for large-scale anti-money-laundering analysis.",
+      "star": {
+        "situation": "The project targeted 1B+ on-chain transactions across USDT/USDC flows representing approximately $2.9T in monthly volume.",
+        "task": "Identify high-risk blockchain wallets in real time using transaction, smart-contract, and KYC signals.",
+        "action": "Combined BigQuery-scale feature extraction with gradient-boosted models, drawing features from transaction graphs, smart-contract relationships, and KYC activity.",
+        "result": "Delivered an AI-driven wallet risk-scoring engine and received the Academic Award at the 2025 FINOS DTCC Hackathon."
+      },
       "stack": [
-        "Python", "Google BigQuery", "SQL", "XGBoost", "CatBoost", "LightGBM",
-        "Random Forest", "Model evaluation", "Financial ML"
+        "Python",
+        "Google BigQuery",
+        "SQL",
+        "XGBoost",
+        "CatBoost",
+        "LightGBM",
+        "Random Forest",
+        "Model evaluation",
+        "Financial ML"
       ],
       "link": "https://github.com/finos-labs/dtcch-2025-OpenAML",
       "image": "./images/optimized/project_006.webp"
@@ -171,10 +306,25 @@
       "id": "PROJ_007",
       "title": "FlashBack",
       "category": "Companion AI",
-      "description": "An end-to-end, memory-augmented personal AI on a Raspberry Pi with camera and mic — continuously capturing first-person lifelog video. A Flask + GCP backend syncs audio–video to cloud storage and exposes a Gemini-powered API so users can query past in-person interactions (who you met, what you discussed, when). 1st place, Education track — 2024 Duke AI Hackathon.",
+      "description": "A Raspberry Pi lifelogging assistant that makes past in-person interactions searchable with multimodal AI.",
+      "star": {
+        "situation": "First-person audio and video can preserve encounters, but recalling who was there, what was discussed, and when requires a searchable memory interface.",
+        "task": "Connect wearable-style capture, cloud storage, and natural-language retrieval in an end-to-end personal assistant.",
+        "action": "Used a Raspberry Pi with a camera and microphone to capture lifelog video. Built a Flask and GCP backend to synchronize recordings and expose a Gemini-powered query API.",
+        "result": "Enabled users to query past in-person interactions and won first place in the Education track at the 2024 Duke AI Hackathon."
+      },
       "stack": [
-        "Raspberry Pi", "Camera", "Microphone", "Full-stack", "Python", "Flask",
-        "Docker", "CI/CD", "GCP", "Gemini API", "Multimodal AI"
+        "Raspberry Pi",
+        "Camera",
+        "Microphone",
+        "Full-stack",
+        "Python",
+        "Flask",
+        "Docker",
+        "CI/CD",
+        "GCP",
+        "Gemini API",
+        "Multimodal AI"
       ],
       "link": "https://github.com/Harrisous/FlashBack",
       "image": "./images/optimized/project_007.webp"
@@ -183,58 +333,125 @@
       "id": "PROJ_008",
       "title": "Gosvea Agentic RAG Chatbot",
       "category": "Production Agentic AI",
-      "description": "Company's first AI customer-support channel — a production agentic RAG chatbot wiring Chatwoot and n8n to a LangChain multi-LLM pipeline (Llama 3.1 70B + GPT-OSS-120B on Groq). Cold-started a Pinecone vector store from internal manuals with OpenAI text-embedding-003, LLM-powered query augmentation, and a weekly curation loop; custom agentic tools handle real-time zip/date course search and e-certificate retrieval. Achieved ~80% autonomous resolution, −40% simple email inquiries, and a 280:1 revenue-to-token-cost ratio.",
+      "description": "Gosvea’s first production AI support channel, combining retrieval, multiple LLMs, and task-specific tools.",
+      "star": {
+        "situation": "Gosvea needed its first AI support channel for recurring course questions, course availability, and certificate requests.",
+        "task": "Build a production assistant grounded in internal manuals, with tools to complete common support requests.",
+        "action": "Connected Chatwoot and n8n to a LangChain multi-LLM pipeline on Groq. Built a Pinecone knowledge base with embeddings, query augmentation, and weekly curation; added real-time zip/date course search and e-certificate retrieval.",
+        "result": "Achieved approximately 80% autonomous resolution, reduced simple email inquiries by 40%, and reached a 280:1 revenue-to-token-cost ratio."
+      },
       "stack": [
-        "Python", "LangChain", "Chatwoot", "n8n", "Llama 3.1 70B", "GPT-OSS-120B", "Groq",
-        "Pinecone", "OpenAI text-embedding-003", "Agentic RAG", "Agentic Tools"
+        "Python",
+        "LangChain",
+        "Chatwoot",
+        "n8n",
+        "Llama 3.1 70B",
+        "GPT-OSS-120B",
+        "Groq",
+        "Pinecone",
+        "OpenAI text-embedding-003",
+        "Agentic RAG",
+        "Agentic Tools"
       ],
       "link": null,
-      "image": "./images/optimized/project_008.webp"
+      "image": "./images/generated/project_008.webp",
+      "imageAlt": "Concept illustration of a support conversation connected to a knowledge library and agent tools.",
+      "imageKind": "generated-concept"
     },
     {
       "id": "PROJ_009",
       "title": "Gosvea Scheduling Platform",
       "category": "Full-stack SaaS",
-      "description": "Designed and deployed an end-to-end scheduling platform with drag-and-drop calendar, automated instructor notifications, and a unified instructor-ID system supporting parallel AHA and ARC certification programs. Cut scheduling cycle time by 50%+ and removed entire classes of hand-off errors between coordinators and instructors.",
+      "description": "A deployed scheduling platform coordinating instructors across AHA and ARC certification programs.",
+      "star": {
+        "situation": "Parallel AHA and ARC certification programs required coordinated scheduling and reliable hand-offs between coordinators and instructors.",
+        "task": "Create a shared workflow for calendar management, instructor identity, and scheduling notifications.",
+        "action": "Designed and deployed a Spring Boot, React, and MySQL platform on AWS EC2, with a drag-and-drop calendar, automated instructor notifications, and a unified instructor-ID system.",
+        "result": "Cut scheduling cycle time by more than 50% and eliminated classes of coordinator-to-instructor hand-off errors through the shared workflow."
+      },
       "stack": [
-        "Spring Boot", "Java", "React", "MySQL", "AWS EC2", "REST API", "Drag-and-drop Calendar"
+        "Spring Boot",
+        "Java",
+        "React",
+        "MySQL",
+        "AWS EC2",
+        "REST API",
+        "Drag-and-drop Calendar"
       ],
       "link": null,
-      "image": "./images/optimized/project_009.webp"
+      "image": "./images/generated/project_009.webp",
+      "imageAlt": "Concept illustration of a scheduling calendar with linked instructors and course sessions.",
+      "imageKind": "generated-concept"
     },
     {
       "id": "PROJ_010",
+      "date": "2026-01",
       "title": "Multi-Agent Slide Architect",
       "category": "Multi-Agent Systems",
-      "description": "An autonomous end-to-end multi-agent system that generates compliant presentations by restricting content generation to authorized Pinecone vector databases — enforcing 100% factual integrity. The agentic graph fuses intent understanding, query expansion/rewriting, hybrid search, and reranking to maximize retrieval recall, with a constructor agent translating verified content into structured HTML layouts. A multi-stage Reviewer-Assembler feedback loop hits 96% factual precision; conditional routing trims 40%+ of redundant compute versus full-system resets.",
+      "description": "A multi-agent presentation builder that retrieves authorized evidence and iteratively assembles HTML slides.",
+      "star": {
+        "situation": "Automated presentations needed to draw from authorized source material while avoiding costly full-system reruns during revision.",
+        "task": "Generate structured presentations from approved Pinecone sources and route feedback to the components that needed revision.",
+        "action": "Built a LangGraph workflow for intent understanding, query expansion, hybrid retrieval, and reranking. A constructor generated HTML layouts, while a Reviewer-Assembler loop checked content and used conditional routing for targeted revisions.",
+        "result": "The project evaluation reported 96% factual precision and over 40% less redundant compute than full-system resets, while restricting retrieval to authorized sources."
+      },
       "stack": [
-        "LangGraph", "Agentic RAG", "Pinecone", "Query Expansion", "Hybrid Search",
-        "Reranking", "HTML Constructor Agent", "Reviewer-Assembler Loop", "Conditional Routing"
+        "LangGraph",
+        "Agentic RAG",
+        "Pinecone",
+        "Query Expansion",
+        "Hybrid Search",
+        "Reranking",
+        "HTML Constructor Agent",
+        "Reviewer-Assembler Loop",
+        "Conditional Routing"
       ],
       "link": null,
-      "image": "./images/optimized/project_010.webp"
+      "image": "./images/generated/project_010.webp",
+      "imageAlt": "Concept illustration of multiple agents assembling and reviewing a presentation deck.",
+      "imageKind": "generated-concept"
     },
     {
       "id": "PROJ_011",
+      "date": "2026-01",
       "title": "Clinical Claim Verifier with RAG",
       "category": "Multimodal RAG",
-      "description": "A multimodal RAG system for influenza-vaccine clinical-claim verification built on Gemini Vision + ChromaDB. Features layout-aware parsing, contextual chunking, hybrid retrieval, and multi-stage reranking with an LLM-as-judge workflow. Cross-model sensitivity analysis reached 100% overall accuracy at a 0.9 confidence threshold (77% at 0.95), enabling principled operating-point selection for reliable evidence extraction.",
+      "description": "A multimodal RAG workflow for finding and evaluating evidence behind influenza-vaccine clinical claims.",
+      "star": {
+        "situation": "Influenza-vaccine claim verification required extracting relevant evidence from documents whose layout and visual content affected interpretation.",
+        "task": "Build a retrieval and verification workflow, then examine how confidence thresholds changed its evaluation results.",
+        "action": "Combined Gemini Vision and ChromaDB with layout-aware parsing, contextual chunking, hybrid retrieval, and multi-stage reranking. Used an LLM-as-judge workflow and cross-model sensitivity analysis.",
+        "result": "The project evaluation reported 100% overall accuracy at a 0.9 confidence threshold and 77% at 0.95, informing the choice of operating point for this evaluated dataset."
+      },
       "stack": [
-        "Gemini Vision", "ChromaDB", "Multimodal RAG", "Layout-aware Parsing",
-        "Contextual Chunking", "Hybrid Retrieval", "LLM-as-judge", "Multi-stage Reranking"
+        "Gemini Vision",
+        "ChromaDB",
+        "Multimodal RAG",
+        "Layout-aware Parsing",
+        "Contextual Chunking",
+        "Hybrid Retrieval",
+        "LLM-as-judge",
+        "Multi-stage Reranking"
       ],
       "link": null,
-      "image": "./images/optimized/project_011.webp"
+      "image": "./images/generated/project_011.webp",
+      "imageAlt": "Concept illustration of clinical claims linked to highlighted evidence and citations.",
+      "imageKind": "generated-concept"
     }
   ],
-
   "blogs": [
     {
       "id": "BLOG_01",
       "title": "How AI Sees Cats — Grad-CAM Visualization",
       "category": "Computer Vision · XAI",
       "description": "A visual dive into Grad-CAM: how convolutional networks localize evidence for a prediction. Walks through the math, the gradient-hook plumbing, and side-by-side heatmaps on cat photos — including the weird cases where the model 'sees' the wrong fur.",
-      "stack": ["Grad-CAM", "PyTorch", "CNN", "Explainability", "Visualization"],
+      "stack": [
+        "Grad-CAM",
+        "PyTorch",
+        "CNN",
+        "Explainability",
+        "Visualization"
+      ],
       "link": "./blog/blog1/blog1.html",
       "image": null
     },
@@ -249,14 +466,17 @@
       "active": false
     }
   ],
-
   "resources": [
     {
       "id": "RES_01",
       "title": "CH_01 · Introduction to Machine Learning",
       "category": "Field Manual",
       "description": "Core concepts, supervised vs. unsupervised framing, terminology. The opening chapter of the Traditional ML Field Manual — designed as a fast-recall reference rather than a tutorial.",
-      "stack": ["Fundamentals", "Supervised", "Unsupervised"],
+      "stack": [
+        "Fundamentals",
+        "Supervised",
+        "Unsupervised"
+      ],
       "link": "./blog/blog2/1_introduction.html",
       "image": null,
       "active": true
@@ -266,7 +486,12 @@
       "title": "CH_02 · Classic Supervised Models Deep Dive",
       "category": "Field Manual",
       "description": "Linear regression, logistic regression, decision trees, random forests, and boosting — with the intuitions and trade-offs that actually matter in practice.",
-      "stack": ["Linear / Logistic", "Decision Trees", "Random Forest", "Boosting"],
+      "stack": [
+        "Linear / Logistic",
+        "Decision Trees",
+        "Random Forest",
+        "Boosting"
+      ],
       "link": "./blog/blog2/2_supervised.html",
       "image": null,
       "active": true
@@ -276,7 +501,11 @@
       "title": "CH_03 · Unsupervised Learning",
       "category": "Field Manual",
       "description": "K-Means, PCA, and t-SNE — when each is the right tool, and what they quietly assume about your data.",
-      "stack": ["K-Means", "PCA", "t-SNE"],
+      "stack": [
+        "K-Means",
+        "PCA",
+        "t-SNE"
+      ],
       "link": "./blog/blog2/3_unsupervised.html",
       "image": null,
       "active": true
@@ -286,7 +515,11 @@
       "title": "CH_04 · Deep Learning",
       "category": "Field Manual",
       "description": "Neural networks, backpropagation, and convolutional architectures — bridging the classical toolbox with the modern one.",
-      "stack": ["Neural Networks", "Backprop", "CNN"],
+      "stack": [
+        "Neural Networks",
+        "Backprop",
+        "CNN"
+      ],
       "link": "./blog/blog2/4_deep_learning.html",
       "image": null,
       "active": true
@@ -296,20 +529,32 @@
       "title": "CH_05 · Reinforcement Learning",
       "category": "Field Manual · WIP",
       "description": "Agents, environments, rewards. Draft transmission — signal not yet stabilized.",
-      "stack": ["Agents", "Environments", "Rewards"],
+      "stack": [
+        "Agents",
+        "Environments",
+        "Rewards"
+      ],
       "link": null,
       "image": null,
       "active": false
     }
   ],
-
   "publications": [
     {
       "id": "PUB_001",
       "title": "StableAML: Machine Learning for Behavioral Wallet Detection in Stablecoin Anti-Money Laundering on Ethereum",
       "category": "Peer-Reviewed · Blockchain, Vol. 4 (2026)",
       "description": "Open-access journal article with Luciano Juvinski and Alessio Brini (Duke Pratt School of Engineering), published in Blockchain, Vol. 4, Issue 2, Art. 0007 (2026).\n\nOver $3.1T of illicit money moves through the global financial system yearly — increasingly via stablecoins. Using on-chain USDT/USDC transaction data on Ethereum, the study benchmarks linear models, tree ensembles, deep networks, and graph neural networks for behavioral wallet detection. Tree ensembles come out on top, cleanly separating distinct illicit patterns such as cybercrime and sanctioned wallets — sharpening know-your-transaction (KYT) compliance precision under the EU's MiCA and the U.S. GENIUS Act.\n\nDOI: 10.55092/blockchain20260007",
-      "stack": ["Machine Learning", "Anti-Money Laundering", "Stablecoins", "Blockchain Analytics", "Ethereum", "Graph Neural Networks", "Tree Ensembles", "KYT"],
+      "stack": [
+        "Machine Learning",
+        "Anti-Money Laundering",
+        "Stablecoins",
+        "Blockchain Analytics",
+        "Ethereum",
+        "Graph Neural Networks",
+        "Tree Ensembles",
+        "KYT"
+      ],
       "link": "https://www.elspub.com/doi/10.55092/blockchain20260007",
       "image": null
     }

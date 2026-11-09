@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-labelledby="title desc">
+<title id="title">Gosvea Scheduling Platform</title><desc id="desc">Concept illustration of a shared course calendar, a movable appointment card and linked instructor profiles.</desc>
+<defs>
+ <radialGradient id="glow"><stop stop-color="#c981ef" stop-opacity=".19"/><stop offset="1" stop-color="#c981ef" stop-opacity="0"/></radialGradient>
+ <linearGradient id="panel" x1="0" x2="1" y2="1"><stop stop-color="#132739"/><stop offset="1" stop-color="#091423"/></linearGradient>
+ <linearGradient id="glass" x1="0" x2="1" y2="1"><stop stop-color="#234356"/><stop offset="1" stop-color="#0c1d2d"/></linearGradient>
+ <linearGradient id="cyan" x1="0" x2="1" y2="1"><stop stop-color="#9cf7ff"/><stop offset="1" stop-color="#00badb"/></linearGradient>
+ <linearGradient id="mint" x1="0" x2="1" y2="1"><stop stop-color="#d1ffba"/><stop offset="1" stop-color="#49dfaf"/></linearGradient>
+ <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#6f9bb6" stroke-opacity=".075"/></pattern>
+ <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000611" flood-opacity=".65"/></filter>
+ <filter id="neon" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<rect width="960" height="540" fill="#07111d"/><rect width="960" height="540" fill="url(#grid)"/>
+<ellipse cx="510" cy="250" rx="480" ry="300" fill="url(#glow)"/>
+<path d="M32 84V32H84M876 508h52v-52" fill="none" stroke="#c981ef" stroke-opacity=".35"/>
+
+<g font-family="Arial,sans-serif" font-size="13" letter-spacing="3" fill="#b5a9c8"><text x="52" y="63">GOSVEA / COORDINATED BY DESIGN</text></g>
+<path d="m160 438 531 55 205-130-535-55Z" fill="#6c4cad" opacity=".08"/>
+<g transform="translate(108 104) rotate(-5 265 170)" filter="url(#shadow)">
+ <rect x="12" y="16" width="530" height="332" rx="14" fill="#102032" stroke="#29384e"/>
+ <rect width="530" height="332" rx="14" fill="url(#panel)" stroke="#7984ad" stroke-width="1.5"/>
+ <path d="M0 58h530" stroke="#354d69"/>
+ <circle cx="28" cy="29" r="5" fill="#f087ce"/><text x="48" y="36" font-family="Arial,sans-serif" font-size="20" letter-spacing="2" fill="#e4e9fa">A SHARED SCHEDULE</text>
+ <path d="m468 24-7 6 7 6m26-12 7 6-7 6" fill="none" stroke="#9bb0c9" stroke-width="2"/>
+ <g font-family="Arial,sans-serif" font-size="11" letter-spacing="1" fill="#8399b1"><text x="53" y="85">MON</text><text x="153" y="85">TUE</text><text x="254" y="85">WED</text><text x="354" y="85">THU</text><text x="455" y="85">FRI</text></g>
+ <g stroke="#2d4057" stroke-opacity=".7"><path d="M20 102h490M20 158h490M20 214h490M20 270h490M20 318h490M118 102v216M216 102v216M314 102v216M412 102v216"/></g>
+ <g>
+ <rect x="28" y="113" width="81" height="34" rx="5" fill="#1c565d"/><rect x="28" y="113" width="4" height="34" rx="2" fill="#69eee7"/><path d="M42 126h51M42 136h32" stroke="#84c5ce" stroke-width="3" stroke-linecap="round"/>
+ <rect x="225" y="113" width="81" height="84" rx="5" fill="#54435a"/><rect x="225" y="113" width="4" height="84" rx="2" fill="#f29cd7"/><path d="M239 128h51M239 139h35" stroke="#ddaccd" stroke-width="3" stroke-linecap="round"/><circle cx="242" cy="178" r="8" fill="#bd82a8"/><circle cx="260" cy="178" r="8" fill="#835f87"/>
+ <rect x="323" y="173" width="81" height="34" rx="5" fill="#4e4d30"/><rect x="323" y="173" width="4" height="34" rx="2" fill="#e4dc87"/><path d="M337 186h51M337 196h32" stroke="#c5c394" stroke-width="3" stroke-linecap="round"/>
+ <rect x="128" y="225" width="81" height="78" rx="5" fill="#223e6a"/><rect x="128" y="225" width="4" height="78" rx="2" fill="#8ba8ff"/><path d="M142 240h51M142 251h33" stroke="#99add5" stroke-width="3" stroke-linecap="round"/><circle cx="146" cy="283" r="8" fill="#7394ce"/>
+ <rect x="421" y="225" width="81" height="36" rx="5" fill="#1c565d"/><rect x="421" y="225" width="4" height="36" rx="2" fill="#69eee7"/><path d="M435 239h51M435 250h32" stroke="#84c5ce" stroke-width="3" stroke-linecap="round"/>
+ </g>
+ <rect x="322" y="222" width="83" height="82" rx="7" fill="#76ede6" fill-opacity=".04" stroke="#7ff2e9" stroke-dasharray="4 5"/>
+</g>
+<path d="M650 220h44q25 0 25-25v-23M650 351h50q25 0 25 25v25" fill="none" stroke="#838be4" stroke-width="2" stroke-dasharray="6 6"/>
+<g transform="translate(689 120)">
+ <circle cx="40" cy="40" r="43" fill="#1d293f" stroke="#a2a6fb"/>
+ <circle cx="40" cy="30" r="12" fill="#a6afe6"/><path d="M18 62q0-22 22-22t22 22" fill="#687cac"/>
+ <circle cx="72" cy="68" r="12" fill="#88e7cf"/><path d="m66 68 4 4 8-9" fill="none" stroke="#173634" stroke-width="2"/>
+</g>
+<g transform="translate(739 280)">
+ <circle cx="40" cy="40" r="43" fill="#2d243e" stroke="#c58ec4"/>
+ <circle cx="40" cy="30" r="12" fill="#e1acd4"/><path d="M18 62q0-22 22-22t22 22" fill="#976f9b"/>
+ <circle cx="72" cy="68" r="12" fill="#88e7cf"/><path d="m66 68 4 4 8-9" fill="none" stroke="#173634" stroke-width="2"/>
+</g>
+<g transform="translate(493 334) rotate(7 102 52)" filter="url(#shadow)">
+ <rect width="207" height="97" rx="9" fill="#13373f" stroke="#85f0e9" stroke-width="1.5"/><rect x="0" y="0" width="6" height="97" rx="3" fill="#85f0e9"/>
+ <text x="20" y="28" fill="#d6fffa" font-family="Arial,sans-serif" font-size="17">INSTRUCTOR SYNC</text><path d="M20 48h123M20 61h98" stroke="#6b9eaa" stroke-width="4" stroke-linecap="round"/>
+ <path d="M174 67v22l7-6 6 9 5-3-6-9 10-2Z" fill="#d3fff8" stroke="#12373f" stroke-width="2"/>
+</g>
+<g font-family="Arial,sans-serif" font-size="13" letter-spacing="2"><text x="120" y="490" fill="#79cfcf">AHA</text><path d="M163 485h48" stroke="#597b94"/><text x="225" y="490" fill="#dda8d6">ARC</text><text x="700" y="483" fill="#8ca2b6">ONE WORKFLOW</text></g>
+
+</svg>

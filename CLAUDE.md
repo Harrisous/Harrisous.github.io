@@ -2,124 +2,34 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## Current homepage (2026-11-09)
 
-**Harrisous.github.io** is a personal website and portfolio hosted on GitHub Pages. It's a static site with no build process or server-side components.
+The active homepage is the open-workspace design; the carousel descriptions in
+historical notes below refer to the previous layout. See README.md for commands.
 
-### Tech Stack
-- **Frontend**: HTML, Tailwind CSS (CDN), React 18 (CDN with Babel for JSX)
-- **Styling**: Tailwind CSS for utility-first design; custom CSS for special pages
-- **Interactivity**: Inline React components (no bundling needed)
-- **Hosting**: GitHub Pages (static files only)
-
-## Site Structure
-
-### Main Pages
-- `index.html` - Primary portfolio/personal page (cyberpunk Graph-OS theme, dark mode)
-- `index_backup.html` - Previous cyberpunk layout (kept as reference for canvas/BGM patterns)
-- `index_apple.html` - Alternative "Apple-style" theme; linked from the mobile top bar
-  (`[ SWITCH_MODE ]`) — don't delete
-- `hidden/` - Alternative theme versions (plain, geometric, cyber_old) plus
-  `index_till_2026Apr.html`, the archived pre-April-2026 main page
-- `blog/` - Blog posts as markdown files
-  - `blog1/` and `blog2/` subdirectories for organizing posts
-- `holidays/` - Special interactive pages (e.g., christmas.html with canvas-based particle effects)
-- `images/` - Assets (profile images, project thumbnails)
-- `data/rings.json` - Structured content feed for `index.html` (profile, projects, blogs, resources)
-- `mascot/` - Floating corner mascot (3D chibi penguin girl, Three.js) — see "Corner mascot" below
-
-### `index.html` layout (Graph-OS)
-`App` branches on `matchMedia('(min-width: 768px)')`: ≥768px renders `GraphScene`
-(desktop), <768px renders `MobileScene`. Both share the `Dossier` and `DetailView`
-components and the same `useBgm` hook, so detail cards and the profile dossier behave
-identically on both.
-
-**Desktop (`GraphScene`)** — three-column flex layout centred horizontally in the viewport:
-
-1. **Identity column** (`w-[440px]`) — avatar w/ BGM toggle, volume slider, identity card
-   (callsign / name / title / education short / contact icon row / `[▶] EXPAND_PROFILE` button).
-2. **Expand slot** (`0 → 460px`, animated) — inline dossier panel with `✕` close button; opens
-   beside identity, pushes the rings column right; closes on `Esc` or any outside click.
-3. **Rings column** (`w-[560px]`) — centered tab row (`PROJECTS / BLOGS / RESOURCES`, equal
-   `170 × 54` tabs) above a rails-area that shows exactly one "folder" rail at a time,
-   with inactive rings stacked behind/right (opacity 0.25–0.4, blur + scale).
-
-**Mobile (`MobileScene`)** — single vertical scroll: top bar (`[ SWITCH_MODE ]` link to
-`index_apple.html` + BGM toggle), profile card with `EXPAND_PROFILE`, contact links,
-background blurb, horizontal skills ticker, then a tabbed PROJECTS / BLOGS / RESOURCES
-card list. Tapping an item opens the same `DetailView` as desktop; `active: false` items
-render at 40% opacity and are not tappable.
-
-### Rail folder geometry
-Each rail is a custom `clip-path` polygon with a raised tab at the top-left
-(x: 12 → 202, y: 0 → 30) that holds the `// PROJECTS | // BLOGS | // RESOURCES` label. Below
-the tab, the body holds `rail-header` + `rail-items` (fixed height 430px, masked top/bottom
-with a `linear-gradient` fade). Up/down chevrons sit in a vertical `.rail-arrows` column to
-the LEFT of the rail, vertically centred.
-
-### Keyboard / mouse map (desktop scene only)
-- `← / →` — cycle focused ring (horizontal slide)
-- `↑ / ↓` — cycle focused item inside the active ring
-- `Enter` — open focused item's detail card
-- `Esc` — close detail; or collapse expand panel when no detail is open
-- Mouse wheel over active rail — scroll items (150ms debounce)
-- Click a background (inactive) ring — focus it
-- Click avatar — toggle BGM (volume slider is separate; doesn't toggle)
-- Click outside the expand panel — collapse it
-
-## Adding Content
-
-### Editing profile / projects / blogs / resources / publications on `index.html`
-All content for the Graph-OS main page lives in `data/rings.json` — NOT inline in HTML.
-`index.html` fetches it on mount and falls back to a minimal inline copy only if the
-fetch fails (e.g., when opening via `file://`).
-
-Shape:
-```
-{
-  "profile":      { name, callsign, title, educationShort[], educationFull[], experience[],
-                    skills{}, contact{ email, linkedin, github, location } },
-  "projects":     [ { id, title, category, description, stack[], link, image } ],
-  "blogs":        [ { id, title, category, description, stack[], link, image, active? } ],
-  "resources":    [ { id, title, category, description, stack[], link, image, active? } ],
-  "publications": [ { id, title, category, description, stack[], link, image } ]
-}
-```
-
-The four rings render as tabs PROJECTS / BLOGS / RESOURCES / PUBLICATIONS (desktop rails +
-mobile card list; the mobile tab is abbreviated to `PUBS`). Ring order/colors live in
-`RING_META` + `ringOrder` (desktop) and `MobileTabs` (mobile) in `src/app.jsx`; the
-publications accent color is neonLime `#a7ff4c` (`.k-publications` in `src/styles.css`).
-Publication IDs are `PUB_001`, `PUB_002`, … ascending.
-
-Conventions:
-- **Privacy: no phone number anywhere on the site.** The email address is shown ONLY on
-  the main page (`data/rings.json` `contact.email`, mirrored in `FALLBACK_DATA`) — it was
-  removed everywhere in Sept 2026 and deliberately restored on the homepage on 2026-09-18.
-  Keep it out of `index_apple.html`, `index_backup.html` and every page under `hidden/`
-  (all publicly served even when unlinked). Never add a phone field.
-- Project IDs are `PROJ_001`, `PROJ_002`, … appended ascending (no `PROJ_NEW_*` prefix).
-- A new project at position N expects `./images/project_<NNN>.png` (3-digit, zero-padded).
-  Missing images render as an in-page `NO_SIGNAL` SVG placeholder — no external request.
-- `active: false` disables an item (dashed border, not clickable). Useful for WIP blogs/chapters.
-
-### Blog Posts
-1. Create a `.md` file in `blog/blog2/` (current active blog directory)
-2. Blog posts use standard markdown format
-3. Add a resources entry in `data/rings.json` pointing to the rendered `.html` if one exists,
-   or keep the entry `active: false` until published.
-
-### New Pages
-- Create `.html` files in root or subdirectories
-- Use Tailwind CSS from CDN for styling
-- Can use inline React for interactivity (see index.html for the pattern)
-- For complex animations, use HTML5 Canvas (see holidays/christmas.html)
-
-### Styling Approach
-- **Tailwind CSS**: Primary styling utility (loaded from CDN)
-- **Custom CSS**: Embedded in `<style>` tags for specific effects
-- **Theme customization**: Modify Tailwind config in the `<head>` section or override with custom CSS
-- Main colors defined: cyber theme (neonBlue, neonPink, neonYellow)
+- Static React 18 UMD with **compiled** esbuild and Tailwind v3 assets; no backend.
+- `src/app.jsx` loads data and retains Canvas/BGM/image helpers.
+- `src/workbench.jsx` + `src/workbench.css` render all five content sections and
+  the full experience, education and skills in one responsive document.
+- `src/agent-build.jsx` + `src/agent-build.css` build individual modules on viewport
+  entry in 2,000ms: frame, parallel progressive raw text, then final styling.
+  Longer content uses two or three writers. Each module pauses while
+  offscreen or the tab is hidden; Skip, Replay, Escape and reduced motion are supported.
+- Reserve final geometry during the progressive visual reveal and retain complete
+  semantic content. Keyboard focus reveals its module. Do not restore tab-only
+  content, masked carousels, global arrow-key capture or a blocking page loader.
+- Desktop has a sticky portrait/social/navigation rail; mobile has a sticky top
+  section bar. Order: Education, Experience, Projects, Publications, Blogs,
+  Resources, Study Notes, Skills. The agent console and old directory are removed.
+- All content stays in `data/rings.json`; `active: false` entries remain non-clickable.
+- Keep the Apple mode, backup and hidden historical pages intact.
+- The active homepage no longer loads the cyber cat; retain its historical assets.
+- Privacy: never add phone numbers. Email is allowed only on the main homepage,
+  its JSON feed and fallback. Keep it out of alternative/archived pages.
+- Preserve project IDs `PROJ_001` etc. Projects have `star` fields for Situation,
+  Task, Action and Result; descriptions remain short summaries. Images use local
+  optimized WebP assets, including AI-generated covers in `images/generated/`;
+  missing images retain a local NO_SIGNAL placeholder. No new external image fetch.
 
 ## Corner mascot (`mascot/`)
 
@@ -164,7 +74,7 @@ The main page no longer compiles JSX/Tailwind in the browser. Source lives in `s
 served artifacts in `assets/` (checked in — GitHub Pages serves them as-is):
 
 - `src/app.jsx` → `assets/app.js`:
-  `npx esbuild src/app.jsx --minify --format=iife --global-name=HarryGraphOS --outfile=assets/app.js`
+  `npx --yes esbuild src/app.jsx --bundle --minify --format=iife --global-name=HarryGraphOS --outfile=assets/app.js`
 - `src/styles.css` + `tailwind.config.cjs` → `assets/site.css`:
   `npx --yes tailwindcss@3.4.17 -c tailwind.config.cjs -i src/styles.css -o assets/site.css --minify`
   (Tailwind v3 syntax; custom classes toggled at runtime must be in the config `safelist`.)
@@ -261,12 +171,9 @@ through `npx` on demand.
   background pattern and the SoundCloud widget wiring — do not delete.
 
 ## Gotchas
-- `clip-path` clips children too. The rail title sits on a custom polygon tab — don't nest
-  it inside another `clip-path` without inheriting, or it will be invisible.
-- Body has `overflow-x: hidden`; inactive rings that offset ~+260px right of the rings
-  column rely on this so they don't create a horizontal scrollbar.
-- `data/rings.json` is fetched relatively (`./data/rings.json`). When opening `index.html`
-  directly via `file://`, the fetch fails and the minimal inline `FALLBACK_DATA` renders.
-  For real testing always use `python3 -m http.server`.
-- Image filenames are strict `project_001.png` through `project_011.png`. Missing images do
-  not break the page — they render as a dashed `NO_SIGNAL` SVG placeholder in-place.
+
+- JSX modules require esbuild `--bundle`; rebuild tracked JS/CSS and bump cache versions.
+- Serve through HTTP for the real JSON content, not `file://`.
+- Directory links navigate within the document; no detail modal or keyboard carousel.
+- Full text and tag lists are intentional. Keep the two WIP entries visible but inert.
+- Source checks cover every JSX module under `src/`.
