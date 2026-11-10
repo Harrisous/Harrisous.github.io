@@ -1,5 +1,9 @@
 # AI-generated project covers
 
+> Status, 2026-11-09: retired from the homepage. The owner found these glass
+> renders too plastic; projects 008–011 now use the line-drawn schematics in
+> `images/schematics/`. The files and prompts below are kept as a record.
+
 Generated on 2026-11-09 using the built-in `image_gen.imagegen` tool (no project API key or external API client). These are original concept illustrations, not screenshots of the deployed products. Original PNGs remain in the generated-images directory; project copies are optimized WebP, at most 1280 × 720, each below the 450 KB homepage budget. No existing SVG source was overwritten.
 
 ## Saved assets

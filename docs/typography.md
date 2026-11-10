@@ -18,6 +18,15 @@ fallback stack; no external font request is needed for the English homepage.
 official Google Fonts stylesheet. It is imported before Tailwind compilation.
 Relative font URLs work both from this source and from `assets/site.css`.
 
+## Sizes
+
+From 1001px up (the two-column desktop layout) every text style steps up together
+in one block at the end of `src/workbench.css`: mono labels about a fifth
+(9px to 11px, 10px to 11.5–12px), running text about a tenth (14px to 15.5px),
+headings in proportion (card titles 21px to 23px). Tablet and phone layouts keep
+the base sizes. The block changes sizes only; where a larger label sits in a fixed
+column, a second block widens that column.
+
 ## Sources and licenses
 
 - [Space Grotesk, Florian Karsten](https://fonts.floriankarsten.com/space-grotesk)
@@ -28,6 +37,16 @@ Relative font URLs work both from this source and from `assets/site.css`.
 Exact download URLs are recorded in `assets/fonts/sources.json`. The unmodified
 upstream SIL Open Font License texts and copyright notices accompany the fonts:
 `ibmplexsans-OFL.txt`, `jetbrainsmono-OFL.txt`, and `spacegrotesk-OFL.txt`.
+
+## Triptych
+
+The triptych above the first section uses the same families and adds no font:
+JetBrains Mono for the `F` / `R` / `C` tags and the impact tag, IBM Plex Sans 500
+for the single impact statement. Each column takes its voice's colour (cyan, gold,
+magenta); the impact glyph is cut at 22 degrees, the angle of the build's shock
+front. The schematic covers in `images/schematics/` are SVG files loaded as
+images, so they cannot use the page fonts: the one cover with numerals falls back
+through `ui-monospace`, Cascadia Mono, SF Mono, Consolas and Menlo.
 
 The previous Share Tech Mono family is no longer needed on the active homepage.
 Independent archived pages keep their existing font setup.

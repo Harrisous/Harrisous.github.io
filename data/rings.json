@@ -5,6 +5,11 @@
     "title": "AI Engineer",
     "location": "Miami, FL",
     "tagline": "Building agentic systems that ship.",
+    "triptych": {
+      "voices": ["Futurism", "Realism", "Cyberpunk"],
+      "impact": "The work below is where the three collide: built for the future, measured against the real, aware of the cost."
+    },
+    "colophon": "Composed in your browser by a simulated ensemble; no model is called. The neon is styling; the record is real.",
     "avatar": "./images/optimized/profile.webp",
     "educationShort": [
       "Duke · M.Eng. AI · 2024–2025",
@@ -354,9 +359,9 @@
         "Agentic Tools"
       ],
       "link": null,
-      "image": "./images/generated/project_008.webp",
-      "imageAlt": "Concept illustration of a support conversation connected to a knowledge library and agent tools.",
-      "imageKind": "generated-concept"
+      "image": "./images/schematics/project_008.svg",
+      "imageAlt": "Line schematic: a support conversation enters a multi-model router that retrieves from a knowledge base and calls a course-search tool and a certificate tool.",
+      "imageKind": "schematic"
     },
     {
       "id": "PROJ_009",
@@ -379,9 +384,9 @@
         "Drag-and-drop Calendar"
       ],
       "link": null,
-      "image": "./images/generated/project_009.webp",
-      "imageAlt": "Concept illustration of a scheduling calendar with linked instructors and course sessions.",
-      "imageKind": "generated-concept"
+      "image": "./images/schematics/project_009.svg",
+      "imageAlt": "Line schematic: a weekly calendar of colour-coded sessions for three instructors, with one session being moved to a new slot.",
+      "imageKind": "schematic"
     },
     {
       "id": "PROJ_010",
@@ -407,9 +412,9 @@
         "Conditional Routing"
       ],
       "link": null,
-      "image": "./images/generated/project_010.webp",
-      "imageAlt": "Concept illustration of multiple agents assembling and reviewing a presentation deck.",
-      "imageKind": "generated-concept"
+      "image": "./images/schematics/project_010.svg",
+      "imageAlt": "Line schematic: a retrieval chain feeds a constructor that builds a slide deck; a reviewer routes one targeted revision back before the assembler finishes.",
+      "imageKind": "schematic"
     },
     {
       "id": "PROJ_011",
@@ -434,9 +439,9 @@
         "Multi-stage Reranking"
       ],
       "link": null,
-      "image": "./images/generated/project_011.webp",
-      "imageAlt": "Concept illustration of clinical claims linked to highlighted evidence and citations.",
-      "imageKind": "generated-concept"
+      "image": "./images/schematics/project_011.svg",
+      "imageAlt": "Line schematic: a document parsed by layout region, evidence narrowed through three reranking stages, and results compared at confidence thresholds 0.90 and 0.95.",
+      "imageKind": "schematic"
     }
   ],
   "blogs": [

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-labelledby="t d">
+<title id="t">Multi-Agent Slide Architect: system schematic</title>
+<desc id="d">A retrieval chain feeds a constructor that assembles a slide deck. A reviewer checks the deck and routes one targeted revision back to a single region before the assembler finishes.</desc>
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b1422"/><stop offset="1" stop-color="#06090f"/></linearGradient>
+ <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.2" fill="#8fb8cc" fill-opacity=".16"/></pattern>
+ <marker id="ac" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0 10 5 0 10z" fill="#00e5ff"/></marker>
+ <marker id="ag" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0 10 5 0 10z" fill="#f5e663"/></marker>
+ <marker id="am" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0 10 5 0 10z" fill="#ff65d9"/></marker>
+ <marker id="an" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0 10 5 0 10z" fill="#9fb4c2"/></marker>
+</defs>
+<rect width="960" height="540" fill="url(#bg)"/>
+<rect width="960" height="540" fill="url(#dots)"/>
+
+<g fill="none" stroke-width="2.5" stroke-linejoin="round">
+ <path d="M40 96H80" stroke="#9fb4c2" marker-end="url(#an)"/>
+ <path d="M109 96H183M209 96H283M309 96H383" stroke="#9fb4c2"/>
+ <path d="M409 96H470V168H150V300" stroke="#9fb4c2" marker-end="url(#an)"/>
+ <path d="M180 335H292" stroke="#f5e663" marker-end="url(#ag)"/>
+ <path d="M640 280H720V262H776" stroke="#9fb4c2" marker-end="url(#an)"/>
+ <path d="M800 282V330M800 360V406" stroke="#9fb4c2"/>
+ <path d="M820 430H866" stroke="#00e5ff" marker-end="url(#ac)"/>
+</g>
+<circle cx="96" cy="96" r="13" fill="#0a121d" stroke="#9fb4c2" stroke-width="2.5"/><circle cx="196" cy="96" r="13" fill="#0a121d" stroke="#9fb4c2" stroke-width="2.5"/><circle cx="296" cy="96" r="13" fill="#0a2633" stroke="#00e5ff" stroke-width="2.5"/><circle cx="396" cy="96" r="13" fill="#0a121d" stroke="#9fb4c2" stroke-width="2.5"/>
+<path d="M150 305 180 335 150 365 120 335Z" fill="#2b2a14" stroke="#f5e663" stroke-width="3" stroke-linejoin="round"/><circle cx="150" cy="335" r="6" fill="#f5e663"/>
+<rect x="340" y="205" width="340" height="200" rx="4" fill="#0a121d" stroke="#5d7686" stroke-width="2"/>
+<rect x="320" y="222" width="340" height="200" rx="4" fill="#0b1420" stroke="#7d95a4" stroke-width="2"/>
+<rect x="300" y="240" width="340" height="200" rx="4" fill="#0c1622" stroke="#e6f4fa" stroke-width="3"/>
+<rect x="324" y="264" width="150" height="12" rx="3" fill="#f5e663"/>
+<rect x="324" y="296" width="130" height="104" rx="3" fill="#00e5ff" fill-opacity=".1" stroke="#00e5ff" stroke-width="2.5"/>
+<path d="M332 392 362 350 384 372 412 332 446 392" fill="none" stroke="#00e5ff" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M478 302h136M478 322h104" stroke="#9fb4c2" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+<g fill="#00e5ff" fill-opacity=".22" stroke="#00e5ff" stroke-width="2"><rect x="492" y="376" width="26" height="44"/><rect x="530" y="360" width="26" height="60"/><rect x="568" y="344" width="26" height="76"/></g>
+<rect x="476" y="334" width="134" height="96" rx="6" fill="none" stroke="#ff65d9" stroke-width="2.5" stroke-dasharray="7 6"/>
+<path d="M786 346H700V382H618" fill="none" stroke="#ff65d9" stroke-width="2.5" stroke-dasharray="7 6" stroke-linejoin="round" marker-end="url(#am)"/>
+<circle cx="800" cy="262" r="20" fill="#2a1226" stroke="#ff65d9" stroke-width="3"/><circle cx="800" cy="262" r="6" fill="#ff65d9"/>
+<path d="M800 332 814 346 800 360 786 346Z" fill="#0a121d" stroke="#e6f4fa" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="800" cy="430" r="20" fill="#0a2633" stroke="#00e5ff" stroke-width="3"/><path d="M791 430l7 7 12-14" fill="none" stroke="#00e5ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="none" stroke="#00e5ff" stroke-width="2.5"><rect x="878" y="414" width="34" height="24" rx="3" fill="#0a121d"/><rect x="886" y="422" width="34" height="24" rx="3" fill="#0a2633"/></g>
+<g transform="translate(70 486) skewX(-22)"><rect width="7" height="26" fill="#ff65d9"/><rect x="15" width="7" height="26" fill="#fffbe6"/><rect x="30" width="7" height="26" fill="#00e5ff"/></g>
+</svg>

@@ -9,8 +9,6 @@
 .wb-brand-mark { display: grid; place-items: center; background: var(--wb-yellow); color: #08080d; width: 27px; height: 28px; clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px); font-size: 18px; }
 .wb-brand-sub { color: var(--wb-muted); font-size: 10px; font-weight: 400; }
 .wb-header-right { display: flex; align-items: center; gap: 22px; }
-.wb-mode { font-size: 10px; color: #c2d6de; }
-.wb-mode:hover { color: var(--wb-cyan); }
 .wb-layout { display: grid; grid-template-columns: 300px minmax(0,1fr); gap: clamp(48px,6vw,100px); align-items: start; padding-top: 48px; }
 .wb-sidebar { position: sticky; top: 28px; align-self: start; min-width: 0; }
 .wb-portrait { position: relative; width: 208px; height: 208px; padding: 9px; border: 1px solid #00e5ff40; background: linear-gradient(140deg,#00e5ff12,transparent 65%); margin-bottom: 14px; }
@@ -42,6 +40,16 @@
 .wb-audio button[aria-pressed="true"] { color: #ff65d9; }
 .wb-audio input { width: 72px; accent-color: #00e5ff; }
 .wb-document { min-width: 0; }
+/* The triptych is the page's one fixed statement: the three voices by name,
+   then the line where they collide. It is never built by the ensemble. */
+.wb-triptych { max-width: 880px; margin: 0 0 64px; }
+.wb-triptych-voices { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0 44px; list-style: none; margin: 0; padding: 0; }
+.wb-triptych-voices li { position: relative; display: flex; align-items: center; gap: 8px; padding-top: 14px; border-top: 1px solid color-mix(in srgb,var(--voice-color),transparent 74%); font: 500 9px/1.6 'JetBrains Mono',monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--voice-color); }
+.wb-triptych-voices li::before { content: ''; position: absolute; top: -1px; left: 0; width: 34px; height: 1px; background: var(--voice-color); box-shadow: 0 0 12px var(--voice-color); }
+.wb-triptych-voices b { display: grid; place-items: center; flex: none; width: 17px; height: 17px; border: 1px solid color-mix(in srgb,var(--voice-color),transparent 55%); font-weight: 600; letter-spacing: 0; }
+.wb-triptych-impact { margin: 22px 0 0; font: 500 clamp(15px,1.2vw,17px)/1.55 var(--font-body); color: #edf6fa; text-wrap: balance; }
+.wb-triptych-impact > span { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; font: 500 9px/1.6 'JetBrains Mono',monospace; letter-spacing: .18em; text-transform: uppercase; color: #fff3c4; }
+.wb-triptych-impact > span > i { width: 18px; height: 9px; transform: skewX(-22deg); background: linear-gradient(90deg,#ff65d9 0 2px,transparent 2px 8px,#fffbe6 8px 10px,transparent 10px 16px,#00e5ff 16px 18px); }
 .wb-section { --section-color: #00e5ff; scroll-margin-top: 32px; margin-bottom: 80px; }
 .wb-section-heading { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; min-width: 0; }
 .wb-section-index { position: relative; isolation: isolate; display: grid; place-items: center; flex: 0 0 42px; height: 38px; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--wb-yellow); background: var(--wb-yellow); clip-path: polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px); }
@@ -111,10 +119,13 @@
 .wb-footer { border-top: 1px solid var(--wb-line); padding: 30px 0 50px; }
 .wb-footer-email { font: 400 clamp(15px,2vw,23px)/1.6 var(--font-body); display: block; margin-top: 8px; overflow-wrap: anywhere; }
 .wb-footer-email:hover { color: #00e5ff; }
+.wb-colophon { max-width: 62ch; margin-top: 26px; font: 400 12.5px/1.7 var(--font-body); color: #8fa5b3; }
+.wb-colophon > span { display: block; margin-bottom: 4px; font: 500 9px/1.6 'JetBrains Mono',monospace; letter-spacing: .18em; text-transform: uppercase; color: #f5e663c4; }
 .wb-footer > div:last-child { display: flex; justify-content: space-between; gap: 15px; font-size: 9px; color: #8da8b9; margin-top: 30px; }
 .wb-skip { position: fixed; top: -100px; left: 20px; background: #00e5ff; color: #04121b; padding: 14px; z-index: 90; }
 .wb-skip:focus { top: 10px; }
-#bg-canvas { opacity: .18; }
+/* The canvas sets its own strength per layer (see useCyberBackground). */
+#bg-canvas { opacity: 1; }
 .scanlines { opacity: .18; }
 .vignette { opacity: .25; }
 body:has(.workbench) { position: relative; }
@@ -164,7 +175,6 @@ body:has(.workbench) { position: relative; }
   .wb-header { min-height: 68px; gap: 10px; }
   .wb-header-right { gap: 12px; }
   .wb-brand-sub { display: none; }
-  .wb-mode { font-size: 9px; }
   .wb-identity { min-height: 0; padding: 0; display: flex; flex-direction: column; align-items: flex-start; }
   .wb-portrait { position: relative; width: 190px; height: 190px; margin: 0 auto 14px; }
   .wb-socials { position: static; margin: 0 auto 30px; gap: 10px; }
@@ -177,6 +187,9 @@ body:has(.workbench) { position: relative; }
   .wb-school, .wb-job { grid-template-columns: minmax(0,1fr); gap: 10px; }
   .wb-date > span { display: inline; margin-left: 12px; }
   .wb-section { margin-bottom: 56px; }
+  .wb-triptych { margin-bottom: 48px; }
+  .wb-triptych-voices { gap: 0 14px; }
+  .wb-triptych-voices li { letter-spacing: .1em; }
   .wb-section-heading { gap: 10px; margin-bottom: 25px; }
   .wb-card-grid, .wb-skills-grid { grid-template-columns: minmax(0,1fr); }
   .wb-card-body { padding: 21px; }
@@ -200,12 +213,10 @@ body:has(.workbench) { position: relative; }
 
 /* Neon accents retain the original cyan/pink/yellow identity; long copy stays neutral. */
 .wb-title { font-family: var(--font-heading); font-weight: 600; font-size: 24px; }
-.wb-focus-areas { display: grid; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
-.wb-focus-areas li { display: flex; align-items: center; gap: 8px; padding: 7px 8px; font: 500 11px/1.45 var(--font-body); color: #dcecf3; border: 1px solid #00e5ff40; background: #00e5ff08; }
-.wb-focus-areas li > span { color: #00e5ff; font: 400 8px/1 'JetBrains Mono',monospace; }
-.wb-focus-areas li:nth-child(2) { border-color: #ff00c840; background: #ff00c808; }
+.wb-focus-areas { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.wb-focus-areas li { display: flex; align-items: baseline; gap: 10px; font: 500 12.5px/1.45 var(--font-body); color: #dcecf3; }
+.wb-focus-areas li > span { color: #00e5ff; font: 400 9px/1 'JetBrains Mono',monospace; }
 .wb-focus-areas li:nth-child(2) > span { color: #ff65d9; }
-.wb-focus-areas li:nth-child(3) { border-color: #f5e66340; background: #f5e66308; }
 .wb-focus-areas li:nth-child(3) > span { color: #f5e663; }
 .wb-card::before { content: ''; position: absolute; left: -1px; top: -1px; width: 34px; height: 2px; background: var(--section-color); z-index: 1; }
 .wb-section-projects .wb-card-build:nth-child(even) .wb-card::before { background: #ff00c8; }
@@ -220,8 +231,63 @@ body:has(.workbench) { position: relative; }
 .wb-audio-message a { color: #00e5ff; text-decoration: underline; }
 @media (min-width: 1001px) and (max-height: 800px) {
   .wb-portrait { width: 130px; height: 130px; }
-  .wb-focus-areas { gap: 4px; margin-top: 8px; }
-  .wb-focus-areas li { padding: 5px 7px; }
+  .wb-focus-areas { gap: 5px; margin-top: 9px; }
   .wb-nav a { min-height: 24px; }
   .wb-nav { margin-top: 15px; }
+}
+
+/* Desktop reading sizes. The layout was drawn small; from 1001px up every text
+   style steps up together (labels about a fifth, running text about a tenth).
+   Narrower layouts keep the sizes above. Sizes only: spacing stays put. */
+@media (min-width: 1001px) {
+  .wb-brand { font-size: 14px; }
+  .wb-brand-sub { font-size: 11.5px; }
+  .wb-portrait-id { font-size: 9.5px; }
+  .wb-socials a { font-size: 11.5px; }
+  .wb-eyebrow { font-size: 11.5px; }
+  .wb-name { font-size: 13.5px; }
+  .wb-title { font-size: 26px; }
+  .wb-focus-areas li { font-size: 14px; }
+  .wb-focus-areas li > span { font-size: 10.5px; }
+  .wb-nav a { font-size: 13px; }
+  .wb-nav-number { font-size: 10.5px; }
+  .wb-audio button { font-size: 10.5px; }
+  .wb-audio-message { font-size: 12.5px; }
+  .wb-triptych-voices li { font-size: 11px; }
+  .wb-triptych-voices b { width: 20px; height: 20px; }
+  .wb-triptych-impact { font-size: clamp(17px,1.35vw,19.5px); }
+  .wb-triptych-impact > span { font-size: 11px; }
+  .wb-section-index { font-size: 13.5px; }
+  .wb-section h2 { font-size: clamp(28px,2.7vw,38px); }
+  .wb-date { font-size: 12px; }
+  .wb-date > span { font-size: 11px; }
+  .wb-school h3, .wb-job h3 { font-size: 23px; }
+  .wb-degree, .wb-role { font-size: 15.5px; }
+  .wb-gpa { font-size: 12.5px; }
+  .wb-tags li { font-size: 11.5px; }
+  .wb-job-points li { font-size: 15.5px; }
+  .wb-job-points li::before { top: 11px; }
+  .wb-more-projects { font-size: 20px; }
+  .wb-image-code { font-size: 10.5px; }
+  .wb-card-meta { font-size: 11px; }
+  .wb-card h3 { font-size: 23px; }
+  .wb-card p { font-size: 15.5px; }
+  .wb-star dt { font-size: 10.5px; }
+  .wb-star dt > span { width: 19px; height: 19px; font-size: 10.5px; }
+  .wb-star dd { font-size: 15.5px; }
+  .wb-card-action { font-size: 12.5px; }
+  .wb-section-publications .wb-card h3 { font-size: 28px; }
+  .wb-skills-grid h3 { font-size: 14px; }
+  .wb-skill-models h4 { font-size: 12.5px; }
+  .wb-colophon { font-size: 14px; }
+  .wb-colophon > span { font-size: 10.5px; }
+  .wb-footer > div:last-child { font-size: 10.5px; }
+}
+/* The larger labels need a little more room where they sit in fixed columns. */
+@media (min-width: 1181px) {
+  .wb-school, .wb-job { grid-template-columns: 170px minmax(0,1fr); }
+}
+@media (min-width: 1001px) and (max-width: 1180px) {
+  .wb-socials { gap: 6px; }
+  .wb-socials a { padding: 7px; gap: 5px; font-size: 10.5px; }
 }

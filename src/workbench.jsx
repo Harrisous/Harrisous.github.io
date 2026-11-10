@@ -1,4 +1,4 @@
-import { useAgentBuild, AgentModule } from './agent-build.jsx';
+import { useAgentBuild, AgentModule, VOICES } from './agent-build.jsx';
 const { useState, useEffect } = React;
 
 const SECTIONS = [
@@ -29,6 +29,17 @@ function SocialIcon({ type }) {
 function SectionHeading({ section, index }) {
   return <div className="wb-section-heading"><span className="wb-section-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><h2 id={`${section.key}-heading`}>{section.title}</h2><span className="wb-heading-rule" /></div>;
 }
+// The page's one fixed statement. It is never built by the ensemble: it names
+// the three voices (futurism, realism, cyberpunk) that draft every module, in
+// the marks and colours they keep while they write, then the line they meet on.
+function Triptych({ triptych }) {
+  const names = (triptych?.voices || []).slice(0, VOICES.length);
+  if (!names.length) return null;
+  return <aside className="wb-triptych" aria-label="Three readings of the work">
+    <ul className="wb-triptych-voices">{names.map((name, index) => <li key={name} style={{ '--voice-color': VOICES[index].color }}><b aria-hidden="true">{VOICES[index].mark}</b>{name}</li>)}</ul>
+    {triptych.impact && <p className="wb-triptych-impact"><span><i aria-hidden="true" />Impact</span>{triptych.impact}</p>}
+  </aside>;
+}
 function ContentCard({ item, section, SmartImage, build }) {
   const disabled = item.active === false;
   const external = /^https?:\/\//i.test(item.link || '');
@@ -41,7 +52,7 @@ function ContentCard({ item, section, SmartImage, build }) {
     ...(story.length ? story.map(([key, label]) => `${label.toUpperCase()}\n${item.star[key]}`) : [item.description]),
     item.stack?.join(' · '), disabled ? 'Work in progress' : item.link ? actionLabel : 'Project overview',
   ].filter(Boolean).join('\n');
-  return <AgentModule build={build} name={section.agent} color={section.color} rawText={rawText} className="wb-card-build"><article className={`wb-card ${disabled ? 'wb-card-wip' : ''}`} data-entry-id={item.id}>
+  return <AgentModule build={build} name={section.agent} group={section.key} color={section.color} rawText={rawText} className="wb-card-build"><article className={`wb-card ${disabled ? 'wb-card-wip' : ''}`} data-entry-id={item.id}>
     {item.image && <div className="wb-card-image"><SmartImage src={item.image} alt={item.imageAlt || item.title} id={item.id} className="wb-image" />{!item.image.endsWith('.svg') && item.imageKind !== 'generated-concept' && <span className="wb-image-code" aria-hidden="true">{item.id}</span>}</div>}
     <div className="wb-card-body">
       <div className="wb-card-meta"><span>{item.id}{item.date ? ` / ${item.date}` : ''}</span><span>{disabled ? 'IN PROGRESS' : item.category}</span></div>
@@ -53,12 +64,12 @@ function ContentCard({ item, section, SmartImage, build }) {
   </article></AgentModule>;
 }
 function Education({ profile, build }) {
-  return <div className="wb-education-list">{(profile.educationFull || []).map((school, i) => <AgentModule key={i} build={build} name="SCHOLAR" color="#00e5ff" rawText={[school.dates, school.school, school.degree, school.gpa && `GPA ${school.gpa}`, school.courses?.join(' · ')].filter(Boolean).join('\n')}><article className="wb-school">
+  return <div className="wb-education-list">{(profile.educationFull || []).map((school, i) => <AgentModule key={i} build={build} name="SCHOLAR" group="education" color="#00e5ff" rawText={[school.dates, school.school, school.degree, school.gpa && `GPA ${school.gpa}`, school.courses?.join(' · ')].filter(Boolean).join('\n')}><article className="wb-school">
     <div className="wb-date">{school.dates}</div><div><h3>{school.school}</h3><p className="wb-degree">{school.degree}</p>{school.gpa && <p className="wb-gpa">GPA {school.gpa}</p>}<Tags items={school.courses} /></div>
   </article></AgentModule>)}</div>;
 }
 function Experience({ profile, build }) {
-  return <div className="wb-timeline">{(profile.experience || []).map((job, i) => <AgentModule key={`${job.company}-${i}`} build={build} name="VECTOR" color="#ff65d9" rawText={[job.dates, job.location, job.company, job.role, ...(job.bullets || [])].filter(Boolean).join('\n')}><article className="wb-job">
+  return <div className="wb-timeline">{(profile.experience || []).map((job, i) => <AgentModule key={`${job.company}-${i}`} build={build} name="VECTOR" group="experience" color="#ff65d9" rawText={[job.dates, job.location, job.company, job.role, ...(job.bullets || [])].filter(Boolean).join('\n')}><article className="wb-job">
     <div className="wb-date">{job.dates}<span>{job.location}</span></div><div><h3>{job.company}</h3><p className="wb-role">{job.role}</p>{!!job.bullets?.length && <ul className="wb-job-points">{job.bullets.map((b,k)=><li key={k}>{b}</li>)}</ul>}</div>
   </article></AgentModule>)}</div>;
 }
@@ -74,7 +85,7 @@ function Skills({ profile, build, color }) {
     const skills = alphabetical(items);
     const models = group === 'Generative AI & LLM' ? alphabetical(profile.llmModels || []) : [];
     const rawText = [group, skills.join(' · '), ...(models.length ? ['Models', models.join(' · ')] : [])].join('\n');
-    return <AgentModule key={group} build={build} name="FORGE" color={color} rawText={rawText}>
+    return <AgentModule key={group} build={build} name="FORGE" group="skills" color={color} rawText={rawText}>
       <div><h3>{group}</h3><Tags items={skills} />{models.length > 0 && <div className="wb-skill-models"><h4>Models</h4><Tags items={models} /></div>}</div>
     </AgentModule>;
   })}</div>;
@@ -115,25 +126,26 @@ export function WorkbenchScene({ data, bgm, SmartImage }) {
   return <div className="workbench" id="top">
     <a className="wb-skip" href="#education">Skip to content</a>
     <header className="wb-header"><a href="#top" className="wb-brand" aria-label="Harry home"><span className="wb-brand-mark" aria-hidden="true">H</span>HARRY<span className="wb-brand-sub"> / GRAPH_OS</span></a>
-      <div className="wb-header-right"><button className="agent-build-button" type="button" onClick={build.moduleRunning ? build.skip : build.replay} disabled={build.reducedMotion} aria-label={build.moduleRunning ? 'Skip all builds' : 'Replay builds'}><span aria-hidden="true">{build.moduleRunning ? '↳' : '↻'}</span>{build.moduleRunning ? 'Skip builds' : 'Replay builds'}</button><a href="./index_apple.html" className="wb-mode">Switch mode <Arrow /></a></div>
+      <div className="wb-header-right"><button className="agent-build-button" type="button" onClick={build.replay} disabled={build.reducedMotion}><span aria-hidden="true">↻</span>Replay builds</button></div>
     </header>
     <div className="wb-layout">
       <aside className="wb-sidebar" aria-label="Profile and section navigation">
         <div className="wb-identity">
           <div className="wb-portrait"><img src={p.avatar} alt={p.name} width="220" height="220" loading="eager" decoding="async" /><span className="wb-portrait-corner" aria-hidden="true" /><span className="wb-portrait-id" aria-hidden="true">ID / HARRISOUS</span></div>
           <div className="wb-socials" aria-label="Social links"><a href={p.contact.github} target="_blank" rel="noopener noreferrer"><SocialIcon type="github" />GitHub</a><a href={p.contact.linkedin} target="_blank" rel="noopener noreferrer"><SocialIcon type="linkedin" />LinkedIn</a><a href={`mailto:${p.contact.email}`}><SocialIcon type="email" />Email</a></div>
-          <AgentModule build={build} name="ORIGIN" color="#00e5ff" rawText={[p.location, p.callsign, p.name, p.title, ...(p.focusAreas || [])].join('\n')} className="wb-identity-copy"><div className="wb-eyebrow wb-location"><span className="wb-status-dot" />{p.location}</div>
+          <AgentModule build={build} name="ORIGIN" group="origin" color="#00e5ff" rawText={[p.location, p.callsign, p.name, p.title, ...(p.focusAreas || [])].join('\n')} className="wb-identity-copy"><div className="wb-eyebrow wb-location"><span className="wb-status-dot" />{p.location}</div>
           <h1>{p.callsign}<span className="wb-hero-period">.</span></h1><p className="wb-name">{p.name}</p><p className="wb-title">{p.title}</p><ul className="wb-focus-areas" aria-label="Areas of focus">{(p.focusAreas || []).map((area,i)=><li key={area}><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{area}</li>)}</ul></AgentModule>
         </div>
         <nav className="wb-nav" aria-label="Content sections">{SECTIONS.map((s,i)=><a key={s.key} href={`#${s.key}`} aria-current={active===s.key?'location':undefined} style={{'--section-color':s.color}}><span className="wb-nav-number">{String(i+1).padStart(2,'0')}</span><span className="wb-nav-line" /><span>{s.title}</span><span className="wb-nav-dot" aria-hidden="true" /></a>)}</nav>
         <div className="wb-audio"><button onClick={bgm.toggle} aria-pressed={bgm.playing} aria-label="Toggle background music">{bgm.status === 'loading' ? '◌ LOADING' : bgm.playing ? 'Ⅱ BGM ON' : bgm.status === 'error' ? '↻ RETRY BGM' : '▶ BGM OFF'}</button><label><span className="sr-only">Music volume</span><input type="range" min="0" max="100" value={bgm.vol} onChange={e=>bgm.setVolume(Number(e.target.value))} /></label>{bgm.status === 'loading' && <span className="wb-audio-message" role="status">Connecting to SoundCloud…</span>}{bgm.error && <span className="wb-audio-message" role="status">{bgm.error} <a href={bgm.trackUrl} target="_blank" rel="noopener noreferrer">Open SoundCloud ↗</a></span>}</div>
       </aside>
       <main className="wb-document">
+        <Triptych triptych={p.triptych} />
         {SECTIONS.map((s,i)=><section id={s.key} key={s.key} className={`wb-section wb-section-${s.key}`} style={{'--section-color':s.color}} aria-labelledby={`${s.key}-heading`}>
           <SectionHeading section={s} index={i} />
           {s.key==='education' ? <Education profile={p} build={build} /> : s.key==='experience' ? <Experience profile={p} build={build} /> : s.key==='projects' ? <Projects items={data.projects} section={s} SmartImage={SmartImage} build={build} /> : s.key==='skills' ? <Skills profile={p} build={build} color={s.color} /> : <div className="wb-card-grid">{(data[s.key] || []).map(item=><ContentCard key={item.id} item={item} section={s} SmartImage={SmartImage} build={build} />)}</div>}
         </section>)}
-        <footer className="wb-footer"><div><span className="wb-eyebrow">LET'S BUILD SOMETHING.</span><a className="wb-footer-email" href={`mailto:${p.contact.email}`}>{p.contact.email} <Arrow /></a></div><div><span>© 2026 HAOCHEN LI</span><a href="#top">Back to top ↑</a></div></footer>
+        <footer className="wb-footer"><div><span className="wb-eyebrow">LET'S BUILD SOMETHING.</span><a className="wb-footer-email" href={`mailto:${p.contact.email}`}>{p.contact.email} <Arrow /></a></div>{p.colophon && <p className="wb-colophon"><span>Colophon</span>{p.colophon}</p>}<div><span>© 2026 HAOCHEN LI</span><a href="#top">Back to top ↑</a></div></footer>
       </main>
     </div>
   </div>;

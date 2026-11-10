@@ -11,10 +11,46 @@ historical notes below refer to the previous layout. See README.md for commands.
 - `src/app.jsx` loads data and retains Canvas/BGM/image helpers.
 - `src/workbench.jsx` + `src/workbench.css` render all five content sections and
   the full experience, education and skills in one responsive document.
-- `src/agent-build.jsx` + `src/agent-build.css` build individual modules on viewport
-  entry in 2,000ms: frame, parallel progressive raw text, then final styling.
-  Longer content uses two or three writers. Each module pauses while
-  offscreen or the tab is hidden; Skip, Replay, Escape and reduced motion are supported.
+- Concept: three voices draft every module and collide. Futurism (`F`, cyan `#00e5ff`,
+  what could be), realism (`R`, gold `#f5e663`, what is), cyberpunk (`C`, magenta
+  `#ff65d9`, what it costs); `VOICES` in `src/agent-build.jsx` is the single source for
+  their order, marks and colours. No borrowed quotations (the Laozi epigraph was removed
+  at the owner's request on 2026-11-09). On the page the triptych only lists the three
+  names and one impact sentence: the owner asked for no per-voice descriptions.
+- `src/agent-build.jsx` + `src/agent-build.css` compose individual modules on viewport
+  entry in 2,000ms as five measures, named on each frame's legend: SIGNAL (`intent`, one
+  spark arrives from the nav rail), FRAME (`division`, two sparks draw the frame), F R C
+  (`voices`, they part as the three), DRAFT (`composition`, parallel raw text; three
+  voices from 60 characters, two from 20), IMPACT (`impact`, they collide, then a
+  diagonal three-line shock front erases the draft plate over the finished module).
+  Simultaneous starts cascade through `build.claimSlot()`. Each module pauses while
+  offscreen or the tab is hidden; Replay, Escape and reduced motion are supported. There
+  is no Skip button and no aggregated module state: do not reintroduce either.
+- Performance contract, keep it: React renders a module only when its measure changes
+  (clock `marks`). Everything continuous is written by the module's stage
+  (`createAgentStage`) from the one frame loop in `src/agent-ensemble.js`, which calls
+  every `stage.write()` before any `stage.read()` (one layout per frame). The draft is an
+  imperative DOM island (`.agent-module-raw-copy` gets no React children), rewritten at
+  about 30Hz inside `contain: strict`. Clocks advance per frame, at most 34ms a frame,
+  with a timer fallback when frames stop. Impact animates only `--agent-front` on
+  `.agent-module-plate` and the beam's `transform`; do not put masks or blend modes back
+  on `.agent-module-final`. The loop stays additive: content never waits on the canvas.
+- Background: `useCyberBackground` in `src/app.jsx` owns the one `#bg-canvas` loop (about
+  30 draws a second, device-pixel sized, CSS opacity 1). It draws rain, glitch bars and
+  terminal columns at `UNDERLAY` (.18) through `globalAlpha`, and between them the
+  rhombille lattice from `src/lattice.js` at its own alpha. The pointer effect is
+  deliberately simple: one soft, faint patch of raised cubes centred on the pointer
+  (`GLOW_REACH`, `GLOW_LIFT`) and a wave on `click`. The owner chose the lattice
+  ("立方格"), rejected a content-aware frame around the hovered block as a misreading
+  ("就鼠标位置附近一圈高亮就行"), then asked for a filled centre and less brightness
+  ("实心一团", "整体更淡"), then for the whole lattice to be fainter as well. Keep it a
+  plain highlight around the mouse; resting faintness is `SWELL`, `FACE_REST` and
+  `EDGE_REST`, and when in doubt err on the faint side.
+- Desktop type (1001px and up) is enlarged by the last blocks of `src/workbench.css` and
+  `src/agent-build.css`; add new text styles there too. Narrower layouts keep base sizes.
+- The triptych (`profile.triptych`) and footer colophon (`profile.colophon`) are static
+  content from `data/rings.json`. Never wrap them in an `AgentModule`: the triptych is
+  the fixed statement that introduces the three voices. It uses the page's three fonts.
 - Reserve final geometry during the progressive visual reveal and retain complete
   semantic content. Keyboard focus reveals its module. Do not restore tab-only
   content, masked carousels, global arrow-key capture or a blocking page loader.
@@ -22,14 +58,20 @@ historical notes below refer to the previous layout. See README.md for commands.
   section bar. Order: Education, Experience, Projects, Publications, Blogs,
   Resources, Study Notes, Skills. The agent console and old directory are removed.
 - All content stays in `data/rings.json`; `active: false` entries remain non-clickable.
-- Keep the Apple mode, backup and hidden historical pages intact.
+- The Apple-style page (`index_apple.html`) was removed on 2026-11-09 and the header has
+  no mode switch; do not relink or restore it. Keep the backup and hidden historical
+  pages intact (their old mode-switch links now point to the homepage).
 - The active homepage no longer loads the cyber cat; retain its historical assets.
 - Privacy: never add phone numbers. Email is allowed only on the main homepage,
   its JSON feed and fallback. Keep it out of alternative/archived pages.
 - Preserve project IDs `PROJ_001` etc. Projects have `star` fields for Situation,
   Task, Action and Result; descriptions remain short summaries. Images use local
-  optimized WebP assets, including AI-generated covers in `images/generated/`;
-  missing images retain a local NO_SIGNAL placeholder. No new external image fetch.
+  assets: optimized WebP for projects 001–007 and flat line-drawn SVG schematics in
+  `images/schematics/` for 008–011 (the owner rejected the glossy AI renders in
+  `images/generated/` as "太塑料"; keep those files but do not relink them, and keep new
+  covers matte: strokes, flat fills, no gloss, glass or 3D). Missing images retain a
+  local NO_SIGNAL placeholder. No new external image fetch.
+- The focus areas under the title are a plain numbered list; do not box them again.
 
 ## Corner mascot (`mascot/`)
 
@@ -85,7 +127,7 @@ served artifacts in `assets/` (checked in — GitHub Pages serves them as-is):
   `FALLBACK_DATA` in `src/app.jsx` roughly in sync for `file://` viewing.
 
 ### Local Testing
-- Other pages (index_apple, hidden/, holidays/) still open directly — no build step
+- Other pages (index_backup, hidden/, holidays/) still open directly — no build step
 - To test with live reload: `python -m http.server 8000` or similar (required for
   `index.html` so the `rings.json` fetch works)
 - `python scripts/verify_index.py` — checks unsafe JS patterns, blank-link hardening,
@@ -162,6 +204,15 @@ through `npx` on demand.
   `.k-notes`; mobile tab `NOTES`; IDs `NOTE_01`, `NOTE_02`, …). It links the DeepSeek course and the
   Feynman edition of its lesson 1, both claude.ai Artifacts from the Harrisous/Study-Notes repo.
   Ring tabs' letter-spacing dropped to .06em so five labels fit.
+- 2026-11-09 (branch `feat/agent-stage-v2`): replaced the labelled-cursor build with the
+  ensemble choreography (five measures, canvas threads and sparks, resolving sweep),
+  added the footer colophon, and removed the Apple-style page. The same day the owner
+  rejected the Tao Te Ching epigraph: it became the futurism / realism / cyberpunk
+  triptych, the voices took fixed colours, `concord` became `impact`, the Skip button
+  went, and the build was moved off per-tick React renders onto the frame loop (see the
+  performance contract above). The background canvas now draws at about 30fps.
+  `scripts/verify_agent_build.cjs` covers measures, cascade, marks, the 34ms frame limit
+  and the no-frames fallback.
 
 ## File Organization Notes
 - Markdown blog files are currently stored in `blog/blog2/`—check this folder first for recent posts
@@ -177,3 +228,10 @@ through `npx` on demand.
 - Directory links navigate within the document; no detail modal or keyboard carousel.
 - Full text and tag lists are intentional. Keep the two WIP entries visible but inert.
 - Source checks cover every JSX module under `src/`.
+- A hidden Browser pane produces no frames: `requestAnimationFrame` and
+  IntersectionObserver callbacks stall and timers get throttled, so builds look stuck
+  and the ensemble canvas stays blank there. Judge motion only in a visible page; for
+  still frames, drive `performance.now`, timers and rAF from a Web Worker heartbeat.
+  When `document.visibilityState` is `hidden` the page also pauses itself and
+  screenshots can return a stale frame; canvas work can then only be checked by reading
+  pixels back (`getImageData`) after faking visibility.

@@ -1,5 +1,6 @@
 import { WorkbenchScene } from './workbench.jsx';
 import { useBgm } from './bgm.js';
+import { createLattice } from './lattice.js';
 const { useState, useEffect, useRef, useCallback } = React;
 
   /* ============================================================
@@ -14,6 +15,11 @@ const { useState, useEffect, useRef, useCallback } = React;
       focusAreas: ['AI Agent System Orchestration', 'LLM Post Training', 'Applied AI & DevOps'],
       location: 'Miami, FL',
       tagline: 'Building agentic systems that ship.',
+      triptych: {
+        voices: ['Futurism', 'Realism', 'Cyberpunk'],
+        impact: 'The work below is where the three collide: built for the future, measured against the real, aware of the cost.',
+      },
+      colophon: 'Composed in your browser by a simulated ensemble; no model is called. The neon is styling; the record is real.',
       avatar: './images/optimized/profile.webp',
       educationShort: [
         'Duke · M.Eng. AI · 2024–2025',
@@ -32,7 +38,7 @@ const { useState, useEffect, useRef, useCallback } = React;
       },
     },
     projects: [
-      { id: 'PROJ_008', title: 'Gosvea Agentic RAG Chatbot', category: 'Production Agentic AI', description: 'Production AI support channel.', stack: ['LangChain','Pinecone','Groq'], link: null, image: './images/generated/project_008.webp' },
+      { id: 'PROJ_008', title: 'Gosvea Agentic RAG Chatbot', category: 'Production Agentic AI', description: 'Production AI support channel.', stack: ['LangChain','Pinecone','Groq'], link: null, image: './images/schematics/project_008.svg' },
     ],
     blogs: [
       { id: 'BLOG_01', title: 'How AI Sees Cats — Grad-CAM Visualization', category: 'Computer Vision · XAI', description: 'Grad-CAM on cats.', stack: ['PyTorch'], link: './blog/blog1/blog1.html', image: null },
@@ -49,8 +55,8 @@ const { useState, useEffect, useRef, useCallback } = React;
   };
 
   /* ============================================================
-     Cyberpunk canvas background — layered neural net + matrix rain
-     + signal pulses + occasional glitch bars
+     Canvas background: the rhombille lattice (./lattice.js) over matrix
+     rain, occasional glitch bars and the terminal columns
      ============================================================ */
   const useCyberBackground = () => {
     useEffect(() => {
@@ -58,25 +64,31 @@ const { useState, useEffect, useRef, useCallback } = React;
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      let raf = 0, frame = 0;
+      let raf = 0, frame = 0, drawnAt = -Infinity;
+      // The field is drawn about thirty times a second and advances two 60Hz
+      // steps per draw, so it keeps its speed on any display while costing half
+      // the canvas work. The older layers keep their 18% strength through
+      // globalAlpha; the lattice sets its own alpha so it can brighten locally.
+      const DRAW_INTERVAL = 30;
+      const STEPS = 2;
+      const UNDERLAY = .18;
+      const lattice = createLattice(ctx);
       const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
       let reduced = motionPreference.matches;
 
-      let width = 0, height = 0;
+      let width = 0, height = 0, scale = 1;
       const resize = () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        // Thin lattice edges need device pixels; very large screens are capped.
+        scale = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(6e6 / Math.max(1, width * height)));
+        canvas.width = Math.round(width * scale);
+        canvas.height = Math.round(height * scale);
+        lattice.resize(width, height);
       };
       resize();
 
       const isMobile = () => width < 768;
-
-      /* ---------- Hexagonal Water Grid ---------- */
-      const hexRadius = isMobile() ? 48 : 64;
-      const hexWidth = Math.sqrt(3) * hexRadius;
-      const hexHeight = 2 * hexRadius;
-      const xOffset = hexWidth;
-      const yOffset = hexHeight * 0.75;
 
       /* ---------- Matrix Rain ---------- */
       const chars = 'アイウエオカキクケコｻｼｽｾｿﾀﾁﾂﾃﾄ01{}[]<>#$%*+=<>/\\';
@@ -88,7 +100,7 @@ const { useState, useEffect, useRef, useCallback } = React;
         drops = Array.from({ length: cols }).map(() => Math.random() * -height);
       };
 
-      const onResize = () => { resize(); buildRain(); if (reduced) draw(); };
+      const onResize = () => { resize(); buildRain(); if (reduced) draw(performance.now()); };
       window.addEventListener('resize', onResize);
       buildRain();
 
@@ -170,72 +182,19 @@ const { useState, useEffect, useRef, useCallback } = React;
         }
       }
 
-      const getProjectedPoint = (vx, vy, t, w, h) => {
-        const proj = (vx - vy) * 0.004;
-        const wave1 = Math.sin(proj - t);
-        const wave2 = Math.sin((vx * 0.002 + vy * 0.005) - t * 1.3) * 0.5;
-        const wave3 = Math.sin((vx * 0.006 - vy * 0.002) - t * 0.8) * 0.3;
-        const randPhase = Math.sin(vx * 0.012 + vy * 0.078) * 43.75;
-        const wave4 = Math.sin(t * 0.6 + randPhase) * 0.25;
-
-        let z = (wave1 + wave2 + wave3 + wave4) / 2.05;
-        z = Math.max(-1, Math.min(1, z));
-
-        // 2D longitudinal wave effect (nodes pushed in wave direction)
-        const pushAmp = 56; // Amplitude of the push/pull stretching (scaled with radius)
-        // wave direction is roughly bottom-left to top-right (+x, -y)
-        const dx = z * pushAmp; 
-        const dy = -z * pushAmp; 
-
-        // Orthogonal shear to make the pull slightly organic and swirling
-        const shear = (wave2 - wave3) * 12;
-        
-        const px = vx + dx + shear;
-        const py = vy + dy + shear;
-
-        return { px, py, z };
-      };
-
-      const drawHexagon = (cx, cy, radius, t, globalAlpha, w, h) => {
-        const points = [];
-        let avgZ = 0;
-        for (let i = 0; i < 6; i++) {
-          const angle_deg = 60 * i - 30;
-          const angle_rad = Math.PI / 180 * angle_deg;
-          const vx = cx + radius * Math.cos(angle_rad);
-          const vy = cy + radius * Math.sin(angle_rad);
-          const p = getProjectedPoint(vx, vy, t, w, h);
-          points.push(p);
-          avgZ += p.z;
-        }
-        avgZ /= 6;
-
-        const normZ = (avgZ + 1) / 2; 
-
-        // High: Blue (0, 229, 255)
-        const r1 = 0, g1 = 229, b1 = 255;
-        // Low: Dark Purple-Red (70, 0, 50)
-        const r2 = 70, g2 = 0, b2 = 50;
-
-        const r = Math.floor(r2 + (r1 - r2) * normZ);
-        const g = Math.floor(g2 + (g1 - g2) * normZ);
-        const b = Math.floor(b2 + (b1 - b2) * normZ);
-
-        // Draw vertices (节点) without edges, making them larger
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${globalAlpha + 0.45})`;
-        for (let i = 0; i < 6; i++) {
-          ctx.beginPath();
-          ctx.arc(points[i].px, points[i].py, 3.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      };
-
-      const draw = () => {
+      const draw = now => {
         if (document.visibilityState === 'hidden') return;
-        frame++;
+        if (!reduced) {
+          raf = requestAnimationFrame(draw);
+          if (now - drawnAt < DRAW_INTERVAL) return;
+          drawnAt = now;
+        }
+        frame += STEPS;
         const t = frame * 0.0105; // Slower time (30% reduction)
         
-        // Clear background completely to avoid messy trails on moving nodes
+        ctx.setTransform(scale, 0, 0, scale, 0, 0);
+        ctx.clearRect(0, 0, width, height);
+        ctx.globalAlpha = UNDERLAY;
         ctx.fillStyle = '#020202';
         ctx.fillRect(0, 0, width, height);
 
@@ -270,8 +229,8 @@ const { useState, useEffect, useRef, useCallback } = React;
           }
           
           ctx.shadowBlur = 0;
-          drops[i] += 4;
-          if (drops[i] - tailLength * 16 > height && Math.random() > 0.97) {
+          drops[i] += 4 * STEPS;
+          if (drops[i] - tailLength * 16 > height && Math.random() > 0.97 ** STEPS) {
             drops[i] = -Math.random() * 200;
           }
         }
@@ -310,27 +269,9 @@ const { useState, useEffect, useRef, useCallback } = React;
           }
         }
 
-        // Breathing effect around 50% transparency
-        const breath = 0.5 + 0.15 * Math.sin(frame * 0.014); // Slower breathing
-
-        // Add padding so perspective distortion doesn't show edges of grid
-        const padCols = 4;
-        const padRows = 4;
-        const cols = Math.ceil(width / xOffset) + padCols;
-        const rows = Math.ceil(height / yOffset) + padRows;
-
-        for (let row = -padRows; row < rows; row++) {
-          for (let col = -padCols; col < cols; col++) {
-            let cx = col * xOffset;
-            let cy = row * yOffset;
-            if (row % 2 !== 0) {
-              cx += xOffset / 2;
-            }
-
-            // Ocean movement is now calculated per-vertex in getProjectedPoint
-            drawHexagon(cx, cy, hexRadius, t, breath, width, height);
-          }
-        }
+        ctx.globalAlpha = 1;
+        lattice.draw(now, t);
+        ctx.globalAlpha = UNDERLAY;
 
         /* ----- Draw Terminal Logs (Desktop Only) ----- */
         if (!isMobile()) {
@@ -345,42 +286,47 @@ const { useState, useEffect, useRef, useCallback } = React;
             const isRight = (c === visibleCols - 1);
             const speed = 10 + (c % 5) * 3; // Speeds between 10 and 22 frames per line
 
-            if (frame % speed === 0) {
-              termColumns[c].shift();
-              termColumns[c].push(isRight ? generateLogRight(0) : generateLogLeft(0));
+            for (let step = frame - STEPS + 1; step <= frame; step++) {
+              if (step % speed === 0) {
+                termColumns[c].shift();
+                termColumns[c].push(isRight ? generateLogRight(0) : generateLogLeft(0));
+              }
             }
 
+            // Rows below the viewport are never seen.
+            const rows = Math.min(maxLogs, Math.ceil((height - 14) / 16) + 1);
             if (isRight) {
               ctx.textAlign = 'right';
-              for (let j = 0; j < maxLogs; j++) {
+              for (let j = 0; j < rows; j++) {
                 ctx.fillText(termColumns[c][j], width - 20, 30 + j * 16);
               }
             } else {
               ctx.textAlign = 'left';
-              for (let j = 0; j < maxLogs; j++) {
+              for (let j = 0; j < rows; j++) {
                 ctx.fillText(termColumns[c][j], 20 + c * colWidth, 30 + j * 16);
               }
             }
           }
           ctx.textAlign = 'left'; // reset
         }
-
-        if (!reduced) raf = requestAnimationFrame(draw);
+        ctx.globalAlpha = 1;
       };
       const restart = () => {
         cancelAnimationFrame(raf);
         reduced = motionPreference.matches;
-        draw();
+        drawnAt = -Infinity;
+        draw(performance.now());
       };
       document.addEventListener('visibilitychange', restart);
       motionPreference.addEventListener('change', restart);
-      draw();
+      draw(performance.now());
 
       return () => {
         cancelAnimationFrame(raf);
         window.removeEventListener('resize', onResize);
         document.removeEventListener('visibilitychange', restart);
         motionPreference.removeEventListener('change', restart);
+        lattice.dispose();
       };
     }, []);
   };

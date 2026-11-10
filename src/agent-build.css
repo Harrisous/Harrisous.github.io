@@ -1,55 +1,145 @@
-/* Final semantic content supplies geometry from the first render. Raw text and
-   cursors are decorative and never capture clicks, focus, or navigation. */
-.agent-module { position: relative; min-width: 0; height: 100%; isolation: isolate; }
-.agent-module-final { height: 100%; pointer-events: none; }
-.agent-module[data-build-state="styling"] > .agent-module-final,
-.agent-module[data-build-state="complete"] > .agent-module-final { pointer-events: auto; }
+/* Final semantic content supplies geometry from the first render. The draft
+   plate, the shock front and the ensemble canvas are decorative and never
+   capture clicks, focus, or navigation. */
+@property --agent-front { syntax: '<length>'; inherits: false; initial-value: -1px; }
+
+.agent-module { --agent-feather: 64px; position: relative; min-width: 0; height: 100%; isolation: isolate; }
+.agent-module-final { height: 100%; opacity: 0; pointer-events: none; }
+.agent-module[data-build-state="impact"] > .agent-module-final,
+.agent-module[data-build-state="complete"] > .agent-module-final { opacity: 1; pointer-events: auto; }
+
+/* Impact: the finished module already lies beneath the opaque draft plate. One
+   diagonal front erases the plate; the stage moves --agent-front (a length
+   along the 112deg line) and the beam's transform together. Only the scene's
+   own layer is repainted, never the finished content under it. The legend is
+   outside the mask, so it stays whole on the frame until the module resolves. */
+.agent-module[data-build-state="impact"] .agent-module-plate {
+  -webkit-mask-image: linear-gradient(112deg, transparent calc(var(--agent-front, 0px) - var(--agent-feather)), #000 var(--agent-front, 0px));
+  mask-image: linear-gradient(112deg, transparent calc(var(--agent-front, 0px) - var(--agent-feather)), #000 var(--agent-front, 0px));
+}
+.agent-module-beam { position: absolute; inset: 0; z-index: 4; display: none; overflow: hidden; pointer-events: none; }
+.agent-module[data-build-state="impact"] > .agent-module-beam { display: block; }
+/* The front arrives as three lines: futurism leads, realism is the bright core
+   that resolves the form, cyberpunk trails. */
+.agent-module-beam > i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 184px;
+  height: 100%;
+  transform-origin: 0 0;
+  transform: translate3d(-200px, 0, 0) skewX(-22deg);
+  will-change: transform;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb, var(--agent-color) 7%, transparent) 108px,
+    color-mix(in srgb, var(--agent-color) 28%, transparent) 146.4px,
+    #ff65d9 147px,
+    #ff65d9 148.3px,
+    color-mix(in srgb, var(--agent-color) 32%, transparent) 148.9px,
+    color-mix(in srgb, var(--agent-color) 38%, transparent) 158.5px,
+    #fffbe6 159.1px,
+    #fffbe6 160.7px,
+    color-mix(in srgb, var(--agent-color) 34%, transparent) 161.3px,
+    color-mix(in srgb, var(--agent-color) 24%, transparent) 169.6px,
+    #00e5ff 170.2px,
+    #00e5ff 171.5px,
+    color-mix(in srgb, var(--agent-color) 18%, transparent) 172.1px,
+    transparent 184px);
+}
+
 .agent-module-scene {
   position: absolute;
   inset: 0;
   z-index: 3;
-  overflow: clip;
   pointer-events: none;
   user-select: none;
   color: var(--agent-color);
   text-shadow: none;
-  background: #08121ddd;
 }
+.agent-module-plate {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(#67e8f90a 1px, transparent 1px) 0 0 / 100% 26px,
+    linear-gradient(90deg, #67e8f90a 1px, transparent 1px) 0 0 / 26px 100%,
+    linear-gradient(180deg, #08131f, #060b14);
+}
+/* A building scene has its own layer, so rewriting its draft or moving its
+   mask repaints that scene alone. */
+.agent-module:not([data-build-state="pending"]) > .agent-module-scene { will-change: transform; }
 .agent-module-scene *, .agent-module-scene *::before, .agent-module-scene *::after { pointer-events: none; }
-.agent-module-frame { position: absolute; inset: 0; overflow: visible; }
-.agent-module-frame rect { fill: none; stroke: currentColor; stroke-width: 1; }
-.agent-module[data-build-state="pending"] .agent-module-frame { opacity: .14; }
-.agent-module-raw { position: absolute; inset: 13px; overflow: hidden; }
+/* The canvas draws the frame while it is being traced; the edges take over
+   once it is closed. */
+.agent-module-edge { position: absolute; background: currentColor; opacity: .58; }
+.agent-module-edge-top { top: 0; left: 0; width: 100%; height: 1px; }
+.agent-module-edge-right { top: 0; right: 0; width: 1px; height: 100%; }
+.agent-module-edge-left { top: 0; left: 0; width: 1px; height: 100%; }
+.agent-module-edge-bottom { bottom: 0; left: 0; width: 100%; height: 1px; }
+.agent-module[data-build-state="pending"] .agent-module-edge { opacity: .14; }
+.agent-module[data-build-state="intent"] .agent-module-edge,
+.agent-module[data-build-state="division"] .agent-module-edge { opacity: 0; }
+
+/* The draft's box never depends on its text, so each rewrite is laid out and
+   painted inside it. */
+.agent-module-raw { position: absolute; inset: 15px 13px 13px; overflow: hidden; contain: strict; }
 .agent-module-raw-copy {
   font: 400 13px/1.5 'JetBrains Mono', monospace;
   letter-spacing: 0;
   text-transform: none;
   text-align: left;
-  color: #bcd3e0;
+  color: #93aab8;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-.agent-module-raw-chunk > [data-visible="false"] { visibility: hidden; }
-.agent-module-pointer { position: absolute; width: 16px; height: 20px; line-height: 0; filter: drop-shadow(0 2px 3px #0008); }
-.agent-module-pointer svg { overflow: visible; transform-origin: 0 0; }
-.agent-module-caret { position: absolute; width: 1.5px; background: currentColor; box-shadow: 0 0 7px currentColor; }
-.agent-module-click { position: absolute; top: 0; left: 0; width: 19px; height: 19px; border: 1px solid currentColor; border-radius: 50%; }
-.agent-module-label {
+/* Each voice's lines keep a trace of its colour until impact makes them one. */
+.agent-module-raw-chunk { color: color-mix(in srgb, var(--agent-voice) 34%, #a3b6c2); }
+.agent-module-ink { color: #fff; text-shadow: 0 0 9px var(--agent-voice), 0 0 2px var(--agent-voice); }
+.agent-module-unwritten { visibility: hidden; }
+
+/* The legend sits on the frame: ensemble name, five pips cut at the angle of
+   the front, and the measure in plain words. */
+.agent-module-hud {
   position: absolute;
-  display: block;
-  box-sizing: border-box;
-  max-width: calc(100% - 6px);
-  padding: 4px 6px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  border: 1px solid var(--agent-color);
-  border-radius: 2px;
-  background: #07121ff2;
-  color: var(--agent-color);
+  top: 0;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 9px;
+  transform: translateY(-50%);
+  background: #06060c;
+  color: #7f97a6;
   font: 600 8px/1 'JetBrains Mono', monospace;
-  letter-spacing: .06em;
+  letter-spacing: .16em;
+  white-space: nowrap;
 }
+.agent-module-hud b { color: var(--agent-color); font-weight: 600; }
+.agent-module-pips { display: flex; gap: 3px; }
+.agent-module-pips i { width: 7px; height: 5px; background: currentColor; opacity: .26; transform: skewX(-22deg); }
+.agent-module-pips i[data-measure="past"] { opacity: .7; }
+.agent-module-pips i[data-measure="now"] { opacity: 1; background: #fff3c4; box-shadow: 0 0 8px #f5e663; }
+.agent-module-hud em { display: inline-flex; gap: 5px; min-width: 38px; font-style: normal; color: #dbe9f0; }
+.agent-module[data-build-state="pending"] .agent-module-hud { opacity: 0; }
+
+/* Sealed: a brief afterglow on the frame once a module resolves by itself. */
+.agent-module[data-build-sealed]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid var(--agent-color);
+  animation: agent-seal .85s cubic-bezier(.16, .7, .25, 1) forwards;
+}
+@keyframes agent-seal {
+  from { opacity: .9; box-shadow: 0 0 0 0 color-mix(in srgb, var(--agent-color), transparent 45%), inset 0 0 34px color-mix(in srgb, var(--agent-color), transparent 80%); }
+  to { opacity: 0; box-shadow: 0 0 26px 6px transparent, inset 0 0 0 transparent; }
+}
+
+/* One canvas above the document carries threads, sparks and links. */
+.agent-ensemble { position: fixed; top: 0; left: 0; z-index: 58; pointer-events: none; }
+
 .agent-build-button {
   display: inline-flex;
   align-items: center;
@@ -72,6 +162,11 @@
 @media (max-width: 639px) { .agent-build-button { min-height: 40px; } }
 @media (prefers-reduced-motion: reduce) {
   .agent-module-final { opacity: 1 !important; pointer-events: auto; }
-  .agent-module-scene { display: none; }
+  .agent-module-scene, .agent-module-beam, .agent-ensemble, .agent-module[data-build-sealed]::after { display: none !important; }
   .agent-build-button { transition: none; }
+}
+@media (min-width: 1001px) {
+  .agent-build-button { font-size: 11.5px; }
+  .agent-module-hud { font-size: 9.5px; }
+  .agent-module-hud em { min-width: 46px; }
 }
