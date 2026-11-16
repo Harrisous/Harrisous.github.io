@@ -27,7 +27,7 @@ const { useState, useEffect, useRef, useCallback } = React;
       ],
       educationFull: [],
       experience: [
-        { company: 'Jemm Tec', role: 'Artificial Intelligence Engineer', location: 'Miami, FL', dates: 'Jul. 2026 – Present', bullets: [] },
+        { company: 'Jemm Tec', link: 'https://jemm.ai', role: 'Artificial Intelligence Engineer', location: 'Miami, FL', dates: 'Jul. 2026 – Present', bullets: [] },
       ],
       skills: {},
       contact: {

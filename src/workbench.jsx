@@ -70,7 +70,7 @@ function Education({ profile, build }) {
 }
 function Experience({ profile, build }) {
   return <div className="wb-timeline">{(profile.experience || []).map((job, i) => <AgentModule key={`${job.company}-${i}`} build={build} name="VECTOR" group="experience" color="#ff65d9" rawText={[job.dates, job.location, job.company, job.role, ...(job.bullets || [])].filter(Boolean).join('\n')}><article className="wb-job">
-    <div className="wb-date">{job.dates}<span>{job.location}</span></div><div><h3>{job.company}</h3><p className="wb-role">{job.role}</p>{!!job.bullets?.length && <ul className="wb-job-points">{job.bullets.map((b,k)=><li key={k}>{b}</li>)}</ul>}</div>
+    <div className="wb-date">{job.dates}<span>{job.location}</span></div><div><h3>{job.company}{/^https?:\/\//i.test(job.link || '') && <a className="wb-job-link" href={job.link} target="_blank" rel="noopener noreferrer" aria-label={`${job.company} website (opens in a new tab)`}>{job.link.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '')} <Arrow /></a>}</h3><p className="wb-role">{job.role}</p>{!!job.bullets?.length && <ul className="wb-job-points">{job.bullets.map((b,k)=><li key={k}>{b}</li>)}</ul>}</div>
   </article></AgentModule>)}</div>;
 }
 function Projects({ items = [], section, SmartImage, build }) {
