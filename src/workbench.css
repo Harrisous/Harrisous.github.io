@@ -295,3 +295,8 @@ body:has(.workbench) { position: relative; }
 .wb-job-link { display: inline-flex; align-items: center; gap: 6px; margin-left: 12px; padding: 4px 9px; vertical-align: middle; border: 1px solid color-mix(in srgb,var(--section-color),transparent 50%); background: color-mix(in srgb,var(--section-color),transparent 93%); color: var(--section-color); font: 500 10px/1.4 'JetBrains Mono',monospace; letter-spacing: .04em; transition: background .18s, color .18s; }
 .wb-job-link:hover { background: color-mix(in srgb,var(--section-color),transparent 82%); color: #fff; }
 @media (min-width: 1001px) { .wb-job-link { font-size: 11.5px; } }
+/* The current employer, under the title in the identity block. */
+.wb-employer { --section-color: #00e5ff; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 6px; font: 500 15px/1.4 var(--font-heading); color: #dcecf3; }
+.wb-employer > span:first-child { color: #00e5ff; font: 400 12px/1 'JetBrains Mono',monospace; }
+.wb-employer .wb-job-link { margin-left: 4px; }
+@media (min-width: 1001px) { .wb-employer { font-size: 17px; } }
